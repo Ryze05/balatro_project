@@ -1,0 +1,218 @@
+.menu-root {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    padding: 48px 20px;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.menu-root *,
+.menu-root *::before,
+.menu-root *::after {
+    box-sizing: border-box;
+}
+
+.menu-root::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 180px 60px rgba(0, 0, 0, 0.75);
+    pointer-events: none;
+}
+
+.stage {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fan {
+    position: relative;
+    height: 150px;
+    width: 240px;
+    margin-bottom: -18px;
+}
+
+.fan-card {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 76px;
+    height: 108px;
+    background: #f5ede0;
+    border-radius: 8px;
+    border: 2px solid #1b1f23;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1b1f23;
+    animation: menu-float 4.5s ease-in-out infinite;
+}
+
+.fan-card span {
+    line-height: 1;
+}
+
+.fan-card.c0 {
+    transform: translateX(-130px) rotate(-20deg);
+    animation-delay: 0s;
+}
+.fan-card.c1 {
+    transform: translateX(-46px) rotate(-7deg);
+    animation-delay: 0.3s;
+}
+.fan-card.c2 {
+    transform: translateX(38px) rotate(7deg);
+    animation-delay: 0.6s;
+}
+.fan-card.c3 {
+    transform: translateX(122px) rotate(20deg);
+    animation-delay: 0.9s;
+}
+
+@keyframes menu-float {
+    0%,
+    100% {
+        margin-top: 0px;
+    }
+    50% {
+        margin-top: -10px;
+    }
+}
+
+.title-block {
+    text-align: center;
+    z-index: 2;
+}
+
+.title {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-weight: 900;
+    font-stretch: condensed;
+    font-size: clamp(40px, 10vw, 58px);
+    letter-spacing: 2px;
+    color: #e3b23c;
+    text-shadow: 3px 3px 0 #7a1620, 6px 6px 0 rgba(0, 0, 0, 0.5);
+    margin: 0;
+}
+
+.subtitle {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #8fa89a;
+    margin-top: 10px;
+}
+
+.menu-list {
+    margin-top: 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 16px 20px;
+    background: #14181b;
+    border: 2px solid #2b322f;
+    border-radius: 10px;
+    color: #f5ede0;
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.menu-item .icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    background: #f5ede0;
+    color: #1b1f23;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.menu-item .hint {
+    margin-left: auto;
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 11px;
+    color: #6b7570;
+    font-weight: 400;
+    display: none;
+}
+
+.menu-item:hover,
+.menu-item:focus-visible {
+    transform: translateX(6px);
+    border-color: #e3b23c;
+    background: #1a201d;
+}
+
+.menu-item:focus-visible {
+    outline: 2px solid #e3b23c;
+    outline-offset: 3px;
+}
+
+.menu-item.active {
+    border-color: #c1121f;
+}
+
+footer {
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.suit-row {
+    display: flex;
+    gap: 8px;
+    font-size: 16px;
+    color: #4b534f;
+}
+
+.version {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 11px;
+    color: #4b534f;
+    letter-spacing: 1px;
+}
+
+@media (min-width: 480px) {
+    .menu-item .hint {
+        display: block;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fan-card {
+        animation: none;
+    }
+}

@@ -1,4 +1,4 @@
-export enum Suit {
+export enum Palo {
     CORAZON = "♥",
     PICAS = "♠",
     TREBOLES = "♣",

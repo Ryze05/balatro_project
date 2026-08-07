@@ -1,11 +1,11 @@
-import { Suit } from "./Suit";
+import { Palo } from "./Palo";
 
 export class Card {
     valor: number;
-    palo: Suit;
+    palo: Palo;
     hidden: boolean;
 
-    constructor(valor: number, palo: Suit) {
+    constructor(valor: number, palo: Palo) {
         this.valor = Number(valor);
         this.palo = palo;
         this.hidden = true;

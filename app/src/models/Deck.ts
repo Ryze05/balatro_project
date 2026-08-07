@@ -1,5 +1,5 @@
 import { Card } from "./Card";
-import { Suit } from "./Suit";
+import { Palo } from "./Palo";
 
 export class Deck {
 
@@ -14,9 +14,9 @@ export class Deck {
         this.numDecks = numDecks;
 
         for (let d = 0; d < numDecks; d++) {
-            Object.values(Suit).forEach((suit): void => {
+            Object.values(Palo).forEach((palo) => {
                 for (let i = 1; i <= 13; i++) {
-                    this.cards.push(new Card(i, suit));
+                    this.cards.push(new Card(i, palo));
                 }
             });
         }
