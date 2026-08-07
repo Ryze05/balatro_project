@@ -1,14 +1,17 @@
-import { useState } from 'react'
-
-import './App.css'
-import MainMenu from './MainMenu'
+import { Route, Routes } from 'react-router-dom'
+import Landing from './pages/Landing/Landing'
+import Game from './pages/Game/Game'
+import NotFound from './pages/NotFound/NotFound'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-    <MainMenu></MainMenu>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/game" element={<Game />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </>
   )
 }

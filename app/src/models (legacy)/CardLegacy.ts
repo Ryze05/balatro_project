@@ -1,4 +1,4 @@
-import { Palo } from "./Palo";
+import { Palo } from "./PaloLegacy";
 
 export class Card {
     valor: number;
