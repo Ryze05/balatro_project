@@ -1,5 +1,5 @@
-import { Card } from "./Card";
-import { Palo } from "./Palo";
+import { Card } from "./CardLegacy";
+import { Palo } from "./PaloLegacy";
 
 export class Deck {
 
