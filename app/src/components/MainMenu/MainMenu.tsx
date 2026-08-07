@@ -1,20 +1,27 @@
 import { useState, type JSX } from "react";
-import "./MainMenu.css";
-import type { MenuOption, Palo } from "../../types/Game";
+import styles from "./MainMenu.module.css";
+import type { MenuOption, Suit } from "../../types/Game";
 
 interface MenuItem {
   label: string;
   option: MenuOption;
-  palo: Palo;
+  suit: Suit;
   hint: string;
 }
 
-const PALOS: Palo[] = ["♠", "♥", "♦", "♣"];
+const SUITS: Suit[] = ["spades", "hearts", "diamonds", "clubs"];
+
+const SUIT_SYMBOLS: Record<Suit, string> = {
+  spades: "♠",
+  hearts: "♥",
+  diamonds: "♦",
+  clubs: "♣",
+};
 
 const MENU_ITEMS: MenuItem[] = [
-  { label: "Jugar", option: "play", palo: "♠", hint: "Start a new game" },
-  { label: "Reglas", option: "rules", palo: "♥", hint: "How cards are scored" },
-  { label: "Opciones", option: "options", palo: "♦", hint: "Decks, sound, settings" },
+  { label: "Play", option: "play", suit: "spades", hint: "Start a new game" },
+  { label: "Rules", option: "rules", suit: "hearts", hint: "How cards are scored" },
+  { label: "Options", option: "options", suit: "diamonds", hint: "Decks, sound, settings" },
 ];
 
 interface MainMenuProps {
@@ -30,42 +37,42 @@ export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
   };
 
   return (
-    <div className="menu-root">
-      <div className="stage">
-        <div className="fan">
-          {PALOS.map((palo, i) => (
-            <div key={palo} className={`fan-card c${i}`}>
-              <span>{palo}</span>
+    <div className={styles.menuRoot}>
+      <div className={styles.stage}>
+        <div className={styles.fan}>
+          {SUITS.map((suit, i) => (
+            <div key={suit} className={`${styles.fanCard} ${styles[`fanCardC${i}`]}`}>
+              <span>{SUIT_SYMBOLS[suit]}</span>
             </div>
           ))}
         </div>
 
-        <div className="title-block">
-          <h1 className="title">BALATRO WEB</h1>
-          <p className="subtitle">Para Xarxatec Activa</p>
+        <div className={styles.titleBlock}>
+          <h1 className={styles.title}>BALATRO WEB</h1>
+          <p className={styles.subtitle}>Para Xarxatec Activa</p>
         </div>
 
-        <nav className="menu-list">
+        <nav className={styles.menuList}>
           {MENU_ITEMS.map((item) => (
             <button
               key={item.option}
-              className={`menu-item${active === item.option ? " active" : ""}`}
+              className={`${styles.menuItem}${active === item.option ? ` ${styles.menuItemActive}` : ""}`}
               onClick={() => handleSelect(item.option)}
             >
-              <span className="icon">{item.palo}</span>
+              <span className={styles.icon}>{SUIT_SYMBOLS[item.suit]}</span>
               {item.label}
-              <span className="hint">{item.hint}</span>
+              <span className={styles.hint}>{item.hint}</span>
             </button>
           ))}
         </nav>
 
-        <footer>
-          <div className="suit-row">
-            {PALOS.map((palo) => (
-              <span key={palo}>{palo}</span>
+        <footer className={styles.footer}>
+          <div className={styles.suitRow}>
+            {SUITS.map((suit) => (
+              <span key={suit}>{SUIT_SYMBOLS[suit]}</span>
             ))}
           </div>
-          <span className="version">v0.1 — borrador</span>
+          <span className={styles.version}>v0.1 — draft</span>
         </footer>
       </div>
     </div>

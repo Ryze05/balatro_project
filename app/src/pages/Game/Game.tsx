@@ -1,11 +1,11 @@
 import { useState } from "react"
 import MainMenu from "../../components/MainMenu/MainMenu"
-import type { GameState } from "../../types/Game"
+import type { GamePhase } from "../../types/Game"
 
 export default function Game() {
 
 
-    const [gameState, setGameState] = useState<GameState>('menu')
+    const [gameState, setGameState] = useState<GamePhase>('menu')
 
     if (gameState === 'menu') {
         return (

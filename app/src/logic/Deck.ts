@@ -1,40 +1,38 @@
-import type { Card, Palo } from "../types/Game";
+import type { Card, Suit, Rank } from "../types/Game";
 
-const PALOS: Palo[] = ["♥", "♠", "♣", "♦"];
+const SUITS: Suit[] = ["hearts", "diamonds", "clubs", "spades"];
 
-// Devuelve el valor numérico/puntuación de una carta
+const RANKS: Rank[] = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+
 export function getCardScore(card: Card): number {
-  if ([11, 12, 13].includes(card.valor)) return 10;
-  if (card.valor === 1) return 11;
-  return card.valor;
+  if (["J", "Q", "K"].includes(card.rank)) return 10;
+  if (card.rank === "A") return 11;
+  return parseInt(card.rank);
 }
 
-// Devuelve la información textual de la carta
 export function getCardInfo(card: Card): string {
-  return `${card.valor} de ${card.palo}`;
+  return `${card.rank} of ${card.suit}`;
 }
 
-// Genera un mazo nuevo de cartas (barajado por defecto)
 export function createDeck(numDecks: number = 1): Card[] {
   const cards: Card[] = [];
 
   for (let d = 0; d < numDecks; d++) {
-    PALOS.forEach((palo) => {
-      for (let i = 1; i <= 13; i++) {
+    SUITS.forEach((suit) => {
+      RANKS.forEach((rank) => {
         cards.push({
-          id: `${d}-${palo}-${i}-${Math.random()}`,
-          valor: i,
-          palo: palo,
+          id: `${d}-${suit}-${rank}-${Math.random()}`,
+          rank,
+          suit,
           hidden: true,
         });
-      }
+      });
     });
   }
 
   return shuffleCards(cards);
 }
 
-// Mezcla las cartas de forma inmutable (devuelve un array nuevo)
 export function shuffleCards(cards: Card[]): Card[] {
   const newDeck = [...cards];
   for (let i = newDeck.length - 1; i > 0; i--) {
@@ -44,7 +42,6 @@ export function shuffleCards(cards: Card[]): Card[] {
   return newDeck;
 }
 
-// Extrae una carta del mazo de forma inmutable
 export function drawCard(deck: Card[]): { drawnCard: Card | undefined; remainingDeck: Card[] } {
   if (deck.length === 0) return { drawnCard: undefined, remainingDeck: [] };
 

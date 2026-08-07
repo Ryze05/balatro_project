@@ -1,4 +1,4 @@
-.menu-root {
+.menuRoot {
     min-height: 100vh;
     width: 100%;
     display: flex;
@@ -14,13 +14,13 @@
     box-sizing: border-box;
 }
 
-.menu-root *,
-.menu-root *::before,
-.menu-root *::after {
+.menuRoot *,
+.menuRoot *::before,
+.menuRoot *::after {
     box-sizing: border-box;
 }
 
-.menu-root::before {
+.menuRoot::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -44,7 +44,7 @@
     margin-bottom: -18px;
 }
 
-.fan-card {
+.fanCard {
     position: absolute;
     top: 0;
     left: 50%;
@@ -61,31 +61,34 @@
     font-size: 20px;
     font-weight: 700;
     color: #1b1f23;
-    animation: menu-float 4.5s ease-in-out infinite;
+    animation: menuFloat 4.5s ease-in-out infinite;
 }
 
-.fan-card span {
+.fanCard span {
     line-height: 1;
 }
 
-.fan-card.c0 {
+.fanCardC0 {
     transform: translateX(-130px) rotate(-20deg);
     animation-delay: 0s;
 }
-.fan-card.c1 {
+
+.fanCardC1 {
     transform: translateX(-46px) rotate(-7deg);
     animation-delay: 0.3s;
 }
-.fan-card.c2 {
+
+.fanCardC2 {
     transform: translateX(38px) rotate(7deg);
     animation-delay: 0.6s;
 }
-.fan-card.c3 {
+
+.fanCardC3 {
     transform: translateX(122px) rotate(20deg);
     animation-delay: 0.9s;
 }
 
-@keyframes menu-float {
+@keyframes menuFloat {
     0%,
     100% {
         margin-top: 0px;
@@ -95,7 +98,7 @@
     }
 }
 
-.title-block {
+.titleBlock {
     text-align: center;
     z-index: 2;
 }
@@ -120,7 +123,7 @@
     margin-top: 10px;
 }
 
-.menu-list {
+.menuList {
     margin-top: 40px;
     width: 100%;
     display: flex;
@@ -128,7 +131,7 @@
     gap: 14px;
 }
 
-.menu-item {
+.menuItem {
     display: flex;
     align-items: center;
     gap: 14px;
@@ -146,7 +149,7 @@
     transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
-.menu-item .icon {
+.icon {
     width: 30px;
     height: 30px;
     border-radius: 6px;
@@ -159,7 +162,7 @@
     flex-shrink: 0;
 }
 
-.menu-item .hint {
+.hint {
     margin-left: auto;
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 11px;
@@ -168,30 +171,30 @@
     display: none;
 }
 
-.menu-item:hover,
-.menu-item:focus-visible {
+.menuItem:hover,
+.menuItem:focusVisible {
     transform: translateX(6px);
     border-color: #e3b23c;
     background: #1a201d;
 }
 
-.menu-item:focus-visible {
+.menuItem:focusVisible {
     outline: 2px solid #e3b23c;
     outline-offset: 3px;
 }
 
-.menu-item.active {
+.menuItemActive {
     border-color: #c1121f;
 }
 
-footer {
+.footer {
     margin-top: 36px;
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-.suit-row {
+.suitRow {
     display: flex;
     gap: 8px;
     font-size: 16px;
@@ -206,13 +209,13 @@ footer {
 }
 
 @media (min-width: 480px) {
-    .menu-item .hint {
+    .hint {
         display: block;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .fan-card {
+    .fanCard {
         animation: none;
     }
 }
