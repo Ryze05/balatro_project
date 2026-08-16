@@ -20,11 +20,12 @@ export function createDeck(numDecks: number = 1): Card[] {
   for (let d = 0; d < numDecks; d++) {
     SUITS.forEach((suit) => {
       RANKS.forEach((rank) => {
+        const chipValue = getCardScore({ rank } as Card);
         cards.push({
           id: `${d}-${suit}-${rank}-${Math.random()}`,
           rank,
           suit,
-          hidden: true,
+          chipValue,
         });
       });
     });
