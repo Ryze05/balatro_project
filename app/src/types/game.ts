@@ -1,5 +1,5 @@
-export type { Suit, Rank, Card } from "./card";
-export type { Joker, ScoringContext, HandType } from "./joker";
+import type { Card } from "./card";
+import type { Joker } from "./joker";
 
 export type GamePhase = "menu" | "playing" | "rules" | "shop" | "gameover";
 
@@ -25,6 +25,3 @@ export interface GameState {
 }
 
 export type MenuOption = "play" | "rules" | "options";
-
-import type { Card } from "./card";
-import type { Joker } from "./joker";
