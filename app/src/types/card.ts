@@ -4,11 +4,9 @@ export type Rank = "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "J" | 
 
 export interface Card {
   id: string;
-  rank: Rank;
   suit: Suit;
-  hidden: boolean;
+  rank: Rank;
+  chipValue: number;
+  enhanced?: boolean;
+  selected?: boolean;
 }
-
-export type GamePhase = 'menu' | 'playing' | 'shop' | 'gameover';
-
-export type MenuOption = "play" | "rules" | "options";

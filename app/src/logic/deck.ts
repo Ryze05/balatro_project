@@ -1,13 +1,13 @@
-import type { Card, Suit, Rank } from "../types/Game";
+import type { Card, Rank, Suit } from "../types/card";
 
 const SUITS: Suit[] = ["hearts", "diamonds", "clubs", "spades"];
 
 const RANKS: Rank[] = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
 
-export function getCardScore(card: Card): number {
-  if (["J", "Q", "K"].includes(card.rank)) return 10;
-  if (card.rank === "A") return 11;
-  return parseInt(card.rank);
+export function getCardScore(rank: Rank): number {
+  if (["J", "Q", "K"].includes(rank)) return 10;
+  if (rank === "A") return 11;
+  return parseInt(rank);
 }
 
 export function getCardInfo(card: Card): string {
@@ -17,14 +17,15 @@ export function getCardInfo(card: Card): string {
 export function createDeck(numDecks: number = 1): Card[] {
   const cards: Card[] = [];
 
-  for (let d = 0; d < numDecks; d++) {
+  for (let i = 0; i < numDecks; i++) {
     SUITS.forEach((suit) => {
       RANKS.forEach((rank) => {
+        const chipValue = getCardScore(rank);
         cards.push({
-          id: `${d}-${suit}-${rank}-${Math.random()}`,
+          id: `${i}-${suit}-${rank}-${Math.random()}`,
           rank,
           suit,
-          hidden: true,
+          chipValue,
         });
       });
     });
