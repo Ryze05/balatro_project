@@ -1,7 +1,21 @@
 import type { Card, Rank, Suit } from "../types/card";
-import type { HandType } from "../types/joker";
+import type { HandType } from "../types/game";
 
-const RANK_ORDER: Rank[] = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+const RANK_ORDER: Rank[] = [
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "J",
+  "Q",
+  "K",
+  "A",
+];
 
 function getRankIndex(rank: Rank): number {
   return RANK_ORDER.indexOf(rank);
@@ -9,21 +23,21 @@ function getRankIndex(rank: Rank): number {
 
 function groupByRank(cards: Card[]): Map<Rank, Card[]> {
   const groups = new Map<Rank, Card[]>();
-  cards.forEach(card => {
+  cards.forEach((card) => {
     const group = groups.get(card.rank) || [];
     group.push(card);
     groups.set(card.rank, group);
-  })
+  });
   return groups;
 }
 
 function groupBySuit(cards: Card[]): Map<Suit, Card[]> {
   const groups = new Map<Suit, Card[]>();
-  cards.forEach(card => {
+  cards.forEach((card) => {
     const group = groups.get(card.suit) || [];
     group.push(card);
     groups.set(card.suit, group);
-  })
+  });
   return groups;
 }
 
@@ -32,43 +46,35 @@ function isFlush(cards: Card[]): boolean {
   const suitGroups = groupBySuit(cards);
 
   for (const group of suitGroups.values()) {
-    if (group.length >= 5) return true
+    if (group.length >= 5) return true;
   }
 
-  return false
-
-  // let isFlush = false
-
-  // suitGroups.forEach((value) => {
-  //   if (value.length >= 5) isFlush = true
-  // })
-
-  // return isFlush;
+  return false;
 }
 
 function isStraight(cards: Card[]): boolean {
   if (cards.length < 5) return false;
 
-  const rankSet = new Set(cards.map(i => i.rank))
-  const uniqueRanks = [...rankSet]
+  const rankSet = new Set(cards.map((i) => i.rank));
+  const uniqueRanks = [...rankSet];
 
   if (uniqueRanks.length < 5) return false;
 
   const sortedRanks = uniqueRanks
-    .map(i => getRankIndex(i))
+    .map((i) => getRankIndex(i))
     .sort((a, b) => a - b);
 
-  let consecutive = true;
-  for (let i = 1; i < sortedRanks.length; i++) {
-    if (sortedRanks[i] !== sortedRanks[i - 1] + 1) {
-      consecutive = false;
-      break;
-    }
+  for (let i = 0; i <= sortedRanks.length - 5; i++) {
+    if (sortedRanks[i + 4] - sortedRanks[i] === 4) return true;
   }
 
-  if (consecutive) return true;
-
-  if (sortedRanks.includes(12) && sortedRanks.includes(0) && sortedRanks.includes(1) && sortedRanks.includes(2) && sortedRanks.includes(3)) {
+  if (
+    rankSet.has("A") &&
+    rankSet.has("2") &&
+    rankSet.has("3") &&
+    rankSet.has("4") &&
+    rankSet.has("5")
+  ) {
     return true;
   }
 
@@ -88,14 +94,14 @@ function getStraightCards(cards: Card[]): Card[] {
       RANK_ORDER[high - 4],
     ];
 
-    if (ranks.every(rank => cardsByRank.has(rank))) {
-      return ranks.map(rank => cardsByRank.get(rank)![0]);
+    if (ranks.every((rank) => cardsByRank.has(rank))) {
+      return ranks.map((rank) => cardsByRank.get(rank)![0]);
     }
   }
 
   const wheelRanks: Rank[] = ["A", "2", "3", "4", "5"];
-  if (wheelRanks.every(rank => cardsByRank.has(rank))) {
-    return wheelRanks.map(rank => cardsByRank.get(rank)![0]);
+  if (wheelRanks.every((rank) => cardsByRank.has(rank))) {
+    return wheelRanks.map((rank) => cardsByRank.get(rank)![0]);
   }
 
   return [];
@@ -106,15 +112,16 @@ function getFlushCards(cards: Card[]): Card[] {
   const suitGroups = groupBySuit(cards);
   for (const group of suitGroups.values()) {
     if (group.length >= 5) {
-      return group
-      // return group.slice(0, 5);
+      return group.sort((a, b) => getRankIndex(b.rank) - getRankIndex(a.rank)).slice(0, 5);
     }
   }
   return [];
 }
 
-export function evaluateHand(cards: Card[]): { handType: HandType; scoringCards: Card[] } {
-
+export function evaluateHand(cards: Card[]): {
+  handType: HandType;
+  scoringCards: Card[];
+} {
   if (cards.length === 0) {
     return {
       handType: "HighCard",
@@ -130,10 +137,26 @@ export function evaluateHand(cards: Card[]): { handType: HandType; scoringCards:
   }
 
   const rankGroups = groupByRank(cards);
-  const groups = Array.from(rankGroups.values()).sort((a, b) => b.length - a.length);
+  const groups = Array.from(rankGroups.values()).sort(
+    (a, b) => b.length - a.length,
+  );
 
   const hasFlush = isFlush(cards);
   const hasStraight = isStraight(cards);
+
+  //* Flush Five
+  if (groups[0].length >= 5) {
+    const suit = groups[0][0].suit;
+    const suitedFive = groups[0].filter((i) => i.suit === suit);
+    if (suitedFive.length >= 5) {
+      return { handType: "FlushFive", scoringCards: suitedFive.slice(0, 5) };
+    }
+    return { handType: "FiveOfAKind", scoringCards: groups[0] };
+  }
+
+  // if (groups[0].length >= 5) {
+  //   return { handType: "FiveOfAKind", scoringCards: groups[0] };
+  // }
 
   //* Straight Flush
   if (hasFlush && hasStraight) {
@@ -145,9 +168,28 @@ export function evaluateHand(cards: Card[]): { handType: HandType; scoringCards:
     return { handType: "FourOfAKind", scoringCards: groups[0] };
   }
 
+  //* Flush House
+  if (
+    groups[0].length >= 3 &&
+    groups.length >= 2 &&
+    groups[1].length >= 2 &&
+    hasFlush
+  ) {
+    const tripCards = groups[0].slice(0, 3);
+    const pairCards = groups[1].slice(0, 2);
+    const fiveCards = [...tripCards, ...pairCards];
+    const suit = fiveCards[0].suit;
+    if (fiveCards.every((c) => c.suit === suit)) {
+      return { handType: "FlushHouse", scoringCards: fiveCards };
+    }
+  }
+
   //* Full House
   if (groups[0].length === 3 && groups.length >= 2 && groups[1].length >= 2) {
-    return { handType: "FullHouse", scoringCards: [...groups[0], ...groups[1].slice(0, 2)] };
+    return {
+      handType: "FullHouse",
+      scoringCards: [...groups[0], ...groups[1].slice(0, 2)],
+    };
   }
 
   //* Flush
@@ -176,6 +218,8 @@ export function evaluateHand(cards: Card[]): { handType: HandType; scoringCards:
   }
 
   //* High Card
-  const sorted = [...cards].sort((a, b) => getRankIndex(b.rank) - getRankIndex(a.rank));
+  const sorted = [...cards].sort(
+    (a, b) => getRankIndex(b.rank) - getRankIndex(a.rank),
+  );
   return { handType: "HighCard", scoringCards: [sorted[0]] };
 }

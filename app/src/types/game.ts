@@ -11,9 +11,7 @@ export interface Blind {
   type: BlindType;
   targetScore: number;
   reward: number;
-  /** Boss blinds can never be skipped */
   skippable: boolean;
-  /** Shown to the player when hovering the skip button, e.g. "+1 skip tag" */
   skipTag?: string;
   description?: string;
 }
@@ -36,3 +34,24 @@ export interface GameState {
 }
 
 export type MenuOption = "play" | "rules" | "options";
+
+export interface ScoringContext {
+  chips: number;
+  multiplier: number;
+  handType: HandType;
+  playedCards: Card[];
+}
+
+export type HandType =
+  | "HighCard"
+  | "Pair"
+  | "TwoPair"
+  | "ThreeOfAKind"
+  | "Straight"
+  | "Flush"
+  | "FullHouse"
+  | "FourOfAKind"
+  | "StraightFlush"
+  | "FiveOfAKind"
+  | "FlushHouse"
+  | "FlushFive";
