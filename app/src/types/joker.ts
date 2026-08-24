@@ -5,7 +5,7 @@ export interface Joker {
   price: number;
   rarity: "common" | "uncommon" | "rare" | "legendary";
   effect: {
-    type: string;
+    type: "add_chips" | "add_multiplier" | "multiply_multiplier";
     value: number;
   };
 }
