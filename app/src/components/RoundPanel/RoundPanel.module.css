@@ -1,0 +1,224 @@
+.root {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background:
+        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    padding: 32px 20px;
+    box-sizing: border-box;
+}
+
+.root *,
+.root *::before,
+.root *::after {
+    box-sizing: border-box;
+}
+
+.topBar {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.blindInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.anteLabel {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #6b7570;
+    text-transform: uppercase;
+}
+
+.blindName {
+    font-weight: 800;
+    font-size: 18px;
+    color: #e3b23c;
+}
+
+.scoreBlock {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.progressTrack {
+    width: 100%;
+    height: 10px;
+    background: #14181b;
+    border: 2px solid #2b322f;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #c1121f, #e3b23c);
+    transition: width 0.25s ease;
+}
+
+.scoreText {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 13px;
+    color: #f5ede0;
+    font-weight: 700;
+}
+
+.counters {
+    display: flex;
+    gap: 14px;
+}
+
+.counter {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 12px;
+    color: #8fa89a;
+    background: #14181b;
+    border: 2px solid #2b322f;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+.resultToast {
+    margin-top: 18px;
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 14px;
+    color: #8fd18f;
+    background: #14181b;
+    border: 2px solid #2b322f;
+    border-radius: 8px;
+    padding: 8px 16px;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.handArea {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 760px;
+    margin: 32px 0;
+}
+
+.card {
+    width: 68px;
+    height: 96px;
+    background: #f5ede0;
+    border-radius: 8px;
+    border: 2px solid #1b1f23;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+}
+
+.cardSelected {
+    transform: translateY(-16px);
+    border-color: #e3b23c;
+    box-shadow: 0 0 0 2px #e3b23c, 0 10px 20px rgba(0, 0, 0, 0.55);
+}
+
+.cardRank {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.cardSuit {
+    font-size: 22px;
+}
+
+.cardRed {
+    color: #b5121f;
+}
+
+.cardBlack {
+    color: #1b1f23;
+}
+
+.actions {
+    display: flex;
+    gap: 14px;
+}
+
+.discardButton,
+.playButton {
+    padding: 14px 26px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.discardButton {
+    background: transparent;
+    border: 2px solid #2b322f;
+    color: #b7c2bb;
+}
+
+.discardButton:hover:not(:disabled) {
+    border-color: #6b7570;
+}
+
+.discardButton:disabled,
+.playButton:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.playButton {
+    background: #c1121f;
+    border: 2px solid #c1121f;
+    color: #f5ede0;
+}
+
+.playButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.devWinButton {
+    margin-top: 24px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 11px;
+    color: #6b7570;
+    background: transparent;
+    border: 1px dashed #2b322f;
+    cursor: pointer;
+}
+
+.devWinButton:hover {
+    color: #8fa89a;
+    border-color: #6b7570;
+}
