@@ -1,6 +1,9 @@
 import { useState, type JSX } from "react";
 import styles from "./MainMenu.module.css";
-import type { MenuOption, Suit } from "../../types/Game";
+import type { MenuOption } from "../../types/game";
+import type { Suit } from "../../types/card"
+import type { DeckDefinition } from "../../types/deck";
+import { DeckSelectPanel } from "../DeckSelectPanel/DeckSelectPanel"
 
 interface MenuItem {
   label: string;
@@ -25,15 +28,32 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 interface MainMenuProps {
-  onSelect?: (option: MenuOption) => void;
+  onSelect?: (option: MenuOption, deckId?: string) => void;
 }
 
 export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
   const [active, setActive] = useState<MenuOption | null>(null);
+  const [showDeckPanel, setShowDeckPanel] = useState(false);
 
   const handleSelect = (option: MenuOption): void => {
     setActive(option);
+
+    if (option === "play") {
+      setShowDeckPanel(true);
+      return;
+    }
+
     onSelect?.(option);
+  };
+
+  const handleDeckConfirm = (deck: DeckDefinition): void => {
+    setShowDeckPanel(false);
+    onSelect?.("play", deck.id);
+  };
+
+  const handleDeckCancel = (): void => {
+    setShowDeckPanel(false);
+    setActive(null);
   };
 
   return (
@@ -75,6 +95,10 @@ export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
           <span className={styles.version}>v0.1 — draft</span>
         </footer>
       </div>
+
+      {showDeckPanel && (
+        <DeckSelectPanel onConfirm={handleDeckConfirm} onCancel={handleDeckCancel} />
+      )}
     </div>
   );
 }

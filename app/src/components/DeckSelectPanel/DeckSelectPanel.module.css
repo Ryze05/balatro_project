@@ -1,0 +1,175 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 9, 8, 0.72);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.panel {
+    width: 100%;
+    max-width: 380px;
+    background:
+        radial-gradient(ellipse at 50% 20%, #163425 0%, #0b0e10 70%);
+    border: 2px solid #2b322f;
+    border-radius: 14px;
+    padding: 28px 24px 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.panel *,
+.panel *::before,
+.panel *::after {
+    box-sizing: border-box;
+}
+
+.title {
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #8fa89a;
+    margin: 0 0 22px;
+}
+
+.selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.arrow {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #14181b;
+    border: 2px solid #2b322f;
+    color: #e3b23c;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.arrow:hover:not(:disabled) {
+    border-color: #e3b23c;
+    transform: scale(1.08);
+}
+
+.arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.deckCard {
+    width: 168px;
+    background: #14181b;
+    border: 2px solid #2b322f;
+    border-radius: 12px;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: border-color 0.2s ease;
+}
+
+.deckBack {
+    width: 88px;
+    height: 124px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    margin-bottom: 12px;
+    border: 2px solid rgba(0, 0, 0, 0.35);
+}
+
+.deckBackGlyph {
+    font-size: 40px;
+    color: rgba(245, 237, 224, 0.85);
+}
+
+.deckName {
+    font-size: 16px;
+    font-weight: 800;
+    margin: 0 0 6px;
+}
+
+.deckDescription {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #b7c2bb;
+    margin: 0;
+}
+
+.dots {
+    display: flex;
+    gap: 6px;
+    margin-top: 18px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2b322f;
+}
+
+.dotActive {
+    background: #e3b23c;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    margin-top: 24px;
+}
+
+.cancelButton,
+.confirmButton {
+    flex: 1;
+    padding: 12px 0;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.cancelButton {
+    background: transparent;
+    border: 2px solid #2b322f;
+    color: #b7c2bb;
+}
+
+.cancelButton:hover {
+    border-color: #6b7570;
+}
+
+.confirmButton {
+    background: #c1121f;
+    border: 2px solid #c1121f;
+    color: #f5ede0;
+}
+
+.confirmButton:hover {
+    transform: translateY(-2px);
+}
