@@ -4,6 +4,7 @@ import type { MenuOption } from "../../types/game";
 import type { Suit } from "../../types/card"
 import type { DeckDefinition } from "../../types/deck";
 import { DeckSelectPanel } from "../DeckSelectPanel/DeckSelectPanel"
+import { RulesPanel } from "../RulesPanel/RulesPanel"
 
 interface MenuItem {
   label: string;
@@ -24,7 +25,6 @@ const SUIT_SYMBOLS: Record<Suit, string> = {
 const MENU_ITEMS: MenuItem[] = [
   { label: "Play", option: "play", suit: "spades", hint: "Start a new game" },
   { label: "Rules", option: "rules", suit: "hearts", hint: "How cards are scored" },
-  { label: "Options", option: "options", suit: "diamonds", hint: "Decks, sound, settings" },
 ];
 
 interface MainMenuProps {
@@ -34,12 +34,18 @@ interface MainMenuProps {
 export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
   const [active, setActive] = useState<MenuOption | null>(null);
   const [showDeckPanel, setShowDeckPanel] = useState(false);
+  const [showRulesPanel, setShowRulesPanel] = useState(false);
 
   const handleSelect = (option: MenuOption): void => {
     setActive(option);
 
     if (option === "play") {
       setShowDeckPanel(true);
+      return;
+    }
+
+    if (option === "rules") {
+      setShowRulesPanel(true);
       return;
     }
 
@@ -53,6 +59,11 @@ export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
 
   const handleDeckCancel = (): void => {
     setShowDeckPanel(false);
+    setActive(null);
+  };
+
+  const handleRulesClose = (): void => {
+    setShowRulesPanel(false);
     setActive(null);
   };
 
@@ -99,6 +110,8 @@ export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
       {showDeckPanel && (
         <DeckSelectPanel onConfirm={handleDeckConfirm} onCancel={handleDeckCancel} />
       )}
+
+      {showRulesPanel && <RulesPanel onClose={handleRulesClose} />}
     </div>
   );
 }
