@@ -4,8 +4,7 @@ import MainMenu from "../../components/MainMenu/MainMenu";
 import BlindSelect from "../../components/BlindSelect/BlindSelect";
 import RoundPanel from "../../components/RoundPanel/RoundPanel";
 import Shop from "../../components/Shop/Shop";
-import { generateBlindsForAnte } from "../../lib/blinds";
-
+import { generateBlindsForAnte } from "../../logic/blinds";
 
 export default function Game() {
     const [phase, setPhase] = useState<GamePhase>("menu");
