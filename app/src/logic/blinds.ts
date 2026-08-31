@@ -1,4 +1,5 @@
 import type { Blind, BlindType } from "../types/game";
+import { shuffle } from "../utils/shuffle";
 
 //* Puntajes de los niveles
 const BASE_CHIPS_FOR_LEVEL: Record<number, number> = {
@@ -59,21 +60,12 @@ const BOSS_NAMES = [
   "The Water",
 ];
 
-function shuffleBosses(): string[] {
-  const pool = [...BOSS_NAMES];
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  return pool;
-}
-
 export function createBossPool(): () => string {
-  let remaining = shuffleBosses();
+  let remaining = shuffle(BOSS_NAMES);
 
   return function pickBossName(): string {
     if (remaining.length === 0) {
-      remaining = shuffleBosses();
+      remaining = shuffle(BOSS_NAMES);
     }
 
     return remaining.pop() as string;
