@@ -6,7 +6,6 @@ import RoundPanel from "../../components/RoundPanel/RoundPanel";
 import Shop from "../../components/Shop/Shop";
 import { generateBlindsForAnte } from "../../logic/blinds";
 
-
 export default function Game() {
     const [phase, setPhase] = useState<GamePhase>("menu");
 
