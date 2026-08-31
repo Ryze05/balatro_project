@@ -4,7 +4,7 @@ import type { Blind } from "../../types/game";
 
 interface RoundPanelProps {
   blind: Blind;
-  ante: number;
+  level: number;
   onWin: () => void;
   onLose: () => void;
 }
@@ -64,7 +64,7 @@ export function RoundPanel({ blind, ante, onWin, onLose }: RoundPanelProps): JSX
     <div className={styles.root}>
       <div className={styles.topBar}>
         <div className={styles.blindInfo}>
-          <span className={styles.anteLabel}>Ante {ante}</span>
+          <span className={styles.levelLabel}>Level {level}</span>
           <span className={styles.blindName}>{blind.name}</span>
         </div>
 
