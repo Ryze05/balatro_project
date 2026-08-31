@@ -4,14 +4,15 @@ import MainMenu from "../../components/MainMenu/MainMenu";
 import BlindSelect from "../../components/BlindSelect/BlindSelect";
 import RoundPanel from "../../components/RoundPanel/RoundPanel";
 import Shop from "../../components/Shop/Shop";
-import { generateBlindsForAnte } from "../../logic/blinds";
+import { generateBlindsForLevel, createBossPool } from "../../logic/blinds";
 
 export default function Game() {
     const [phase, setPhase] = useState<GamePhase>("menu");
 
-    const [ante, setAnte] = useState(1);
+    const [level, setLevel] = useState(1);
     const [blinds, setBlinds] = useState<Blind[]>([]);
     const [blindIndex, setBlindIndex] = useState(0);
+    const [bossPool, setBossPool] = useState<() => string>(createBossPool);
 
     const currentBlind = blinds[blindIndex];
 
@@ -19,8 +20,10 @@ export default function Game() {
     const handleMenuSelect = (option: MenuOption, _deckId?: string): void => {
         // _deckId: chosen deck from DeckSelectPanel, not wired in yet.
         if (option !== "play") return;
-        setAnte(1);
-        setBlinds(generateBlindsForAnte(1));
+        const freshPool = createBossPool();
+        setLevel(1);
+        setBossPool(freshPool);
+        setBlinds(generateBlindsForLevel(1, freshPool));
         setBlindIndex(0);
         setPhase("blindSelect");
     };
@@ -29,9 +32,9 @@ export default function Game() {
     const advanceToNextBlind = (): void => {
         const nextIndexRaw = blindIndex + 1;
         if (nextIndexRaw >= blinds.length) {
-            const nextAnte = ante + 1;
-            setAnte(nextAnte);
-            setBlinds(generateBlindsForAnte(nextAnte));
+            const nextLevel = level + 1;
+            setLevel(nextLevel);
+            setBlinds(generateBlindsForLevel(nextLevel, bossPool));
             setBlindIndex(0);
         } else {
             setBlindIndex(nextIndexRaw);
@@ -74,12 +77,12 @@ export default function Game() {
 
     if (phase === "blindSelect") {
         return (
-            <BlindSelect ante={ante} blinds={blinds} blindIndex={blindIndex} onPlay={handlePlayBlind} onSkip={handleSkip} />
+            <BlindSelect level={level} blinds={blinds} blindIndex={blindIndex} onPlay={handlePlayBlind} onSkip={handleSkip} />
         );
     }
 
     if (phase === "playing" && currentBlind) {
-        return <RoundPanel blind={currentBlind} ante={ante} onWin={handleWin} onLose={handleLose} />;
+        return <RoundPanel blind={currentBlind} level={level} onWin={handleWin} onLose={handleLose} />;
     }
 
     if (phase === "shop") {
@@ -90,7 +93,7 @@ export default function Game() {
         return (
             <div>
                 <h1>Game Over</h1>
-                <p>You reached Ante {ante}.</p>
+                <p>You reached Level {level}.</p>
                 <button onClick={() => setPhase("menu")}>Back to Menu</button>
             </div>
         );

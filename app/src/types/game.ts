@@ -21,7 +21,7 @@ export interface GameState {
   hand: Card[];
   discardPile: Card[];
   jokers: Joker[];
-  ante: number;
+  level: number;
   blinds: Blind[];
   blindIndex: number;
   currentBlind: Blind;

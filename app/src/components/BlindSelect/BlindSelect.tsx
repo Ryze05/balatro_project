@@ -3,7 +3,7 @@ import styles from "./BlindSelect.module.css";
 import type { Blind } from "../../types/game";
 
 interface BlindSelectProps {
-  ante: number;
+  level: number;
   blinds: Blind[];
   blindIndex: number;
   onPlay: (blind: Blind) => void;
@@ -16,13 +16,13 @@ const TYPE_LABEL: Record<Blind["type"], string> = {
   boss: "Boss Blind",
 };
 
-export function BlindSelect({ ante, blinds, blindIndex, onPlay, onSkip }: BlindSelectProps): JSX.Element {
+export function BlindSelect({ level, blinds, blindIndex, onPlay, onSkip }: BlindSelectProps): JSX.Element {
   const currentBlind = blinds[blindIndex];
 
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <span className={styles.anteLabel}>Ante {ante}</span>
+        <span className={styles.levelLabel}>Level {level}</span>
       </div>
 
       <div className={styles.row}>
