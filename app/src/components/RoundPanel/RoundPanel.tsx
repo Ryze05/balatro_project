@@ -4,7 +4,7 @@ import type { Blind } from "../../types/game";
 
 interface RoundPanelProps {
   blind: Blind;
-  ante: number;
+  level: number;
   onWin: () => void;
   onLose: () => void;
 }
@@ -16,7 +16,7 @@ const DISCARDS_PLACEHOLDER = 3;
 // Real cards will come from the deck once the round logic is wired in.
 const PLACEHOLDER_HAND = ["A♠", "K♥", "10♦", "7♣", "7♠", "4♥", "3♦", "2♣"];
 
-export function RoundPanel({ blind, ante, onWin, onLose }: RoundPanelProps): JSX.Element {
+export function RoundPanel({ blind, level, onWin, onLose }: RoundPanelProps): JSX.Element {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [handsLeft, setHandsLeft] = useState(HANDS_PLACEHOLDER);
   const [discardsLeft, setDiscardsLeft] = useState(DISCARDS_PLACEHOLDER);
@@ -52,7 +52,7 @@ export function RoundPanel({ blind, ante, onWin, onLose }: RoundPanelProps): JSX
     <div className={styles.root}>
       <div className={styles.topBar}>
         <div className={styles.blindInfo}>
-          <span className={styles.anteLabel}>Ante {ante}</span>
+          <span className={styles.levelLabel}>Level {level}</span>
           <span className={styles.blindName}>{blind.name}</span>
         </div>
 

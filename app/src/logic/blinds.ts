@@ -1,20 +1,39 @@
 import type { Blind, BlindType } from "../types/game";
+import { shuffle } from "../utils/shuffle";
 
-// Simplified approximation of Balatro's ante scaling curve.
-// Not the exact numbers from the game, but grows the same way:
-// each ante is meaningfully harder than the last.
-const BASE_SCORE_BY_ANTE: number[] = [
-  100, 300, 500, 800, 1200, 1800, 2600, 3800,
-];
+//* Puntajes de los niveles
+const BASE_CHIPS_FOR_LEVEL: Record<number, number> = {
+  1: 300,
+  2: 800,
+  3: 2000,
+  4: 5000,
+  5: 11000,
+  6: 20000,
+  7: 35000,
+  8: 50000,
+};
 
-function getBaseScore(ante: number): number {
-  if (ante <= BASE_SCORE_BY_ANTE.length) return BASE_SCORE_BY_ANTE[ante - 1];
-  // keep scaling ~1.5x per ante past the table above
-  const last = BASE_SCORE_BY_ANTE[BASE_SCORE_BY_ANTE.length - 1];
-  const extraAntes = ante - BASE_SCORE_BY_ANTE.length;
-  return Math.round(last * Math.pow(1.5, extraAntes));
+const ENDLESS_BASE_CHIPS_FOR_LEVEL: Record<number, number> = {
+  9: 110000,
+  10: 560000,
+  11: 7200000,
+  12: 300000000,
+};
+
+const ENDLESS_EXTRA_LEVEL_FACTOR = 4;
+
+function getBaseChipsForLevel(level: number): number {
+  if (level <= 8) return BASE_CHIPS_FOR_LEVEL[level];
+
+  const known = ENDLESS_BASE_CHIPS_FOR_LEVEL[level];
+  if (known !== undefined) return known;
+
+  const lastKnown = ENDLESS_BASE_CHIPS_FOR_LEVEL[12];
+  const extraLevels = level - 12;
+  return Math.round(lastKnown * Math.pow(ENDLESS_EXTRA_LEVEL_FACTOR, extraLevels));
 }
 
+//* Multiplicadores y premios por tipo de blind
 const TYPE_MULTIPLIER: Record<BlindType, number> = {
   small: 1,
   big: 1.5,
@@ -27,6 +46,7 @@ const TYPE_REWARD: Record<BlindType, number> = {
   boss: 5,
 };
 
+//* Boss blinds
 const BOSS_NAMES = [
   "The Hook",
   "The Ox",
@@ -40,19 +60,28 @@ const BOSS_NAMES = [
   "The Water",
 ];
 
-function pickBossName(ante: number): string {
-  return BOSS_NAMES[(ante - 1) % BOSS_NAMES.length];
+export function createBossPool(): () => string {
+  let remaining = shuffle(BOSS_NAMES);
+
+  return function pickBossName(): string {
+    if (remaining.length === 0) {
+      remaining = shuffle(BOSS_NAMES);
+    }
+
+    return remaining.pop() as string;
+  };
 }
 
-function makeBlind(ante: number, type: BlindType): Blind {
-  const base = getBaseScore(ante);
-  const targetScore = Math.round(base * TYPE_MULTIPLIER[type]);
+//* Construcción de los blinds
+function buildBlind(level: number, type: BlindType, pickBossName: () => string): Blind {
+  const baseChips = getBaseChipsForLevel(level);
+  const targetScore = Math.round(baseChips * TYPE_MULTIPLIER[type]);
   const reward = TYPE_REWARD[type];
 
   if (type === "boss") {
     return {
-      id: `${ante}-boss`,
-      name: pickBossName(ante),
+      id: `${level}-boss`,
+      name: pickBossName(),
       type,
       targetScore,
       reward,
@@ -62,7 +91,7 @@ function makeBlind(ante: number, type: BlindType): Blind {
   }
 
   return {
-    id: `${ante}-${type}`,
+    id: `${level}-${type}`,
     name: type === "small" ? "Small Blind" : "Big Blind",
     type,
     targetScore,
@@ -73,6 +102,11 @@ function makeBlind(ante: number, type: BlindType): Blind {
   };
 }
 
-export function generateBlindsForAnte(ante: number): Blind[] {
-  return [makeBlind(ante, "small"), makeBlind(ante, "big"), makeBlind(ante, "boss")];
+//* Generar blinds de los niveles
+export function generateBlindsForLevel(level: number, pickBossName: () => string): Blind[] {
+  return [
+    buildBlind(level, "small", pickBossName),
+    buildBlind(level, "big", pickBossName),
+    buildBlind(level, "boss", pickBossName),
+  ];
 }
