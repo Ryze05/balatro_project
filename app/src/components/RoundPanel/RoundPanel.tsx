@@ -4,7 +4,7 @@ import type { Blind } from "../../types/game";
 
 interface RoundPanelProps {
   blind: Blind;
-  level: number;
+  ante: number;
   onWin: () => void;
   onLose: () => void;
 }
@@ -16,7 +16,16 @@ const DISCARDS_PLACEHOLDER = 3;
 // Real cards will come from the deck once the round logic is wired in.
 const PLACEHOLDER_HAND = ["A♠", "K♥", "10♦", "7♣", "7♠", "4♥", "3♦", "2♣"];
 
-export function RoundPanel({ blind, level, onWin, onLose }: RoundPanelProps): JSX.Element {
+// Splits a placeholder label like "10♦" into its rank + suit parts.
+function parseCard(label: string): { rank: string; suit: string } {
+  const suit = label.slice(-1);
+  const rank = label.slice(0, -1);
+  return { rank, suit };
+}
+
+const RED_SUITS = new Set(["♥", "♦"]);
+
+export function RoundPanel({ blind, ante, onWin, onLose }: RoundPanelProps): JSX.Element {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [handsLeft, setHandsLeft] = useState(HANDS_PLACEHOLDER);
   const [discardsLeft, setDiscardsLeft] = useState(DISCARDS_PLACEHOLDER);
@@ -48,11 +57,14 @@ export function RoundPanel({ blind, level, onWin, onLose }: RoundPanelProps): JS
     setSelected(new Set());
   };
 
+  const cardCount = PLACEHOLDER_HAND.length;
+  const mid = (cardCount - 1) / 2;
+
   return (
     <div className={styles.root}>
       <div className={styles.topBar}>
         <div className={styles.blindInfo}>
-          <span className={styles.levelLabel}>Level {level}</span>
+          <span className={styles.anteLabel}>Ante {ante}</span>
           <span className={styles.blindName}>{blind.name}</span>
         </div>
 
@@ -68,17 +80,42 @@ export function RoundPanel({ blind, level, onWin, onLose }: RoundPanelProps): JS
 
       <div className={styles.handArea}>
         {PLACEHOLDER_HAND.map((label, i) => {
+          const { rank, suit } = parseCard(label);
           const isSelected = selected.has(i);
-          const isRed = label.includes("♥") || label.includes("♦");
+          const isRed = RED_SUITS.has(suit);
+
+          // Subtle fan effect: cards rotate away from the center and
+          // arc slightly upward, like a hand of cards laid on a table.
+          const offset = i - mid;
+          const rotation = offset * 3.2;
+          const arcLift = Math.abs(offset) * 5;
+
           return (
-            <button
+            <div
               key={i}
-              type="button"
-              className={`${styles.card} ${isSelected ? styles.cardSelected : ""} ${isRed ? styles.cardRed : styles.cardBlack}`}
-              onClick={() => toggleCard(i)}
+              className={styles.cardSlot}
+              style={{ transform: `rotate(${rotation}deg) translateY(${arcLift}px)` }}
             >
-              {label}
-            </button>
+              <button
+                type="button"
+                className={`${styles.card} ${isSelected ? styles.cardSelected : ""}`}
+                onClick={() => toggleCard(i)}
+              >
+                <span className={`${styles.cardCorner} ${styles.cardCornerTL} ${isRed ? styles.cardRed : styles.cardBlack}`}>
+                  <span className={styles.cardRank}>{rank}</span>
+                  <span className={styles.cardCornerSuit}>{suit}</span>
+                </span>
+
+                <span className={`${styles.cardCenterSuit} ${isRed ? styles.cardRed : styles.cardBlack}`}>
+                  {suit}
+                </span>
+
+                <span className={`${styles.cardCorner} ${styles.cardCornerBR} ${isRed ? styles.cardRed : styles.cardBlack}`}>
+                  <span className={styles.cardRank}>{rank}</span>
+                  <span className={styles.cardCornerSuit}>{suit}</span>
+                </span>
+              </button>
+            </div>
           );
         })}
       </div>
