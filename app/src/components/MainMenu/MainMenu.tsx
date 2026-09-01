@@ -2,7 +2,7 @@ import { useState, type JSX } from "react";
 import styles from "./MainMenu.module.css";
 import type { MenuOption } from "../../types/game";
 import type { Suit } from "../../types/card"
-import type { DeckDefinition } from "../../types/deck";
+import type { DeckDefinition, DeckId } from "../../types/deck";
 import type { Joker } from "../../types/joker";
 import { DeckSelectPanel } from "../DeckSelectPanel/DeckSelectPanel"
 import { RulesPanel } from "../RulesPanel/RulesPanel"
