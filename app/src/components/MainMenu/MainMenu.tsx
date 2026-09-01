@@ -32,7 +32,7 @@ const MENU_ITEMS: MenuItem[] = [
 const FAN_CARD_COUNT = 4;
 
 interface MainMenuProps {
-  onSelect?: (option: MenuOption, deckId?: string) => void;
+  onSelect?: (option: MenuOption, deckId?: DeckId) => void;
 }
 
 export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
