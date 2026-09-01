@@ -2,7 +2,7 @@ import { useState, type JSX } from "react";
 import styles from "./MainMenu.module.css";
 import type { MenuOption } from "../../types/game";
 import type { Suit } from "../../types/card"
-import type { DeckDefinition } from "../../types/deck";
+import type { DeckDefinition, DeckId } from "../../types/deck";
 import { DeckSelectPanel } from "../DeckSelectPanel/DeckSelectPanel"
 
 interface MenuItem {
@@ -28,7 +28,7 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 interface MainMenuProps {
-  onSelect?: (option: MenuOption, deckId?: string) => void;
+  onSelect?: (option: MenuOption, deckId?: DeckId) => void;
 }
 
 export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {

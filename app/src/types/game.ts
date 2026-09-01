@@ -1,5 +1,6 @@
 import type { Card } from "./card";
 import type { Joker } from "./joker";
+import type { DeckId } from "./deck";
 
 export type GamePhase = "menu" | "blindSelect" | "playing" | "rules" | "shop" | "gameover";
 
@@ -21,6 +22,7 @@ export interface GameState {
   hand: Card[];
   discardPile: Card[];
   jokers: Joker[];
+  deckId: DeckId;
   level: number;
   blinds: Blind[];
   blindIndex: number;
@@ -31,6 +33,7 @@ export interface GameState {
   money: number;
   score: number;
   status: GamePhase;
+  bossNamesRemaining: string[];
 }
 
 export type MenuOption = "play" | "rules" | "options";

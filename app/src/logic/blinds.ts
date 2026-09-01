@@ -60,20 +60,19 @@ const BOSS_NAMES = [
   "The Water",
 ];
 
-export function createBossPool(): () => string {
-  let remaining = shuffle(BOSS_NAMES);
+export function createBossPool(): string[] {
+  return shuffle(BOSS_NAMES);
+}
 
-  return function pickBossName(): string {
-    if (remaining.length === 0) {
-      remaining = shuffle(BOSS_NAMES);
-    }
-
-    return remaining.pop() as string;
-  };
+//* Saca un boss del pool sin repetir
+export function pickNextBossName(pool: string[]): { bossName: string; remaining: string[] } {
+  const activePool = pool.length === 0 ? createBossPool() : pool;
+  const bossName = activePool[activePool.length - 1];
+  return { bossName, remaining: activePool.slice(0, -1) };
 }
 
 //* Construcción de los blinds
-function buildBlind(level: number, type: BlindType, pickBossName: () => string): Blind {
+function buildBlind(level: number, type: BlindType, bossName: string): Blind {
   const baseChips = getBaseChipsForLevel(level);
   const targetScore = Math.round(baseChips * TYPE_MULTIPLIER[type]);
   const reward = TYPE_REWARD[type];
@@ -81,7 +80,7 @@ function buildBlind(level: number, type: BlindType, pickBossName: () => string):
   if (type === "boss") {
     return {
       id: `${level}-boss`,
-      name: pickBossName(),
+      name: bossName,
       type,
       targetScore,
       reward,
@@ -103,10 +102,10 @@ function buildBlind(level: number, type: BlindType, pickBossName: () => string):
 }
 
 //* Generar blinds de los niveles
-export function generateBlindsForLevel(level: number, pickBossName: () => string): Blind[] {
+export function generateBlindsForLevel(level: number, bossName: string): Blind[] {
   return [
-    buildBlind(level, "small", pickBossName),
-    buildBlind(level, "big", pickBossName),
-    buildBlind(level, "boss", pickBossName),
+    buildBlind(level, "small", bossName),
+    buildBlind(level, "big", bossName),
+    buildBlind(level, "boss", bossName),
   ];
 }
