@@ -11,8 +11,8 @@ export function loadGame(): GameState | null {
   if (!item) return null;
 
   try {
-    // return JSON.parse(item) as GameState;
-    return JSON.parse(item);
+    const parsed = JSON.parse(item);
+    return parsed;
   } catch {
     return null;
   }
