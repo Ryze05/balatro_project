@@ -1,0 +1,76 @@
+.root {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    padding: 48px 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.root *,
+.root *::before,
+.root *::after {
+    box-sizing: border-box;
+}
+
+.cardGlyph {
+    font-size: 64px;
+    color: #c1121f;
+    margin-bottom: 4px;
+    animation: floatGlyph 3s ease-in-out infinite;
+}
+
+.code {
+    font-weight: 900;
+    font-size: clamp(56px, 14vw, 96px);
+    letter-spacing: 4px;
+    color: #e3b23c;
+    text-shadow: 3px 3px 0 #7a1620, 6px 6px 0 rgba(0, 0, 0, 0.5);
+    margin: 0;
+}
+
+.title {
+    font-weight: 800;
+    font-size: 20px;
+    color: #f5ede0;
+    margin: 12px 0 8px;
+}
+
+.description {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 13px;
+    color: #8fa89a;
+    max-width: 380px;
+    line-height: 1.6;
+    margin: 0 0 32px;
+}
+
+.homeLink {
+    display: inline-block;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    background: #c1121f;
+    border: 2px solid #c1121f;
+    color: #f5ede0;
+    transition: transform 0.15s ease;
+}
+
+.homeLink:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes floatGlyph {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
