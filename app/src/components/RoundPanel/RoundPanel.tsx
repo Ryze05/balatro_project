@@ -39,7 +39,7 @@ export function RoundPanel({
     <div className={styles.root}>
       <div className={styles.topBar}>
         <div className={styles.blindInfo}>
-          <span className={styles.anteLabel}>Ante {level}</span>
+          <span className={styles.levelLabel}>Level {level}</span>
           <span className={styles.blindName}>{blind.name}</span>
         </div>
 
@@ -56,19 +56,46 @@ export function RoundPanel({
       </div>
 
       <div className={styles.handArea}>
-        {hand.map((card) => {
+        {hand.map((card, index) => {
           const isSelected = card.selected === true;
           const isRed = RED_SUITS.includes(card.suit);
+          const offset = index - (hand.length - 1) / 2;
+          const rotation = offset * 3.2;
+          const arcLift = Math.abs(offset) * 5;
+
           return (
-            <button
+            <div
               key={card.id}
-              type="button"
-              className={`${styles.card} ${isSelected ? styles.cardSelected : ""} ${isRed ? styles.cardRed : styles.cardBlack}`}
-              onClick={() => onToggleCard(card.id)}
+              className={styles.cardSlot}
+              style={{ transform: `rotate(${rotation}deg) translateY(${arcLift}px)` }}
             >
-              <span className={styles.cardRank}>{card.rank}</span>
-              <span className={styles.cardSuit}>{SUIT_SYMBOLS[card.suit]}</span>
-            </button>
+              <button
+                type="button"
+                className={`${styles.card} ${isSelected ? styles.cardSelected : ""}`}
+                onClick={() => onToggleCard(card.id)}
+                aria-label={`${card.rank} of ${card.suit}`}
+              >
+                <span
+                  className={`${styles.cardCorner} ${styles.cardCornerTL} ${isRed ? styles.cardRed : styles.cardBlack}`}
+                >
+                  <span className={styles.cardRank}>{card.rank}</span>
+                  <span className={styles.cardCornerSuit}>{SUIT_SYMBOLS[card.suit]}</span>
+                </span>
+
+                <span
+                  className={`${styles.cardCenterSuit} ${isRed ? styles.cardRed : styles.cardBlack}`}
+                >
+                  {SUIT_SYMBOLS[card.suit]}
+                </span>
+
+                <span
+                  className={`${styles.cardCorner} ${styles.cardCornerBR} ${isRed ? styles.cardRed : styles.cardBlack}`}
+                >
+                  <span className={styles.cardRank}>{card.rank}</span>
+                  <span className={styles.cardCornerSuit}>{SUIT_SYMBOLS[card.suit]}</span>
+                </span>
+              </button>
+            </div>
           );
         })}
       </div>
