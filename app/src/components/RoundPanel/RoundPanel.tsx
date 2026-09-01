@@ -39,7 +39,7 @@ export function RoundPanel({
     <div className={styles.root}>
       <div className={styles.topBar}>
         <div className={styles.blindInfo}>
-          <span className={styles.levelLabel}>Level {level}</span>
+          <span className={styles.anteLabel}>Ante {ante}</span>
           <span className={styles.blindName}>{blind.name}</span>
         </div>
 

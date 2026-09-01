@@ -55,8 +55,10 @@
     border: 2px solid #1b1f23;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
     display: flex;
+    flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
+    gap: 2px;
     padding: 8px;
     font-size: 20px;
     font-weight: 700;
@@ -64,8 +66,16 @@
     animation: menuFloat 4.5s ease-in-out infinite;
 }
 
+.fanCard::before {
+    content: "A";
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1;
+}
+
 .fanCard span {
     line-height: 1;
+    font-size: 22px;
 }
 
 .fanCardC0 {
