@@ -1,0 +1,32 @@
+.layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.sidebarColumn {
+    width: 33.333%;
+    flex-shrink: 0;
+}
+
+.mainColumn {
+    width: 66.666%;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+/* En pantallas estrechas, el sidebar pasa a ir arriba en vez de al lado */
+@media (max-width: 720px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebarColumn,
+    .mainColumn {
+        width: 100%;
+    }
+
+    .sidebarColumn {
+        max-height: 320px;
+    }
+}

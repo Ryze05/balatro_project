@@ -4,7 +4,9 @@ import MainMenu from "../../components/MainMenu/MainMenu";
 import BlindSelect from "../../components/BlindSelect/BlindSelect";
 import RoundPanel from "../../components/RoundPanel/RoundPanel";
 import Shop from "../../components/Shop/Shop";
+import JokerSidebar from "../../components/JokerSidebar/JokerSidebar";
 import { useGameState } from "../../hooks/useGameState";
+import styles from "./Game.module.css";
 
 export default function Game() {
   const {
@@ -14,6 +16,7 @@ export default function Game() {
     playHand,
     discardCards,
     buyJoker,
+    reorderJokers,
     advanceToNextBlind,
     setGamePhase,
   } = useGameState();
@@ -28,6 +31,7 @@ export default function Game() {
     discardsLeft,
     score,
     money,
+    jokers,
     status,
   } = gameState;
 
@@ -47,53 +51,51 @@ export default function Game() {
     );
   }
 
-  if (status === "blindSelect") {
-    return (
-      <BlindSelect
-        level={level}
-        blinds={blinds}
-        blindIndex={blindIndex}
-        onPlay={() => setGamePhase("playing")}
-        onSkip={advanceToNextBlind}
-      />
-    );
-  }
-
-  if (status === "playing" && currentBlind) {
-    return (
-      <RoundPanel
-        blind={currentBlind}
-        level={level}
-        hand={hand}
-        handsLeft={handsLeft}
-        discardsLeft={discardsLeft}
-        score={score}
-        onToggleCard={selectCard}
-        onPlayHand={playHand}
-        onDiscard={discardCards}
-      />
-    );
-  }
-
-  if (status === "shop") {
-    return (
-      <Shop
-        money={money}
-        onBuy={buyJoker}
-        onContinue={advanceToNextBlind}
-      />
-    );
-  }
-
-  if (status === "gameover") {
-    return (
-      <div>
-        <h1>Game Over</h1>
-        <p>You reached Level {level}.</p>
-        <button onClick={() => setGamePhase("menu")}>Back to Menu</button>
+  // A partir de aquí ya hay una partida en curso: mostramos el
+  // layout de dos columnas con el sidebar de dinero + comodines.
+  return (
+    <div className={styles.layout}>
+      <div className={styles.sidebarColumn}>
+        <JokerSidebar money={money} jokers={jokers} onReorder={reorderJokers} />
       </div>
-    );
-  }
 
-  return null;
+      <div className={styles.mainColumn}>
+        {status === "blindSelect" && (
+          <BlindSelect
+            level={level}
+            blinds={blinds}
+            blindIndex={blindIndex}
+            onPlay={() => setGamePhase("playing")}
+            onSkip={advanceToNextBlind}
+          />
+        )}
+
+        {status === "playing" && currentBlind && (
+          <RoundPanel
+            blind={currentBlind}
+            level={level}
+            hand={hand}
+            handsLeft={handsLeft}
+            discardsLeft={discardsLeft}
+            score={score}
+            onToggleCard={selectCard}
+            onPlayHand={playHand}
+            onDiscard={discardCards}
+          />
+        )}
+
+        {status === "shop" && (
+          <Shop money={money} onBuy={buyJoker} onContinue={advanceToNextBlind} />
+        )}
+
+        {status === "gameover" && (
+          <div>
+            <h1>Game Over</h1>
+            <p>You reached Level {level}.</p>
+            <button onClick={() => setGamePhase("menu")}>Back to Menu</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
