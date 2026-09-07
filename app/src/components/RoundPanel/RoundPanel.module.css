@@ -112,6 +112,69 @@
 }
 
 /* ---------------------------------------------------------------- */
+/* Previsualización de puntuación en vivo                            */
+/* Se recalcula con cada selección de cartas, ya incluye el efecto   */
+/* de los comodines (misma lógica que playHand en useGameState).     */
+/* ---------------------------------------------------------------- */
+
+.previewBlock {
+    margin-top: 22px;
+    min-height: 36px;
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: "Courier New", ui-monospace, monospace;
+}
+
+.previewHint {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: #6b7570;
+}
+
+.previewWarning {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #c1121f;
+}
+
+.previewHandType {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #8fa89a;
+    background: #14181b;
+    border: 2px solid #2b322f;
+    border-radius: 999px;
+    padding: 5px 14px;
+}
+
+.previewFormula {
+    font-size: 16px;
+    font-weight: 700;
+    color: #f5ede0;
+}
+
+.previewChips {
+    color: #8fd18f;
+}
+
+.previewMultiplier {
+    color: #e3b23c;
+}
+
+.previewTotal {
+    font-size: 18px;
+    color: #f5ede0;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* ---------------------------------------------------------------- */
 /* Hand of cards                                                     */
 /* ---------------------------------------------------------------- */
 
@@ -121,7 +184,7 @@
     align-items: flex-end;
     flex-wrap: wrap;
     max-width: 820px;
-    margin: 56px 0 44px;
+    margin: 32px 0 44px;
     /* negative margin lets the cards overlap slightly like a real hand,
        flex-wrap keeps it usable on narrow screens */
     row-gap: 28px;

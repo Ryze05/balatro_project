@@ -75,6 +75,7 @@ export default function Game() {
             blind={currentBlind}
             level={level}
             hand={hand}
+            jokers={jokers}
             handsLeft={handsLeft}
             discardsLeft={discardsLeft}
             score={score}
