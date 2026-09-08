@@ -2,10 +2,12 @@ import { useState, useEffect, useCallback } from "react";
 import type { GameState, GamePhase, Blind } from "../types/game";
 import type { Card } from "../types/card";
 import type { Joker } from "../types/joker";
+import type { Consumable } from "../types/consumable";
 import type { DeckId } from "../types/deck";
 import { createDeck, drawCard, shuffleCards } from "../logic/deck";
 import { evaluateHand } from "../logic/handEvaluator";
 import { calculateScore, getFinalScore } from "../logic/score";
+import { applyConsumableEffect, getHandType } from "../logic/consumables";
 import {
   createBossPool,
   pickNextBossName,
@@ -17,6 +19,7 @@ const HAND_SIZE = 8;
 const BASE_HANDS = 4;
 const BASE_DISCARDS = 3;
 const BASE_MONEY = 4;
+const MAX_CONSUMABLES = 2;
 
 const DECK_BONUS: Record<
   DeckId,
@@ -42,6 +45,8 @@ function makeInitialState(): GameState {
     hand: [],
     discardPile: [],
     jokers: [],
+    consumables: [],
+    handLevels: {},
     deckId: "red",
     level: 1,
     blinds: [],
@@ -135,6 +140,8 @@ export function useGameState() {
         hand: drawn,
         discardPile: [],
         jokers: [],
+        consumables: [],
+        handLevels: {},
         deckId,
         level: 1,
         blinds,
@@ -168,7 +175,7 @@ export function useGameState() {
 
       //* Calculamos puntuación
       const { handType, scoringCards } = evaluateHand(selected);
-      const score = calculateScore(handType, scoringCards, prev.jokers);
+      const score = calculateScore(handType, scoringCards, prev.jokers, prev.handLevels);
       const roundScore = getFinalScore(score);
 
       const newScore = prev.score + roundScore;
@@ -296,6 +303,66 @@ export function useGameState() {
     });
   }, []);
 
+//* Comprar consumible en la tienda
+  const buyConsumable = useCallback((consumable: Consumable) => {
+    setGameState((prev) => {
+      if (prev.money < consumable.price) return prev;
+      if (prev.consumables.length >= MAX_CONSUMABLES) return prev;
+      return {
+        ...prev,
+        money: prev.money - consumable.price,
+        consumables: [...prev.consumables, consumable],
+      };
+    });
+  }, []);
+
+  //* Añadir consumible al inventario (desde un sobre)
+  const addConsumable = useCallback((consumable: Consumable) => {
+    setGameState((prev) => {
+      if (prev.consumables.length >= MAX_CONSUMABLES) return prev;
+      return {
+        ...prev,
+        consumables: [...prev.consumables, consumable],
+      };
+    });
+  }, []);
+
+  //* Usar consumible (tarot con carta objetivo opcional, planeta sin objetivo)
+  const useConsumable = useCallback((consumableId: string, targetCardId?: string) => {
+    setGameState((prev) => {
+      const consumable = prev.consumables.find((i) => i.id === consumableId);
+      if (!consumable) return prev;
+
+      const handType = getHandType(consumable);
+      if (handType) {
+        return {
+          ...prev,
+          handLevels: {
+            ...prev.handLevels,
+            [handType]: (prev.handLevels[handType] ?? 1) + 1,
+          },
+          consumables: prev.consumables.filter((i) => i.id !== consumableId),
+        };
+      }
+
+      const result = applyConsumableEffect(
+        consumable,
+        prev.hand,
+        prev.consumables,
+        targetCardId,
+      );
+      
+      if (!result.consumables) return prev;
+
+      return {
+        ...prev,
+        money: prev.money + (result.money ?? 0),
+        hand: result.hand ?? prev.hand,
+        consumables: result.consumables,
+      };
+    });
+  }, []);
+
   //* Cambiar fase
   const setGamePhase = useCallback((phase: GamePhase) => {
     setGameState((prev) => ({ ...prev, status: phase }));
@@ -308,6 +375,9 @@ export function useGameState() {
     playHand,
     discardCards,
     buyJoker,
+    buyConsumable,
+    addConsumable,
+    useConsumable,
     reorderJokers,
     advanceToNextBlind,
     setGamePhase,
