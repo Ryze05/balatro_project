@@ -14,7 +14,6 @@ interface RoundPanelProps {
   jokers: Joker[];
   handsLeft: number;
   discardsLeft: number;
-  score: number;
   onToggleCard: (cardId: string) => void;
   onPlayHand: () => void;
   onDiscard: () => void;
@@ -52,7 +51,6 @@ export function RoundPanel({
   jokers,
   handsLeft,
   discardsLeft,
-  score,
   onToggleCard,
   onPlayHand,
   onDiscard,
@@ -81,12 +79,6 @@ export function RoundPanel({
         <div className={styles.blindInfo}>
           <span className={styles.levelLabel}>Level {level}</span>
           <span className={styles.blindName}>{blind.name}</span>
-        </div>
-
-        <div className={styles.scoreBlock}>
-          <span className={styles.scoreText}>
-            {score.toLocaleString()} / {blind.targetScore.toLocaleString()}
-          </span>
         </div>
 
         <div className={styles.counters}>

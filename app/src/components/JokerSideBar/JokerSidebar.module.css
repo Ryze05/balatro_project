@@ -18,6 +18,127 @@
     box-sizing: border-box;
 }
 
+/* ---------------------------------------------------------------- */
+/* Panel de puntuación (blind actual, puntos, progreso y objetivo)   */
+/* Mismo lenguaje visual que Balatro: placa azul = puntos actuales,  */
+/* placa roja = objetivo, barra de progreso entre medias.            */
+/* ---------------------------------------------------------------- */
+
+.scorePanel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #14181b;
+    border: 2px solid #2b322f;
+    border-radius: 12px;
+    padding: 14px 16px 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.scorePanel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.scorePanel_small::before { background: #8fa89a; }
+.scorePanel_big::before { background: #4c8fd1; }
+.scorePanel_boss::before { background: #c1121f; }
+
+.scorePanelHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+    text-align: center;
+}
+
+.scoreBlindType {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #6b7570;
+}
+
+.scoreBlindName {
+    font-weight: 800;
+    font-size: 15px;
+    color: #f5ede0;
+}
+
+.scoreMain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background: linear-gradient(160deg, #2f5f8f 0%, #1d3b57 100%);
+    border: 2px solid #1b1f23;
+    border-radius: 10px;
+    padding: 10px 0 12px;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.scoreMainLabel {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(245, 237, 224, 0.65);
+}
+
+.scoreMainValue {
+    font-weight: 900;
+    font-size: 26px;
+    color: #f5ede0;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+    font-variant-numeric: tabular-nums;
+}
+
+.scoreProgressTrack {
+    width: 100%;
+    height: 10px;
+    background: #0f1214;
+    border: 2px solid #2b322f;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.scoreProgressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #8fd18f, #e3b23c);
+    transition: width 0.25s ease;
+}
+
+.scoreTargetRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(160deg, #7a1620 0%, #4d0d14 100%);
+    border: 2px solid #1b1f23;
+    border-radius: 8px;
+    padding: 6px 12px;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.scoreTargetLabel {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(245, 237, 224, 0.7);
+}
+
+.scoreTargetValue {
+    font-weight: 800;
+    font-size: 15px;
+    color: #f5ede0;
+}
+
 .moneyBlock {
     display: flex;
     align-items: center;
