@@ -330,7 +330,7 @@ export function useGameState() {
   //* Usar consumible (tarot con carta objetivo opcional, planeta sin objetivo)
   const useConsumable = useCallback((consumableId: string, targetCardId?: string) => {
     setGameState((prev) => {
-      const consumable = prev.consumables.find((c) => c.id === consumableId);
+      const consumable = prev.consumables.find((i) => i.id === consumableId);
       if (!consumable) return prev;
 
       const handType = getHandType(consumable);
@@ -341,7 +341,7 @@ export function useGameState() {
             ...prev.handLevels,
             [handType]: (prev.handLevels[handType] ?? 1) + 1,
           },
-          consumables: prev.consumables.filter((c) => c.id !== consumableId),
+          consumables: prev.consumables.filter((i) => i.id !== consumableId),
         };
       }
 
@@ -351,6 +351,7 @@ export function useGameState() {
         prev.consumables,
         targetCardId,
       );
+      
       if (!result.consumables) return prev;
 
       return {
@@ -377,6 +378,7 @@ export function useGameState() {
     buyConsumable,
     addConsumable,
     useConsumable,
+    reorderJokers,
     advanceToNextBlind,
     setGamePhase,
   };
