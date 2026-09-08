@@ -53,10 +53,18 @@ export default function Game() {
 
   // A partir de aquí ya hay una partida en curso: mostramos el
   // layout de dos columnas con el sidebar de dinero + comodines.
+  // El sidebar también muestra ahora el marcador de puntuación del
+  // blind actual (puntos / objetivo), estilo Balatro.
   return (
     <div className={styles.layout}>
       <div className={styles.sidebarColumn}>
-        <JokerSidebar money={money} jokers={jokers} onReorder={reorderJokers} />
+        <JokerSidebar
+          money={money}
+          jokers={jokers}
+          onReorder={reorderJokers}
+          blind={currentBlind}
+          score={score}
+        />
       </div>
 
       <div className={styles.mainColumn}>
@@ -78,7 +86,6 @@ export default function Game() {
             jokers={jokers}
             handsLeft={handsLeft}
             discardsLeft={discardsLeft}
-            score={score}
             onToggleCard={selectCard}
             onPlayHand={playHand}
             onDiscard={discardCards}
