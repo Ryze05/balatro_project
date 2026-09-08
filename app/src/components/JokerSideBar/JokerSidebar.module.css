@@ -7,7 +7,7 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
     overflow-y: auto;
     font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
 }
@@ -139,6 +139,74 @@
     color: #f5ede0;
 }
 
+/* ---------------------------------------------------------------- */
+/* Previsualización de la jugada (antes en RoundPanel, misma          */
+/* apariencia, ahora vive en la barra lateral).                      */
+/* ---------------------------------------------------------------- */
+
+.previewBlock {
+    min-height: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+    font-family: "Courier New", ui-monospace, monospace;
+    background: #1b1f23;
+    border: 2px solid #2b322f;
+    border-radius: 10px;
+    padding: 12px 10px;
+}
+
+.previewHint {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: #6b7570;
+}
+
+.previewWarning {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #c1121f;
+}
+
+.previewHandType {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #8fa89a;
+    background: #14181b;
+    border: 2px solid #2b322f;
+    border-radius: 999px;
+    padding: 4px 12px;
+}
+
+.previewFormula {
+    font-size: 15px;
+    font-weight: 700;
+    color: #f5ede0;
+}
+
+.previewChips {
+    color: #8fd18f;
+}
+
+.previewMultiplier {
+    color: #e3b23c;
+}
+
+.previewTotal {
+    font-size: 17px;
+    color: #f5ede0;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* ---------------------------------------------------------------- */
+/* Dinero                                                             */
+/* ---------------------------------------------------------------- */
+
 .moneyBlock {
     display: flex;
     align-items: center;
@@ -164,194 +232,39 @@
     color: #8fd18f;
 }
 
-.jokerSection {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.jokerHeader {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-}
-
-.jokerTitle {
-    font-weight: 800;
-    font-size: 14px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #e3b23c;
-}
-
-.jokerCount {
-    font-family: "Courier New", ui-monospace, monospace;
-    font-size: 12px;
-    color: #6b7570;
-}
-
-.emptyText {
-    font-family: "Courier New", ui-monospace, monospace;
-    font-size: 12px;
-    line-height: 1.6;
-    color: #6b7570;
-    margin: 0;
-}
-
-.jokerList {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
 /* ---------------------------------------------------------------- */
-/* Tarjeta de comodín: mismo lenguaje visual que las fanCard del     */
-/* menú principal (fondo crema, borde oscuro, icono de carta).       */
+/* Botón que abre el panel lateral de Vouchers comprados             */
 /* ---------------------------------------------------------------- */
 
-.jokerItem {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-    background:
-        radial-gradient(circle at 30% 15%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 45%),
-        linear-gradient(160deg, #fffdf7 0%, #efe6d0 100%);
-    border: 2px solid #1b1f23;
-    border-radius: 10px;
-    padding: 10px 12px 12px;
-    box-shadow:
-        0 3px 0 rgba(0, 0, 0, 0.28),
-        0 8px 16px rgba(0, 0, 0, 0.45);
-    cursor: grab;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
-}
-
-.jokerItem:hover {
-    transform: translateY(-3px);
-    box-shadow:
-        0 3px 0 rgba(0, 0, 0, 0.28),
-        0 12px 20px rgba(0, 0, 0, 0.5);
-}
-
-.jokerItem:active {
-    cursor: grabbing;
-}
-
-/* El color de rareza se ve como el borde de la carta, igual que el
-   borde superior de color diferencia los tipos de Blind. */
-.rarity_common { border-color: #6b7570; }
-.rarity_uncommon { border-color: #2f5f8f; }
-.rarity_rare { border-color: #7a1620; }
-.rarity_legendary {
-    border-color: #a5761f;
-    box-shadow:
-        0 3px 0 rgba(0, 0, 0, 0.28),
-        0 0 0 1px #e3b23c,
-        0 10px 20px rgba(227, 178, 60, 0.25);
-}
-
-.dragging {
-    opacity: 0.4;
-}
-
-.dragOver {
-    transform: translateY(-3px);
-    box-shadow:
-        0 3px 0 rgba(0, 0, 0, 0.28),
-        0 0 0 2px #e3b23c,
-        0 12px 20px rgba(0, 0, 0, 0.5);
-}
-
-.cardHeader {
+.vouchersButton {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding-right: 30px; /* deja hueco a los botones de reordenar */
-}
-
-.dragHandle {
-    color: rgba(27, 31, 35, 0.5);
-    font-size: 14px;
-    line-height: 1;
-    user-select: none;
-}
-
-.cardGlyph {
-    font-size: 15px;
-    line-height: 1;
-}
-
-.positionBadge {
-    font-family: "Courier New", ui-monospace, monospace;
-    font-size: 10px;
-    color: rgba(27, 31, 35, 0.6);
-    background: rgba(27, 31, 35, 0.08);
-    border: 1px solid rgba(27, 31, 35, 0.25);
-    border-radius: 5px;
-    padding: 1px 6px;
-}
-
-.cardBody {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.jokerName {
+    justify-content: space-between;
+    background: #1b1f23;
+    border: 2px solid #2b322f;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: inherit;
     font-weight: 700;
     font-size: 13px;
-    color: #1b1f23;
-}
-
-.jokerRarity {
-    font-family: "Courier New", ui-monospace, monospace;
-    font-size: 9px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: rgba(27, 31, 35, 0.55);
-}
-
-.jokerDescription {
-    font-family: "Courier New", ui-monospace, monospace;
-    font-size: 11px;
-    line-height: 1.4;
-    color: rgba(27, 31, 35, 0.75);
-    margin: 2px 0 0;
-}
-
-.reorderButtons {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.reorderButton {
-    width: 20px;
-    height: 18px;
-    padding: 0;
-    background: rgba(255, 253, 247, 0.85);
-    border: 1px solid rgba(27, 31, 35, 0.35);
-    border-radius: 4px;
-    color: #1b1f23;
-    font-size: 8px;
+    color: #b7c2bb;
     cursor: pointer;
     transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
-.reorderButton:hover:not(:disabled) {
-    border-color: #c1121f;
-    transform: scale(1.08);
+.vouchersButton:hover {
+    border-color: #e3b23c;
+    transform: translateY(-2px);
 }
 
-.reorderButton:disabled {
-    opacity: 0.25;
-    cursor: not-allowed;
+.vouchersCount {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 12px;
+    color: #e3b23c;
+    background: #14181b;
+    border: 1px solid #2b322f;
+    border-radius: 999px;
+    padding: 2px 9px;
 }
