@@ -1,6 +1,7 @@
 import type { Card } from "./card";
 import type { Joker } from "./joker";
 import type { Consumable } from "./consumable";
+import type { Voucher } from "./voucher";
 import type { DeckId } from "./deck";
 
 export type GamePhase = "menu" | "blindSelect" | "playing" | "rules" | "shop" | "gameover";
@@ -24,6 +25,7 @@ export interface GameState {
   discardPile: Card[];
   jokers: Joker[];
   consumables: Consumable[];
+  vouchers: Voucher[];
   handLevels: Partial<Record<HandType, number>>;
   deckId: DeckId;
   level: number;
