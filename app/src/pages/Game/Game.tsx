@@ -4,9 +4,9 @@ import MainMenu from "../../components/MainMenu/MainMenu";
 import BlindSelect from "../../components/BlindSelect/BlindSelect";
 import RoundPanel from "../../components/RoundPanel/RoundPanel";
 import Shop from "../../components/Shop/Shop";
-import JokerSidebar from "../../components/JokerSidebar/JokerSidebar";
 import { useGameState } from "../../hooks/useGameState";
 import styles from "./Game.module.css";
+import JokerSidebar from "../../components/JokerSideBar/JokerSidebar";
 
 export default function Game() {
   const {
