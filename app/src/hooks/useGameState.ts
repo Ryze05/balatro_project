@@ -238,6 +238,27 @@ export function useGameState() {
     });
   }, []);
 
+  //* Reordenar comodines (drag & drop o flechas)
+  const reorderJokers = useCallback((fromIndex: number, toIndex: number) => {
+    setGameState((prev) => {
+      if (
+        fromIndex === toIndex ||
+        fromIndex < 0 ||
+        toIndex < 0 ||
+        fromIndex >= prev.jokers.length ||
+        toIndex >= prev.jokers.length
+      ) {
+        return prev;
+      }
+
+      const jokers = [...prev.jokers];
+      const [moved] = jokers.splice(fromIndex, 1);
+      jokers.splice(toIndex, 0, moved);
+
+      return { ...prev, jokers };
+    });
+  }, []);
+
   //* Avanzar de blind
   const advanceToNextBlind = useCallback(() => {
     setGameState((prev) => {
@@ -287,6 +308,7 @@ export function useGameState() {
     playHand,
     discardCards,
     buyJoker,
+    reorderJokers,
     advanceToNextBlind,
     setGamePhase,
   };

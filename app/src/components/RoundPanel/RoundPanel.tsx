@@ -1,12 +1,17 @@
 import type { JSX } from "react";
 import styles from "./RoundPanel.module.css";
 import type { Blind } from "../../types/game";
+import type { HandType } from "../../types/game";
 import type { Card, Suit } from "../../types/card";
+import type { Joker } from "../../types/joker";
+import { evaluateHand } from "../../logic/handEvaluator";
+import { calculateScore, getFinalScore } from "../../logic/score";
 
 interface RoundPanelProps {
   blind: Blind;
   level: number;
   hand: Card[];
+  jokers: Joker[];
   handsLeft: number;
   discardsLeft: number;
   score: number;
@@ -24,10 +29,27 @@ const SUIT_SYMBOLS: Record<Suit, string> = {
 
 const RED_SUITS: Suit[] = ["hearts", "diamonds"];
 
+//* Nombres en español de cada jugada, igual que en RulesPanel.
+const HAND_LABEL: Record<HandType, string> = {
+  HighCard: "Carta Alta",
+  Pair: "Pareja",
+  TwoPair: "Doble Pareja",
+  ThreeOfAKind: "Trío",
+  Straight: "Escalera",
+  Flush: "Color",
+  FullHouse: "Full House",
+  FourOfAKind: "Póker",
+  StraightFlush: "Escalera de Color",
+  FiveOfAKind: "Cinco Iguales",
+  FlushHouse: "Full de Color",
+  FlushFive: "Cinco de Color",
+};
+
 export function RoundPanel({
   blind,
   level,
   hand,
+  jokers,
   handsLeft,
   discardsLeft,
   score,
@@ -35,6 +57,24 @@ export function RoundPanel({
   onPlayHand,
   onDiscard,
 }: RoundPanelProps): JSX.Element {
+  //* Previsualización de puntuación: se recalcula en cada render con
+  //* la misma lógica que se usa al jugar la mano de verdad (playHand
+  //* en useGameState), así que ya incluye el efecto de los comodines.
+  const selectedCards = hand.filter((card) => card.selected === true);
+  const hasValidSelection = selectedCards.length >= 1 && selectedCards.length <= 5;
+
+  let preview: { handType: HandType; chips: number; multiplier: number; total: number } | null = null;
+  if (hasValidSelection) {
+    const { handType, scoringCards } = evaluateHand(selectedCards);
+    const scoreContext = calculateScore(handType, scoringCards, jokers);
+    preview = {
+      handType,
+      chips: scoreContext.chips,
+      multiplier: scoreContext.multiplier,
+      total: getFinalScore(scoreContext),
+    };
+  }
+
   return (
     <div className={styles.root}>
       <div className={styles.topBar}>
@@ -53,6 +93,29 @@ export function RoundPanel({
           <span className={styles.counter}>Hands: {handsLeft}</span>
           <span className={styles.counter}>Discards: {discardsLeft}</span>
         </div>
+      </div>
+
+      <div className={styles.previewBlock}>
+        {selectedCards.length === 0 && (
+          <span className={styles.previewHint}>Selecciona cartas para ver tu jugada</span>
+        )}
+
+        {selectedCards.length > 5 && (
+          <span className={styles.previewWarning}>Máximo 5 cartas seleccionadas</span>
+        )}
+
+        {preview && (
+          <>
+            <span className={styles.previewHandType}>{HAND_LABEL[preview.handType]}</span>
+            <span className={styles.previewFormula}>
+              <span className={styles.previewChips}>{preview.chips}</span>
+              {" × "}
+              <span className={styles.previewMultiplier}>{preview.multiplier}</span>
+              {" = "}
+              <span className={styles.previewTotal}>{preview.total.toLocaleString()}</span>
+            </span>
+          </>
+        )}
       </div>
 
       <div className={styles.handArea}>
