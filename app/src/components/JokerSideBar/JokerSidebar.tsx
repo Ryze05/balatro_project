@@ -1,11 +1,14 @@
 import { useState, type DragEvent, type JSX } from "react";
 import styles from "./JokerSidebar.module.css";
 import type { Joker } from "../../types/joker";
+import type { Blind } from "../../types/game";
 
 interface JokerSidebarProps {
   money: number;
   jokers: Joker[];
   onReorder: (fromIndex: number, toIndex: number) => void;
+  blind: Blind;
+  score: number;
 }
 
 const RARITY_LABEL: Record<Joker["rarity"], string> = {
@@ -15,7 +18,13 @@ const RARITY_LABEL: Record<Joker["rarity"], string> = {
   legendary: "Legendario",
 };
 
-export function JokerSidebar({ money, jokers, onReorder }: JokerSidebarProps): JSX.Element {
+const BLIND_TYPE_LABEL: Record<Blind["type"], string> = {
+  small: "Small Blind",
+  big: "Big Blind",
+  boss: "Boss Blind",
+};
+
+export function JokerSidebar({ money, jokers, onReorder, blind, score }: JokerSidebarProps): JSX.Element {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
 
@@ -51,8 +60,39 @@ export function JokerSidebar({ money, jokers, onReorder }: JokerSidebarProps): J
     if (index < jokers.length - 1) onReorder(index, index + 1);
   };
 
+  //* El panel de puntuación solo se muestra si hay un blind activo
+  //* (evita mostrar "None" / 0 mientras se está en menú, tienda, etc.)
+  const hasActiveBlind = blind.id !== "none";
+  const progress =
+    hasActiveBlind && blind.targetScore > 0
+      ? Math.min(100, (score / blind.targetScore) * 100)
+      : 0;
+
   return (
     <aside className={styles.sidebar}>
+      {hasActiveBlind && (
+        <div className={`${styles.scorePanel} ${styles[`scorePanel_${blind.type}`]}`}>
+          <div className={styles.scorePanelHeader}>
+            <span className={styles.scoreBlindType}>{BLIND_TYPE_LABEL[blind.type]}</span>
+            <span className={styles.scoreBlindName}>{blind.name}</span>
+          </div>
+
+          <div className={styles.scoreMain}>
+            <span className={styles.scoreMainLabel}>Puntos</span>
+            <span className={styles.scoreMainValue}>{score.toLocaleString()}</span>
+          </div>
+
+          <div className={styles.scoreProgressTrack}>
+            <div className={styles.scoreProgressFill} style={{ width: `${progress}%` }} />
+          </div>
+
+          <div className={styles.scoreTargetRow}>
+            <span className={styles.scoreTargetLabel}>Objetivo</span>
+            <span className={styles.scoreTargetValue}>{blind.targetScore.toLocaleString()}</span>
+          </div>
+        </div>
+      )}
+
       <div className={styles.moneyBlock}>
         <span className={styles.moneyLabel}>Dinero</span>
         <span className={styles.moneyValue}>${money}</span>
