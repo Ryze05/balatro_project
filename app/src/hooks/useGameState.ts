@@ -2,10 +2,20 @@ import { useState, useEffect, useCallback } from "react";
 import type { GameState, GamePhase, Blind } from "../types/game";
 import type { Card } from "../types/card";
 import type { Joker } from "../types/joker";
+import type { Consumable } from "../types/consumable";
+import type { Voucher } from "../types/voucher";
 import type { DeckId } from "../types/deck";
 import { createDeck, drawCard, shuffleCards } from "../logic/deck";
 import { evaluateHand } from "../logic/handEvaluator";
 import { calculateScore, getFinalScore } from "../logic/score";
+import { applyConsumableEffect, getHandType } from "../logic/consumables";
+import {
+  getDiscards,
+  getHands,
+  getConsumableSlots,
+  getJokerPrice,
+  getConsumablePrice,
+} from "../logic/vouchers";
 import {
   createBossPool,
   pickNextBossName,
@@ -17,6 +27,7 @@ const HAND_SIZE = 8;
 const BASE_HANDS = 4;
 const BASE_DISCARDS = 3;
 const BASE_MONEY = 4;
+export const MAX_CONSUMABLES = 2;
 
 const DECK_BONUS: Record<
   DeckId,
@@ -42,6 +53,9 @@ function makeInitialState(): GameState {
     hand: [],
     discardPile: [],
     jokers: [],
+    consumables: [],
+    vouchers: [],
+    handLevels: {},
     deckId: "red",
     level: 1,
     blinds: [],
@@ -89,8 +103,14 @@ function makeRoundState(
     deck,
     hand: drawn,
     discardPile: [],
-    handsLeft: BASE_HANDS + DECK_BONUS[state.deckId].hands,
-    discardsLeft: BASE_DISCARDS + DECK_BONUS[state.deckId].discards,
+    handsLeft: getHands(
+      BASE_HANDS + DECK_BONUS[state.deckId].hands,
+      state.vouchers,
+    ),
+    discardsLeft: getDiscards(
+      BASE_DISCARDS + DECK_BONUS[state.deckId].discards,
+      state.vouchers,
+    ),
     score: 0,
   };
 }
@@ -135,14 +155,17 @@ export function useGameState() {
         hand: drawn,
         discardPile: [],
         jokers: [],
+        consumables: [],
+        vouchers: [],
+        handLevels: {},
         deckId,
         level: 1,
         blinds,
         blindIndex: 0,
         currentBlind: blinds[0],
         round: 1,
-        handsLeft: BASE_HANDS + DECK_BONUS[deckId].hands,
-        discardsLeft: BASE_DISCARDS + DECK_BONUS[deckId].discards,
+        handsLeft: getHands(BASE_HANDS + DECK_BONUS[deckId].hands, []),
+        discardsLeft: getDiscards(BASE_DISCARDS + DECK_BONUS[deckId].discards, []),
         money: BASE_MONEY + DECK_BONUS[deckId].money,
         score: 0,
         status: "blindSelect",
@@ -168,7 +191,7 @@ export function useGameState() {
 
       //* Calculamos puntuación
       const { handType, scoringCards } = evaluateHand(selected);
-      const score = calculateScore(handType, scoringCards, prev.jokers);
+      const score = calculateScore(handType, scoringCards, prev.jokers, prev.handLevels);
       const roundScore = getFinalScore(score);
 
       const newScore = prev.score + roundScore;
@@ -229,10 +252,11 @@ export function useGameState() {
   //* Tienda
   const buyJoker = useCallback((joker: Joker) => {
     setGameState((prev) => {
-      if (prev.money < joker.price) return prev;
+      const price = getJokerPrice(joker.price, prev.vouchers);
+      if (prev.money < price) return prev;
       return {
         ...prev,
-        money: prev.money - joker.price,
+        money: prev.money - price,
         jokers: [...prev.jokers, joker],
       };
     });
@@ -271,8 +295,14 @@ export function useGameState() {
           blindIndex: nextIndex,
           currentBlind: prev.blinds[nextIndex],
           score: 0,
-          handsLeft: BASE_HANDS + DECK_BONUS[prev.deckId].hands,
-          discardsLeft: BASE_DISCARDS + DECK_BONUS[prev.deckId].discards,
+          handsLeft: getHands(
+            BASE_HANDS + DECK_BONUS[prev.deckId].hands,
+            prev.vouchers,
+          ),
+          discardsLeft: getDiscards(
+            BASE_DISCARDS + DECK_BONUS[prev.deckId].discards,
+            prev.vouchers,
+          ),
           status: "blindSelect",
         };
       }
@@ -296,6 +326,81 @@ export function useGameState() {
     });
   }, []);
 
+//* Comprar consumible en la tienda
+  const buyConsumable = useCallback((consumable: Consumable) => {
+    setGameState((prev) => {
+      const price = getConsumablePrice(consumable, prev.vouchers);
+      if (prev.money < price) return prev;
+      if (prev.consumables.length >= getConsumableSlots(MAX_CONSUMABLES, prev.vouchers)) return prev;
+      return {
+        ...prev,
+        money: prev.money - price,
+        consumables: [...prev.consumables, consumable],
+      };
+    });
+  }, []);
+
+  //* Añadir consumible al inventario (desde un sobre)
+  const addConsumable = useCallback((consumable: Consumable) => {
+    setGameState((prev) => {
+      if (prev.consumables.length >= getConsumableSlots(MAX_CONSUMABLES, prev.vouchers)) return prev;
+      return {
+        ...prev,
+        consumables: [...prev.consumables, consumable],
+      };
+    });
+  }, []);
+
+  //* Usar consumible (tarot con carta objetivo opcional, planeta sin objetivo)
+  const useConsumable = useCallback((consumableId: string, targetCardId?: string) => {
+    setGameState((prev) => {
+      const consumable = prev.consumables.find((i) => i.id === consumableId);
+      if (!consumable) return prev;
+
+      const handType = getHandType(consumable);
+      if (handType) {
+        return {
+          ...prev,
+          handLevels: {
+            ...prev.handLevels,
+            [handType]: (prev.handLevels[handType] ?? 1) + 1,
+          },
+          consumables: prev.consumables.filter((i) => i.id !== consumableId),
+        };
+      }
+
+      const result = applyConsumableEffect(
+        consumable,
+        prev.hand,
+        prev.consumables,
+        targetCardId,
+      );
+
+      if (!result.consumables) return prev;
+
+      return {
+        ...prev,
+        money: prev.money + (result.money ?? 0),
+        hand: result.hand ?? prev.hand,
+        consumables: result.consumables,
+      };
+      
+    });
+  }, []);
+
+  //* Comprar voucher en la tienda (solo una vez)
+  const buyVoucher = useCallback((voucher: Voucher) => {
+    setGameState((prev) => {
+      if (prev.vouchers.some((i) => i.id === voucher.id)) return prev;
+      if (prev.money < voucher.price) return prev;
+      return {
+        ...prev,
+        money: prev.money - voucher.price,
+        vouchers: [...prev.vouchers, voucher],
+      };
+    });
+  }, []);
+
   //* Cambiar fase
   const setGamePhase = useCallback((phase: GamePhase) => {
     setGameState((prev) => ({ ...prev, status: phase }));
@@ -308,6 +413,10 @@ export function useGameState() {
     playHand,
     discardCards,
     buyJoker,
+    buyConsumable,
+    addConsumable,
+    useConsumable,
+    buyVoucher,
     reorderJokers,
     advanceToNextBlind,
     setGamePhase,

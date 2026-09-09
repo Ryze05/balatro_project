@@ -24,59 +24,9 @@
     max-width: 720px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 20px;
     flex-wrap: wrap;
-}
-
-.blindInfo {
-    display: flex;
-    flex-direction: column;
-}
-
-.anteLabel {
-    font-family: "Courier New", ui-monospace, monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: #6b7570;
-    text-transform: uppercase;
-}
-
-.blindName {
-    font-weight: 800;
-    font-size: 18px;
-    color: #e3b23c;
-}
-
-.scoreBlock {
-    flex: 1;
-    min-width: 200px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-}
-
-.progressTrack {
-    width: 100%;
-    height: 10px;
-    background: #14181b;
-    border: 2px solid #2b322f;
-    border-radius: 999px;
-    overflow: hidden;
-}
-
-.progressFill {
-    height: 100%;
-    background: linear-gradient(90deg, #c1121f, #e3b23c);
-    transition: width 0.25s ease;
-}
-
-.scoreText {
-    font-family: "Courier New", ui-monospace, monospace;
-    font-size: 13px;
-    color: #f5ede0;
-    font-weight: 700;
 }
 
 .counters {
@@ -109,69 +59,6 @@
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-/* ---------------------------------------------------------------- */
-/* Previsualización de puntuación en vivo                            */
-/* Se recalcula con cada selección de cartas, ya incluye el efecto   */
-/* de los comodines (misma lógica que playHand en useGameState).     */
-/* ---------------------------------------------------------------- */
-
-.previewBlock {
-    margin-top: 22px;
-    min-height: 36px;
-    width: 100%;
-    max-width: 720px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    font-family: "Courier New", ui-monospace, monospace;
-}
-
-.previewHint {
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    color: #6b7570;
-}
-
-.previewWarning {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    color: #c1121f;
-}
-
-.previewHandType {
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #8fa89a;
-    background: #14181b;
-    border: 2px solid #2b322f;
-    border-radius: 999px;
-    padding: 5px 14px;
-}
-
-.previewFormula {
-    font-size: 16px;
-    font-weight: 700;
-    color: #f5ede0;
-}
-
-.previewChips {
-    color: #8fd18f;
-}
-
-.previewMultiplier {
-    color: #e3b23c;
-}
-
-.previewTotal {
-    font-size: 18px;
-    color: #f5ede0;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
 }
 
 /* ---------------------------------------------------------------- */

@@ -4,9 +4,12 @@ import MainMenu from "../../components/MainMenu/MainMenu";
 import BlindSelect from "../../components/BlindSelect/BlindSelect";
 import RoundPanel from "../../components/RoundPanel/RoundPanel";
 import Shop from "../../components/Shop/Shop";
-import { useGameState } from "../../hooks/useGameState";
+import { useGameState, MAX_CONSUMABLES } from "../../hooks/useGameState";
+import { getConsumableSlots } from "../../logic/vouchers";
 import styles from "./Game.module.css";
 import JokerSidebar from "../../components/JokerSideBar/JokerSidebar";
+import JokerBoard from "../../components/JokerBoard/JokerBoard";
+import GameOverPanel from "../../components/GameOverPanel/GameOverPanel";
 
 export default function Game() {
   const {
@@ -16,6 +19,8 @@ export default function Game() {
     playHand,
     discardCards,
     buyJoker,
+    buyConsumable,
+    buyVoucher,
     reorderJokers,
     advanceToNextBlind,
     setGamePhase,
@@ -32,8 +37,15 @@ export default function Game() {
     score,
     money,
     jokers,
+    consumables,
+    vouchers,
     status,
   } = gameState;
+
+  //* Huecos reales de consumibles (tiene en cuenta el voucher Grabber),
+  //* misma función que ya usa useGameState internamente para bloquear
+  //* la compra cuando no hay hueco.
+  const maxConsumableSlots = getConsumableSlots(MAX_CONSUMABLES, vouchers);
 
   const handleMenuSelect = (option: MenuOption, deckId?: DeckId): void => {
     if (option === "play") {
@@ -51,23 +63,30 @@ export default function Game() {
     );
   }
 
-  // A partir de aquí ya hay una partida en curso: mostramos el
-  // layout de dos columnas con el sidebar de dinero + comodines.
-  // El sidebar también muestra ahora el marcador de puntuación del
-  // blind actual (puntos / objetivo), estilo Balatro.
+  // Layout de dos columnas:
+  // - Izquierda: marcador del blind, previsualización de la jugada,
+  //   dinero y el botón que abre el panel de Vouchers comprados.
+  // - Derecha: el tablero, que ahora empieza con la fila fija de
+  //   Comodines + Consumibles (como en Balatro) y debajo la pantalla
+  //   activa (selección de blind, ronda o tienda).
+  // Ambas columnas ya son responsive vía Game.module.css (se apilan en
+  // pantallas estrechas) y JokerBoard hace flex-wrap en su fila.
   return (
     <div className={styles.layout}>
       <div className={styles.sidebarColumn}>
         <JokerSidebar
           money={money}
           jokers={jokers}
-          onReorder={reorderJokers}
+          hand={status === "playing" ? hand : []}
           blind={currentBlind}
           score={score}
+          vouchers={vouchers}
         />
       </div>
 
       <div className={styles.mainColumn}>
+        <JokerBoard jokers={jokers} onReorder={reorderJokers} />
+
         {status === "blindSelect" && (
           <BlindSelect
             level={level}
@@ -80,10 +99,7 @@ export default function Game() {
 
         {status === "playing" && currentBlind && (
           <RoundPanel
-            blind={currentBlind}
-            level={level}
             hand={hand}
-            jokers={jokers}
             handsLeft={handsLeft}
             discardsLeft={discardsLeft}
             onToggleCard={selectCard}
@@ -93,15 +109,29 @@ export default function Game() {
         )}
 
         {status === "shop" && (
-          <Shop money={money} onBuy={buyJoker} onContinue={advanceToNextBlind} />
+          <Shop
+            money={money}
+            consumables={consumables}
+            vouchers={vouchers}
+            maxConsumableSlots={maxConsumableSlots}
+            onBuy={buyJoker}
+            onBuyConsumable={buyConsumable}
+            onBuyVoucher={buyVoucher}
+            onContinue={advanceToNextBlind}
+          />
         )}
 
         {status === "gameover" && (
-          <div>
-            <h1>Game Over</h1>
-            <p>You reached Level {level}.</p>
-            <button onClick={() => setGamePhase("menu")}>Back to Menu</button>
-          </div>
+          <GameOverPanel
+            level={level}
+            round={gameState.round}
+            currentBlind={currentBlind}
+            score={score}
+            money={money}
+            jokers={jokers}
+            onRestart={() => startNewGame(gameState.deckId)}
+            onMenu={() => setGamePhase("menu")}
+          />
         )}
       </div>
     </div>
