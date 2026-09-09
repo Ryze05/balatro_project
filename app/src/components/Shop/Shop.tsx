@@ -4,8 +4,9 @@ import type { Joker } from "../../types/joker";
 import type { Consumable } from "../../types/consumable";
 import type { Voucher } from "../../types/voucher";
 import { getShopJokers } from "../../logic/joker";
-import { getShopConsumables } from "../../logic/consumables";
+import { getShopConsumables, getArcanaPack, getCelestialPack } from "../../logic/consumables";
 import { getShopVouchers, getConsumablePrice, hasVoucher } from "../../logic/vouchers";
+import PackModal from "../PackModal/PackModal";
 
 interface ShopProps {
   money: number;
@@ -15,22 +16,22 @@ interface ShopProps {
   onBuy: (joker: Joker) => void;
   onBuyConsumable: (consumable: Consumable) => void;
   onBuyVoucher: (voucher: Voucher) => void;
+  onBuyPack: (price: number) => void;
+  onAddConsumable: (consumable: Consumable) => void;
   onContinue: () => void;
 }
 
-//* Slots de la sección de Sobres, que todavía no tiene lógica propia
-//* (no hay flujo de "comprar sobre -> abrir -> elegir carta" en el
-//* contexto). Se queda como placeholder hasta que se implemente.
-interface PlaceholderSlot {
+//* Sobres disponibles en la tienda (Arcana y Celestial)
+interface PackDefinition {
   id: string;
-  glyph: string;
-  title: string;
-  subtitle: string;
+  name: string;
+  price: number;
+  kind: "arcana" | "celestial";
 }
 
-const PACK_SLOTS: PlaceholderSlot[] = [
-  { id: "pack-1", glyph: "🎁", title: "Sobre", subtitle: "Booster Pack" },
-  { id: "pack-2", glyph: "🎁", title: "Sobre", subtitle: "Booster Pack" },
+const PACK_DEFINITIONS: PackDefinition[] = [
+  { id: "pack-arcana", name: "Arcana Pack", price: 4, kind: "arcana" },
+  { id: "pack-celestial", name: "Celestial Pack", price: 5, kind: "celestial" },
 ];
 
 const JOKER_OFFER_COUNT = 3;
@@ -45,6 +46,8 @@ export function Shop({
   onBuy,
   onBuyConsumable,
   onBuyVoucher,
+  onBuyPack,
+  onAddConsumable,
   onContinue,
 }: ShopProps): JSX.Element {
   const [jokerOffers, setJokerOffers] = useState<Joker[]>(() => getShopJokers(JOKER_OFFER_COUNT));
@@ -53,11 +56,28 @@ export function Shop({
   //* botón de reroll propio todavía.
   const [consumableOffers] = useState<Consumable[]>(() => getShopConsumables(CONSUMABLE_OFFER_COUNT));
   const [voucherOffers] = useState<Voucher[]>(() => getShopVouchers(VOUCHER_OFFER_COUNT));
+  const [openedPack, setOpenedPack] = useState<{
+    name: string;
+    cards: Consumable[];
+  } | null>(null);
 
   const consumablesFull = consumables.length >= maxConsumableSlots;
 
   const reroll = (): void => {
     setJokerOffers(getShopJokers(JOKER_OFFER_COUNT));
+  };
+
+  //* Comprar un sobre: descuenta el dinero y abre el modal con sus cartas
+  const openPack = (pack: PackDefinition): void => {
+    onBuyPack(pack.price);
+    const cards =
+      pack.kind === "arcana" ? getArcanaPack(3) : getCelestialPack(3);
+    setOpenedPack({ name: pack.name, cards });
+  };
+
+  const pickFromPack = (card: Consumable): void => {
+    onAddConsumable(card);
+    setOpenedPack(null);
   };
 
   return (
@@ -127,21 +147,42 @@ export function Shop({
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h3 className={styles.sectionTitle}>Sobres</h3>
-          <span className={styles.sectionBadge}>Próximamente</span>
         </div>
 
-        <div className={styles.placeholderRow}>
-          {PACK_SLOTS.map((slot) => (
-            <div key={slot.id} className={styles.placeholderCard}>
-              <span className={styles.placeholderGlyph} aria-hidden="true">
-                {slot.glyph}
+        <div className={styles.offers}>
+          {PACK_DEFINITIONS.map((pack) => (
+            <div key={pack.id} className={styles.offerCard}>
+              <span className={styles.rarity} style={{ color: "#e3b23c" }}>
+                Booster
               </span>
-              <span className={styles.placeholderTitle}>{slot.title}</span>
-              <span className={styles.placeholderSubtitle}>{slot.subtitle}</span>
+              <h3 className={styles.jokerName}>{pack.name}</h3>
+              <p className={styles.jokerDescription}>
+                {pack.kind === "arcana"
+                  ? "Contiene cartas de tarot. Elige 1."
+                  : "Contiene cartas de planeta. Elige 1."}
+              </p>
+              <button
+                type="button"
+                className={styles.buyButton}
+                onClick={() => openPack(pack)}
+                disabled={money < pack.price}
+              >
+                Buy ${pack.price}
+              </button>
             </div>
           ))}
         </div>
       </section>
+
+      {openedPack && (
+        <PackModal
+          packName={openedPack.name}
+          cards={openedPack.cards}
+          canTake={!consumablesFull}
+          onPick={pickFromPack}
+          onClose={() => setOpenedPack(null)}
+        />
+      )}
 
       {/* ---------------- Vouchers ---------------- */}
       <section className={styles.section}>

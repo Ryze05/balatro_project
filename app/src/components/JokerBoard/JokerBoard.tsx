@@ -1,10 +1,14 @@
 import { useState, type DragEvent, type JSX } from "react";
 import styles from "./JokerBoard.module.css";
 import type { Joker } from "../../types/joker";
+import type { Consumable } from "../../types/consumable";
 
 interface JokerBoardProps {
   jokers: Joker[];
+  consumables: Consumable[];
+  maxConsumableSlots: number;
   onReorder: (fromIndex: number, toIndex: number) => void;
+  onUseConsumable: (consumable: Consumable) => void;
 }
 
 const RARITY_LABEL: Record<Joker["rarity"], string> = {
@@ -14,13 +18,13 @@ const RARITY_LABEL: Record<Joker["rarity"], string> = {
   legendary: "Legendario",
 };
 
-//* Huecos de Consumibles (Cartas de Tarot / Planeta). Por ahora es solo
-//* maquetación: no hay tipo, ni estado, ni lógica de compra o uso.
-//* Se deja el espacio preparado al lado de los comodines para cuando
-//* se implemente el sistema de consumibles en la siguiente parte.
-const CONSUMABLE_SLOT_COUNT = 2;
-
-export function JokerBoard({ jokers, onReorder }: JokerBoardProps): JSX.Element {
+export function JokerBoard({
+  jokers,
+  consumables,
+  maxConsumableSlots,
+  onReorder,
+  onUseConsumable,
+}: JokerBoardProps): JSX.Element {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
 
@@ -127,21 +131,40 @@ export function JokerBoard({ jokers, onReorder }: JokerBoardProps): JSX.Element 
       </div>
 
       {/* ------------------------------------------------------------ */}
-      {/* Espacio de Consumibles (Tarot / Planeta). De momento solo hay  */}
-      {/* huecos vacíos: sin datos, sin estado y sin lógica de uso.      */}
-      {/* Se conecta aquí porque visualmente van al lado de los          */}
-      {/* comodines, igual que en Balatro.                               */}
+      {/* Consumibles (Tarot / Planeta): las cartas que tienes, listas  */}
+      {/* para usar. Al pulsarlas se activa el uso (con carta objetivo  */}
+      {/* si es un tarot de carta, coordinado desde Game.tsx).          */}
       {/* ------------------------------------------------------------ */}
       <div className={styles.consumableArea}>
         <div className={styles.areaHeader}>
           <span className={styles.areaTitle}>Consumibles</span>
-          <span className={styles.areaCount}>0/{CONSUMABLE_SLOT_COUNT}</span>
+          <span className={styles.areaCount}>
+            {consumables.length}/{maxConsumableSlots}
+          </span>
         </div>
 
         <div className={styles.consumableSlots}>
-          {Array.from({ length: CONSUMABLE_SLOT_COUNT }).map((_, i) => (
-            <div key={i} className={styles.consumableSlot}>
-              <span className={styles.consumableGlyph} aria-hidden="true">🔮</span>
+          {consumables.map((consumable) => (
+            <button
+              key={consumable.id}
+              type="button"
+              className={`${styles.consumableSlot} ${styles.consumableSlotFilled}`}
+              onClick={() => onUseConsumable(consumable)}
+            >
+              <span className={styles.consumableGlyph} aria-hidden="true">
+                {consumable.kind === "tarot" ? "🔮" : "🪐"}
+              </span>
+              <span className={styles.consumableName}>{consumable.name}</span>
+            </button>
+          ))}
+
+          {Array.from({
+            length: Math.max(0, maxConsumableSlots - consumables.length),
+          }).map((_, i) => (
+            <div key={`empty-${i}`} className={styles.consumableSlot}>
+              <span className={styles.consumableGlyph} aria-hidden="true">
+                🔮
+              </span>
             </div>
           ))}
         </div>

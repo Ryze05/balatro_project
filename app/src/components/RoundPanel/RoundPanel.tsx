@@ -1,14 +1,18 @@
 import type { JSX } from "react";
 import styles from "./RoundPanel.module.css";
 import type { Card, Suit } from "../../types/card";
+import type { Consumable } from "../../types/consumable";
 
 interface RoundPanelProps {
   hand: Card[];
   handsLeft: number;
   discardsLeft: number;
+  targetConsumable: Consumable | null;
   onToggleCard: (cardId: string) => void;
   onPlayHand: () => void;
   onDiscard: () => void;
+  onTargetCard: (cardId: string) => void;
+  onCancelTarget: () => void;
 }
 
 const SUIT_SYMBOLS: Record<Suit, string> = {
@@ -24,9 +28,12 @@ export function RoundPanel({
   hand,
   handsLeft,
   discardsLeft,
+  targetConsumable,
   onToggleCard,
   onPlayHand,
   onDiscard,
+  onTargetCard,
+  onCancelTarget,
 }: RoundPanelProps): JSX.Element {
   return (
     <div className={styles.root}>
@@ -36,6 +43,22 @@ export function RoundPanel({
           <span className={styles.counter}>Discards: {discardsLeft}</span>
         </div>
       </div>
+
+      {/* Aviso cuando hay un consumible esperando carta objetivo */}
+      {targetConsumable && (
+        <div className={styles.consumableBar}>
+          <span className={styles.targetHint}>
+            Elige una carta para {targetConsumable.name}
+            <button
+              type="button"
+              className={styles.cancelTarget}
+              onClick={onCancelTarget}
+            >
+              Cancelar
+            </button>
+          </span>
+        </div>
+      )}
 
       <div className={styles.handArea}>
         {hand.map((card, index) => {
@@ -54,7 +77,7 @@ export function RoundPanel({
               <button
                 type="button"
                 className={`${styles.card} ${isSelected ? styles.cardSelected : ""}`}
-                onClick={() => onToggleCard(card.id)}
+                onClick={() => (targetConsumable ? onTargetCard(card.id) : onToggleCard(card.id))}
                 aria-label={`${card.rank} of ${card.suit}`}
               >
                 <span

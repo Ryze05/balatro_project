@@ -7,7 +7,7 @@ interface VouchersPanelProps {
   onClose: () => void;
 }
 
-//* Panel lateral de solo lectura: pinta lo que ya hay en gameState.vouchers
+//* Modal de solo lectura: pinta lo que ya hay en gameState.vouchers
 //* (rellenado por buyVoucher en useGameState). No añade lógica nueva, solo
 //* la conexión para poder verlos.
 export function VouchersPanel({ vouchers, onClose }: VouchersPanelProps): JSX.Element {

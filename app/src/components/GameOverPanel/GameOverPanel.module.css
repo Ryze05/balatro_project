@@ -1,12 +1,9 @@
 .root {
-    min-height: 100vh;
+    flex: 1;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background:
-        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
     font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
     padding: 48px 20px;
     box-sizing: border-box;

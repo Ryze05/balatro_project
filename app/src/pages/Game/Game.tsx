@@ -1,5 +1,8 @@
+import { useState, useEffect } from "react";
 import type { MenuOption } from "../../types/game";
 import type { DeckId } from "../../types/deck";
+import type { Consumable } from "../../types/consumable";
+import { requiresTarget } from "../../logic/consumables";
 import MainMenu from "../../components/MainMenu/MainMenu";
 import BlindSelect from "../../components/BlindSelect/BlindSelect";
 import RoundPanel from "../../components/RoundPanel/RoundPanel";
@@ -21,6 +24,9 @@ export default function Game() {
     buyJoker,
     buyConsumable,
     buyVoucher,
+    buyPack,
+    addConsumable,
+    applyConsumable,
     reorderJokers,
     advanceToNextBlind,
     setGamePhase,
@@ -46,6 +52,28 @@ export default function Game() {
   //* misma función que ya usa useGameState internamente para bloquear
   //* la compra cuando no hay hueco.
   const maxConsumableSlots = getConsumableSlots(MAX_CONSUMABLES, vouchers);
+
+  const [targetConsumable, setTargetConsumable] = useState<Consumable | null>(null);
+
+  //* Si sales de la ronda, se cancela el modo "elige carta objetivo"
+  useEffect(() => {
+    if (status !== "playing") setTargetConsumable(null);
+  }, [status]);
+
+  const handleUseConsumable = (consumable: Consumable): void => {
+    if (requiresTarget(consumable)) {
+      setTargetConsumable(consumable);
+      return;
+    }
+    applyConsumable(consumable.id);
+  };
+
+  const handleTargetCard = (cardId: string): void => {
+    if (targetConsumable) {
+      applyConsumable(targetConsumable.id, cardId);
+      setTargetConsumable(null);
+    }
+  };
 
   const handleMenuSelect = (option: MenuOption, deckId?: DeckId): void => {
     if (option === "play") {
@@ -85,53 +113,72 @@ export default function Game() {
       </div>
 
       <div className={styles.mainColumn}>
-        <JokerBoard jokers={jokers} onReorder={reorderJokers} />
+        <JokerBoard
+          jokers={jokers}
+          consumables={consumables}
+          maxConsumableSlots={maxConsumableSlots}
+          onReorder={reorderJokers}
+          onUseConsumable={handleUseConsumable}
+        />
 
         {status === "blindSelect" && (
-          <BlindSelect
-            level={level}
-            blinds={blinds}
-            blindIndex={blindIndex}
-            onPlay={() => setGamePhase("playing")}
-            onSkip={advanceToNextBlind}
-          />
+          <div className={styles.screenArea}>
+            <BlindSelect
+              level={level}
+              blinds={blinds}
+              blindIndex={blindIndex}
+              onPlay={() => setGamePhase("playing")}
+              onSkip={advanceToNextBlind}
+            />
+          </div>
         )}
 
         {status === "playing" && currentBlind && (
-          <RoundPanel
-            hand={hand}
-            handsLeft={handsLeft}
-            discardsLeft={discardsLeft}
-            onToggleCard={selectCard}
-            onPlayHand={playHand}
-            onDiscard={discardCards}
-          />
+          <div className={styles.screenArea}>
+            <RoundPanel
+              hand={hand}
+              handsLeft={handsLeft}
+              discardsLeft={discardsLeft}
+              targetConsumable={targetConsumable}
+              onToggleCard={selectCard}
+              onPlayHand={playHand}
+              onDiscard={discardCards}
+              onTargetCard={handleTargetCard}
+              onCancelTarget={() => setTargetConsumable(null)}
+            />
+          </div>
         )}
 
         {status === "shop" && (
-          <Shop
-            money={money}
-            consumables={consumables}
-            vouchers={vouchers}
-            maxConsumableSlots={maxConsumableSlots}
-            onBuy={buyJoker}
-            onBuyConsumable={buyConsumable}
-            onBuyVoucher={buyVoucher}
-            onContinue={advanceToNextBlind}
-          />
+          <div className={styles.screenArea}>
+            <Shop
+              money={money}
+              consumables={consumables}
+              vouchers={vouchers}
+              maxConsumableSlots={maxConsumableSlots}
+              onBuy={buyJoker}
+              onBuyConsumable={buyConsumable}
+              onBuyVoucher={buyVoucher}
+              onBuyPack={buyPack}
+              onAddConsumable={addConsumable}
+              onContinue={advanceToNextBlind}
+            />
+          </div>
         )}
 
         {status === "gameover" && (
-          <GameOverPanel
-            level={level}
-            round={gameState.round}
-            currentBlind={currentBlind}
-            score={score}
-            money={money}
-            jokers={jokers}
-            onRestart={() => startNewGame(gameState.deckId)}
-            onMenu={() => setGamePhase("menu")}
-          />
+          <div className={styles.screenArea}>
+            <GameOverPanel
+              level={level}
+              round={gameState.round}
+              currentBlind={currentBlind}
+              score={score}
+              money={money}
+              jokers={jokers}
+              onRestart={() => startNewGame(gameState.deckId)}
+              onMenu={() => setGamePhase("menu")}
+            />
+          </div>
         )}
       </div>
     </div>

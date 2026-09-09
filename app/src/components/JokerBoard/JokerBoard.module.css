@@ -236,12 +236,37 @@
     border: 2px dashed #2b322f;
     background: #0f1214;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 4px;
     opacity: 0.6;
+}
+
+.consumableSlotFilled {
+    border: 2px solid #2b322f;
+    background: #1b1f23;
+    opacity: 1;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.consumableSlotFilled:hover {
+    transform: translateY(-2px);
+    border-color: #e3b23c;
 }
 
 .consumableGlyph {
     font-size: 22px;
     filter: grayscale(1);
+}
+
+.consumableName {
+    font-size: 9px;
+    font-weight: 700;
+    color: #f5ede0;
+    text-align: center;
+    line-height: 1.2;
+    word-break: break-word;
 }

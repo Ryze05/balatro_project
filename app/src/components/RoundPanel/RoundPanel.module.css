@@ -1,13 +1,10 @@
 .root {
-    max-height: 100vh;
+    flex: 1;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    background:
-        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
     font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
     padding: 32px 20px;
     box-sizing: border-box;
@@ -21,12 +18,44 @@
 
 .topBar {
     width: 100%;
-    max-width: 720px;
+    max-width: none;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 20px;
     flex-wrap: wrap;
+}
+
+.consumableBar {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin: 12px 0;
+    padding: 10px;
+    background: #1b1f23;
+    border: 2px solid #2b322f;
+    border-radius: 12px;
+}
+
+.targetHint {
+    font-size: 12px;
+    color: #e3b23c;
+    font-weight: 700;
+}
+
+.cancelTarget {
+    margin-left: 8px;
+    background: transparent;
+    border: 2px solid #2b322f;
+    color: #b7c2bb;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-family: inherit;
+    cursor: pointer;
 }
 
 .counters {
@@ -84,8 +113,8 @@
 
 .card {
     position: relative;
-    width: 76px;
-    height: 108px;
+    width: 94px;
+    height: 132px;
     border-radius: 9px;
     background:
         radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 40%),
@@ -143,17 +172,17 @@
 }
 
 .cardRank {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
 }
 
 .cardCornerSuit {
-    font-size: 12px;
+    font-size: 13px;
     margin-top: 1px;
 }
 
 .cardCenterSuit {
-    font-size: 32px;
+    font-size: 36px;
     line-height: 1;
 }
 
