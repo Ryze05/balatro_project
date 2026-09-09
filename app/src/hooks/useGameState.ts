@@ -27,7 +27,7 @@ const HAND_SIZE = 8;
 const BASE_HANDS = 4;
 const BASE_DISCARDS = 3;
 const BASE_MONEY = 4;
-const MAX_CONSUMABLES = 2;
+export const MAX_CONSUMABLES = 2;
 
 const DECK_BONUS: Record<
   DeckId,
