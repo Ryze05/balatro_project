@@ -1,0 +1,247 @@
+.board {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+}
+
+.board *,
+.board *::before,
+.board *::after {
+    box-sizing: border-box;
+}
+
+.jokerArea,
+.consumableArea {
+    background: #14181b;
+    border: 2px solid #2b322f;
+    border-radius: 12px;
+    padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.jokerArea {
+    flex: 3;
+    min-width: 280px;
+}
+
+.consumableArea {
+    flex: 1;
+    min-width: 160px;
+}
+
+.areaHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.areaTitle {
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #e3b23c;
+}
+
+.areaCount {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 12px;
+    color: #6b7570;
+}
+
+.emptyText {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #6b7570;
+    margin: 0;
+}
+
+/* ---------------------------------------------------------------- */
+/* Comodines: misma tarjeta que antes, ahora en fila horizontal con   */
+/* scroll si no caben, en vez de columna vertical en el sidebar.      */
+/* ---------------------------------------------------------------- */
+
+.jokerList {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 4px;
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+}
+
+.jokerItem {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 140px;
+    flex-shrink: 0;
+    background:
+        radial-gradient(circle at 30% 15%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 45%),
+        linear-gradient(160deg, #fffdf7 0%, #efe6d0 100%);
+    border: 2px solid #1b1f23;
+    border-radius: 10px;
+    padding: 10px 12px 12px;
+    box-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.28),
+        0 8px 16px rgba(0, 0, 0, 0.45);
+    cursor: grab;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.jokerItem:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.28),
+        0 12px 20px rgba(0, 0, 0, 0.5);
+}
+
+.jokerItem:active {
+    cursor: grabbing;
+}
+
+.rarity_common { border-color: #6b7570; }
+.rarity_uncommon { border-color: #2f5f8f; }
+.rarity_rare { border-color: #7a1620; }
+.rarity_legendary {
+    border-color: #a5761f;
+    box-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.28),
+        0 0 0 1px #e3b23c,
+        0 10px 20px rgba(227, 178, 60, 0.25);
+}
+
+.dragging {
+    opacity: 0.4;
+}
+
+.dragOver {
+    transform: translateY(-3px);
+    box-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.28),
+        0 0 0 2px #e3b23c,
+        0 12px 20px rgba(0, 0, 0, 0.5);
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dragHandle {
+    color: rgba(27, 31, 35, 0.5);
+    font-size: 14px;
+    line-height: 1;
+    user-select: none;
+}
+
+.cardGlyph {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.positionBadge {
+    margin-left: auto;
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 10px;
+    color: rgba(27, 31, 35, 0.6);
+    background: rgba(27, 31, 35, 0.08);
+    border: 1px solid rgba(27, 31, 35, 0.25);
+    border-radius: 5px;
+    padding: 1px 6px;
+}
+
+.cardBody {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.jokerName {
+    font-weight: 700;
+    font-size: 12px;
+    color: #1b1f23;
+}
+
+.jokerRarity {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(27, 31, 35, 0.55);
+}
+
+.jokerDescription {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 10px;
+    line-height: 1.4;
+    color: rgba(27, 31, 35, 0.75);
+    margin: 2px 0 0;
+}
+
+.reorderButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-top: 2px;
+}
+
+.reorderButton {
+    width: 22px;
+    height: 18px;
+    padding: 0;
+    background: rgba(255, 253, 247, 0.85);
+    border: 1px solid rgba(27, 31, 35, 0.35);
+    border-radius: 4px;
+    color: #1b1f23;
+    font-size: 9px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.reorderButton:hover:not(:disabled) {
+    border-color: #c1121f;
+    transform: scale(1.08);
+}
+
+.reorderButton:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------------- */
+/* Consumibles: de momento solo huecos vacíos (sin lógica), con el    */
+/* mismo aspecto "bloqueado" que los placeholders de la Shop.         */
+/* ---------------------------------------------------------------- */
+
+.consumableSlots {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.consumableSlot {
+    width: 60px;
+    height: 84px;
+    border-radius: 8px;
+    border: 2px dashed #2b322f;
+    background: #0f1214;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+}
+
+.consumableGlyph {
+    font-size: 22px;
+    filter: grayscale(1);
+}
