@@ -359,13 +359,14 @@ export function useGameState() {
 
       const handType = getHandType(consumable);
       if (handType) {
+        const consumableIndex = prev.consumables.findIndex((i) => i.id === consumableId);
         return {
           ...prev,
           handLevels: {
             ...prev.handLevels,
             [handType]: (prev.handLevels[handType] ?? 1) + 1,
           },
-          consumables: prev.consumables.filter((i) => i.id !== consumableId),
+          consumables: prev.consumables.filter((_, i) => i !== consumableIndex),
         };
       }
 
