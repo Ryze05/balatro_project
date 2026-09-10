@@ -109,6 +109,7 @@ export default function Game() {
           blind={currentBlind}
           score={score}
           vouchers={vouchers}
+          handLevels={gameState.handLevels}
         />
       </div>
 

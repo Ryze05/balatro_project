@@ -1,0 +1,18 @@
+.button {
+    padding: 8px 16px;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+}
