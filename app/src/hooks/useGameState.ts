@@ -71,19 +71,28 @@ function makeInitialState(): GameState {
   };
 }
 
-//* Robar cartas
+//* Robar cartas. Si el mazo se agota, recicla el descarte dentro.
 function drawCards(
   deck: Card[],
   count: number,
-): { drawn: Card[]; deck: Card[] } {
+  discardPile: Card[] = [],
+): { drawn: Card[]; deck: Card[]; discardPile: Card[] } {
   const drawn: Card[] = [];
-  let current = [...deck];
-  for (let i = 0; i < count && current.length > 0; i++) {
-    const { drawnCard, remainingDeck } = drawCard(current);
+  let currentDeck = [...deck];
+  let currentDiscard = [...discardPile];
+
+  for (let i = 0; i < count; i++) {
+    if (currentDeck.length === 0) {
+      if (currentDiscard.length === 0) break;
+      currentDeck = shuffleCards(currentDiscard);
+      currentDiscard = [];
+    }
+    const { drawnCard, remainingDeck } = drawCard(currentDeck);
     if (drawnCard) drawn.push({ ...drawnCard, selected: false });
-    current = remainingDeck;
+    currentDeck = remainingDeck;
   }
-  return { drawn, deck: current };
+
+  return { drawn, deck: currentDeck, discardPile: currentDiscard };
 }
 
 //* Estado para nivel nuevo, con pick para devolver partes específicas
@@ -199,16 +208,17 @@ export function useGameState() {
 
       //* Cogemos cartas del mazo y actualizamos estado
       const remaining = prev.hand.filter((i) => i.selected === false);
-      const { drawn, deck } = drawCards(
+      const { drawn, deck, discardPile } = drawCards(
         prev.deck,
         HAND_SIZE - remaining.length,
+        prev.discardPile,
       );
 
       const next: GameState = {
         ...prev,
         deck,
         hand: [...remaining, ...drawn],
-        discardPile: [...prev.discardPile, ...selected],
+        discardPile: [...discardPile, ...selected],
         score: newScore,
         handsLeft: newHandsLeft,
       };
@@ -237,13 +247,17 @@ export function useGameState() {
       if (selected.length === 0) return prev;
 
       const remaining = prev.hand.filter((i) => i.selected === false);
-      const { drawn, deck } = drawCards(prev.deck, selected.length);
+      const { drawn, deck, discardPile } = drawCards(
+        prev.deck,
+        selected.length,
+        prev.discardPile,
+      );
 
       return {
         ...prev,
         deck,
         hand: [...remaining, ...drawn],
-        discardPile: [...prev.discardPile, ...selected],
+        discardPile: [...discardPile, ...selected],
         discardsLeft: prev.discardsLeft - 1,
       };
     });
@@ -288,21 +302,14 @@ export function useGameState() {
     setGameState((prev) => {
       const nextIndex = prev.blindIndex + 1;
 
-      //* Sigue dentro del mismo nivel, siguiente blind
+      //* Sigue dentro del mismo nivel, siguiente blind.
+      //* Se reinicia la ronda: mazo completo barajado y mano nueva.
       if (nextIndex < prev.blinds.length) {
         return {
           ...prev,
+          ...makeRoundState(prev),
           blindIndex: nextIndex,
           currentBlind: prev.blinds[nextIndex],
-          score: 0,
-          handsLeft: getHands(
-            BASE_HANDS + DECK_BONUS[prev.deckId].hands,
-            prev.vouchers,
-          ),
-          discardsLeft: getDiscards(
-            BASE_DISCARDS + DECK_BONUS[prev.deckId].discards,
-            prev.vouchers,
-          ),
           status: "blindSelect",
         };
       }
