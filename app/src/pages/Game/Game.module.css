@@ -31,8 +31,8 @@
     min-width: 0;
 }
 
-/* En pantallas estrechas, el sidebar pasa a ir arriba en vez de al lado */
-@media (max-width: 720px) {
+/* En portrait móvil el RotatePrompt bloquea la partida y pide girar. */
+@media (max-width: 720px) and (orientation: portrait) {
     .layout {
         flex-direction: column;
     }
@@ -44,5 +44,15 @@
 
     .sidebarColumn {
         max-height: 320px;
+        overflow-y: auto;
+    }
+}
+
+/* Landscape móvil: sidebar estrecho pero con espacio suficiente para sus datos. */
+@media (max-width: 900px) and (orientation: landscape) {
+    .sidebarColumn {
+        width: 25%;
+        max-height: 100vh;
+        overflow-y: auto;
     }
 }

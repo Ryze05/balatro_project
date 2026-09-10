@@ -24,7 +24,7 @@ export default function Game() {
     buyJoker,
     buyConsumable,
     buyVoucher,
-    buyPack,
+    spendMoney,
     addConsumable,
     applyConsumable,
     reorderJokers,
@@ -158,9 +158,9 @@ export default function Game() {
               maxConsumableSlots={maxConsumableSlots}
               onBuy={buyJoker}
               onBuyConsumable={buyConsumable}
-              onBuyVoucher={buyVoucher}
-              onBuyPack={buyPack}
-              onAddConsumable={addConsumable}
+onBuyVoucher={buyVoucher}
+            onSpendMoney={spendMoney}
+            onAddConsumable={addConsumable}
               onContinue={advanceToNextBlind}
             />
           </div>

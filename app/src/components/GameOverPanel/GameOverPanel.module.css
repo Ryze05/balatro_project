@@ -29,16 +29,35 @@
     box-shadow: var(--shadow-panel);
 }
 
+.glyphRow {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
 .glyph {
     font-size: 52px;
+    animation: floatGlyph 1.9s ease-in-out infinite;
+}
+
+.glyphRed {
     color: var(--color-danger);
-    margin-bottom: 4px;
-    animation: floatGlyph 3s ease-in-out infinite;
+    animation-delay: 0s;
+}
+
+.glyphBlue {
+    color: var(--color-info);
+    animation-delay: 0.22s;
+}
+
+.glyphYellow {
+    color: var(--color-accent);
+    animation-delay: 0.44s;
 }
 
 @keyframes floatGlyph {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-10px); }
 }
 
 .title {

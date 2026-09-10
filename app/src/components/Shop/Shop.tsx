@@ -16,7 +16,7 @@ interface ShopProps {
   onBuy: (joker: Joker) => void;
   onBuyConsumable: (consumable: Consumable) => void;
   onBuyVoucher: (voucher: Voucher) => void;
-  onBuyPack: (price: number) => void;
+  onSpendMoney: (amount: number) => void;
   onAddConsumable: (consumable: Consumable) => void;
   onContinue: () => void;
 }
@@ -37,6 +37,7 @@ const PACK_DEFINITIONS: PackDefinition[] = [
 const JOKER_OFFER_COUNT = 3;
 const CONSUMABLE_OFFER_COUNT = 2;
 const VOUCHER_OFFER_COUNT = 1;
+const REROLL_BASE_COST = 5;
 
 export function Shop({
   money,
@@ -46,30 +47,50 @@ export function Shop({
   onBuy,
   onBuyConsumable,
   onBuyVoucher,
-  onBuyPack,
+  onSpendMoney,
   onAddConsumable,
   onContinue,
 }: ShopProps): JSX.Element {
   const [jokerOffers, setJokerOffers] = useState<Joker[]>(() => getShopJokers(JOKER_OFFER_COUNT));
-  //* Las ofertas de Cartas Especiales y Vouchers se generan una vez al
-  //* entrar a la tienda (mismo patrón que los comodines), no tienen
-  //* botón de reroll propio todavía.
-  const [consumableOffers] = useState<Consumable[]>(() => getShopConsumables(CONSUMABLE_OFFER_COUNT));
+  //* Las ofertas de Cartas Especiales y Vouchers se generan al entrar a la tienda. Los comodines y consumibles se pueden rerollear; los vouchers no.
+  const [consumableOffers, setConsumableOffers] = useState<Consumable[]>(() => getShopConsumables(CONSUMABLE_OFFER_COUNT));
   const [voucherOffers] = useState<Voucher[]>(() => getShopVouchers(VOUCHER_OFFER_COUNT));
   const [openedPack, setOpenedPack] = useState<{
     name: string;
     cards: Consumable[];
   } | null>(null);
+  const [soldJokerIds, setSoldJokerIds] = useState<string[]>([]);
+  const [soldConsumableIds, setSoldConsumableIds] = useState<string[]>([]);
+  const [soldPackIds, setSoldPackIds] = useState<string[]>([]);
+  const [rerollCount, setRerollCount] = useState(0);
 
   const consumablesFull = consumables.length >= maxConsumableSlots;
+  const rerollCost = REROLL_BASE_COST + rerollCount;
 
   const reroll = (): void => {
+    if (money < rerollCost) return;
+    onSpendMoney(rerollCost);
     setJokerOffers(getShopJokers(JOKER_OFFER_COUNT));
+    setConsumableOffers(getShopConsumables(CONSUMABLE_OFFER_COUNT));
+    setSoldJokerIds([]);
+    setSoldConsumableIds([]);
+    setRerollCount((count) => count + 1);
+  };
+
+  const buyJoker = (joker: Joker): void => {
+    onBuy(joker);
+    setSoldJokerIds((prev) => [...prev, joker.id]);
+  };
+
+  const buyConsumable = (consumable: Consumable): void => {
+    onBuyConsumable(consumable);
+    setSoldConsumableIds((prev) => [...prev, consumable.id]);
   };
 
   //* Comprar un sobre: descuenta el dinero y abre el modal con sus cartas
   const openPack = (pack: PackDefinition): void => {
-    onBuyPack(pack.price);
+    onSpendMoney(pack.price);
+    setSoldPackIds((prev) => [...prev, pack.id]);
     const cards =
       pack.kind === "arcana" ? getArcanaPack(3) : getCelestialPack(3);
     setOpenedPack({ name: pack.name, cards });
@@ -86,31 +107,32 @@ export function Shop({
         <h2 className={styles.title}>Shop</h2>
       </div>
 
-      {/* ---------------- Comodines ---------------- */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h3 className={styles.sectionTitle}>Comodines</h3>
         </div>
 
         <div className={styles.offers}>
-          {jokerOffers.map((joker) => (
-            <div key={joker.id} className={styles.offerCard}>
-              <h3 className={styles.jokerName}>{joker.name}</h3>
-              <p className={styles.jokerDescription}>{joker.description}</p>
-              <button
-                type="button"
-                className={styles.buyButton}
-                onClick={() => onBuy(joker)}
-                disabled={money < joker.price}
-              >
-                Buy ${joker.price}
-              </button>
-            </div>
-          ))}
+          {jokerOffers.map((joker) => {
+            const sold = soldJokerIds.includes(joker.id);
+            return (
+              <div key={joker.id} className={styles.offerCard}>
+                <h3 className={styles.jokerName}>{joker.name}</h3>
+                <p className={styles.jokerDescription}>{joker.description}</p>
+                <button
+                  type="button"
+                  className={styles.buyButton}
+                  onClick={() => buyJoker(joker)}
+                  disabled={sold || money < joker.price}
+                >
+                  {sold ? "Comprado" : `Buy $${joker.price}`}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* ---------------- Cartas Especiales (Tarot / Planeta) ---------------- */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h3 className={styles.sectionTitle}>Cartas Especiales</h3>
@@ -119,11 +141,12 @@ export function Shop({
         <div className={styles.offers}>
           {consumableOffers.map((consumable) => {
             const price = getConsumablePrice(consumable, vouchers);
+            const sold = soldConsumableIds.includes(consumable.id);
             return (
               <div key={consumable.id} className={styles.offerCard}>
                 <span
                   className={styles.rarity}
-                  style={{ color: consumable.kind === "tarot" ? "#c1121f" : "#4c8fd1" }}
+                  style={{ color: consumable.kind === "tarot" ? "var(--color-danger)" : "var(--color-info)" }}
                 >
                   {consumable.kind === "tarot" ? "Tarot" : "Planeta"}
                 </span>
@@ -132,10 +155,10 @@ export function Shop({
                 <button
                   type="button"
                   className={styles.buyButton}
-                  onClick={() => onBuyConsumable(consumable)}
-                  disabled={consumablesFull || money < price}
+                  onClick={() => buyConsumable(consumable)}
+                  disabled={sold || consumablesFull || money < price}
                 >
-                  {consumablesFull ? "Sin hueco" : `Buy $${price}`}
+                  {sold ? "Comprado" : consumablesFull ? "Sin hueco" : `Buy $${price}`}
                 </button>
               </div>
             );
@@ -143,34 +166,36 @@ export function Shop({
         </div>
       </section>
 
-      {/* ---------------- Sobres (Booster Packs) ---------------- */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h3 className={styles.sectionTitle}>Sobres</h3>
         </div>
 
         <div className={styles.offers}>
-          {PACK_DEFINITIONS.map((pack) => (
-            <div key={pack.id} className={styles.offerCard}>
-              <span className={styles.rarity} style={{ color: "#e3b23c" }}>
-                Booster
-              </span>
-              <h3 className={styles.jokerName}>{pack.name}</h3>
-              <p className={styles.jokerDescription}>
-                {pack.kind === "arcana"
-                  ? "Contiene cartas de tarot. Elige 1."
-                  : "Contiene cartas de planeta. Elige 1."}
-              </p>
-              <button
-                type="button"
-                className={styles.buyButton}
-                onClick={() => openPack(pack)}
-                disabled={money < pack.price}
-              >
-                Buy ${pack.price}
-              </button>
-            </div>
-          ))}
+          {PACK_DEFINITIONS.map((pack) => {
+            const sold = soldPackIds.includes(pack.id);
+            return (
+              <div key={pack.id} className={styles.offerCard}>
+                <span className={styles.rarity} style={{ color: "var(--color-accent)" }}>
+                  Booster
+                </span>
+                <h3 className={styles.jokerName}>{pack.name}</h3>
+                <p className={styles.jokerDescription}>
+                  {pack.kind === "arcana"
+                    ? "Contiene cartas de tarot. Elige 1."
+                    : "Contiene cartas de planeta. Elige 1."}
+                </p>
+                <button
+                  type="button"
+                  className={styles.buyButton}
+                  onClick={() => openPack(pack)}
+                  disabled={sold || consumablesFull || money < pack.price}
+                >
+                  {sold ? "Comprado" : consumablesFull ? "Sin hueco" : `Buy $${pack.price}`}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -184,7 +209,6 @@ export function Shop({
         />
       )}
 
-      {/* ---------------- Vouchers ---------------- */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h3 className={styles.sectionTitle}>Vouchers</h3>
@@ -212,8 +236,13 @@ export function Shop({
       </section>
 
       <div className={styles.actions}>
-        <button type="button" className={styles.rerollButton} onClick={reroll}>
-          Reroll Comodines
+        <button
+          type="button"
+          className={styles.rerollButton}
+          onClick={reroll}
+          disabled={money < rerollCost}
+        >
+          Reroll (${rerollCost})
         </button>
         <button type="button" className={styles.continueButton} onClick={onContinue}>
           Next Round

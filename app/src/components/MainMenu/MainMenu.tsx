@@ -3,11 +3,9 @@ import styles from "./MainMenu.module.css";
 import type { MenuOption } from "../../types/game";
 import type { Suit } from "../../types/card"
 import type { DeckDefinition, DeckId } from "../../types/deck";
-import type { Joker } from "../../types/joker";
 import { DeckSelectPanel } from "../DeckSelectPanel/DeckSelectPanel"
 import { RulesPanel } from "../RulesPanel/RulesPanel"
 import { ThemeSelector } from "../ThemeSelector/ThemeSelector"
-import { getShopJokers } from "../../logic/joker";
 
 interface MenuItem {
   label: string;
@@ -30,7 +28,11 @@ const MENU_ITEMS: MenuItem[] = [
   { label: "Rules", option: "rules", suit: "hearts", hint: "How cards are scored" },
 ];
 
-const FAN_CARD_COUNT = 4;
+const FAN_CARDS = [
+  { id: "fan-joker", image: "/caraJoker.png" },
+  { id: "fan-tarot", image: "/tarot.png" },
+  { id: "fan-planeta", image: "/planeta.png" },
+];
 
 interface MainMenuProps {
   onSelect?: (option: MenuOption, deckId?: DeckId) => void;
@@ -40,8 +42,6 @@ export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
   const [active, setActive] = useState<MenuOption | null>(null);
   const [showDeckPanel, setShowDeckPanel] = useState(false);
   const [showRulesPanel, setShowRulesPanel] = useState(false);
-  // Se eligen una sola vez al montar el menú, no en cada render.
-  const [fanJokers] = useState<Joker[]>(() => getShopJokers(FAN_CARD_COUNT));
 
   const handleSelect = (option: MenuOption): void => {
     setActive(option);
@@ -78,9 +78,9 @@ export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
     <div className={styles.menuRoot}>
       <div className={styles.stage}>
         <div className={styles.fan}>
-          {fanJokers.map((joker, i) => (
-            <div key={joker.id} className={`${styles.fanCard} ${styles[`fanCardC${i}`]}`}>
-              <span>{joker.name}</span>
+          {FAN_CARDS.map((card, i) => (
+            <div key={card.id} className={`${styles.fanCard} ${styles[`fanCardC${i}`]}`}>
+              <img src={card.image} alt="" className={styles.fanCardImage} />
             </div>
           ))}
         </div>

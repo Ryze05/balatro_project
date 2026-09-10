@@ -401,11 +401,11 @@ export function useGameState() {
     });
   }, []);
 
-  //* Comprar un sobre en la tienda
-  const buyPack = useCallback((price: number) => {
+  //* Gastar dinero (sobres, reroll de tienda, etc.)
+  const spendMoney = useCallback((amount: number) => {
     setGameState((prev) => {
-      if (prev.money < price) return prev;
-      return { ...prev, money: prev.money - price };
+      if (prev.money < amount) return prev;
+      return { ...prev, money: prev.money - amount };
     });
   }, []);
 
@@ -425,7 +425,7 @@ export function useGameState() {
     addConsumable,
     applyConsumable,
     buyVoucher,
-    buyPack,
+    spendMoney,
     reorderJokers,
     advanceToNextBlind,
     setGamePhase,

@@ -27,7 +27,11 @@ export function GameOverPanel({
   return (
     <div className={styles.root}>
       <div className={styles.panel}>
-        <span className={styles.glyph} aria-hidden="true">🂠</span>
+        <div className={styles.glyphRow} aria-hidden="true">
+          <span className={`${styles.glyph} ${styles.glyphRed}`}>🂠</span>
+          <span className={`${styles.glyph} ${styles.glyphBlue}`}>🂠</span>
+          <span className={`${styles.glyph} ${styles.glyphYellow}`}>🂠</span>
+        </div>
 
         <h1 className={styles.title}>Game Over</h1>
         <p className={styles.subtitle}>
