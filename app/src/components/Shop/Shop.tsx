@@ -5,7 +5,7 @@ import type { Consumable } from "../../types/consumable";
 import type { Voucher } from "../../types/voucher";
 import { getShopJokers } from "../../logic/joker";
 import { getShopConsumables, getArcanaPack, getCelestialPack } from "../../logic/consumables";
-import { getShopVouchers, getConsumablePrice, hasVoucher } from "../../logic/vouchers";
+import { getShopVouchers, getConsumablePrice, getJokerPrice, hasVoucher } from "../../logic/vouchers";
 import PackModal from "../PackModal/PackModal";
 
 interface ShopProps {
@@ -89,7 +89,7 @@ export function Shop({
 
   //* Comprar un sobre: descuenta el dinero y abre el modal con sus cartas
   const openPack = (pack: PackDefinition): void => {
-    onSpendMoney(pack.price);
+    onSpendMoney(getJokerPrice(pack.price, vouchers));
     setSoldPackIds((prev) => [...prev, pack.id]);
     const cards =
       pack.kind === "arcana" ? getArcanaPack(3) : getCelestialPack(3);
@@ -115,6 +115,7 @@ export function Shop({
         <div className={styles.offers}>
           {jokerOffers.map((joker) => {
             const sold = soldJokerIds.includes(joker.id);
+            const price = getJokerPrice(joker.price, vouchers);
             return (
               <div key={joker.id} className={styles.offerCard}>
                 <h3 className={styles.jokerName}>{joker.name}</h3>
@@ -123,9 +124,9 @@ export function Shop({
                   type="button"
                   className={styles.buyButton}
                   onClick={() => buyJoker(joker)}
-                  disabled={sold || money < joker.price}
+                  disabled={sold || money < price}
                 >
-                  {sold ? "Comprado" : `Comprar $${joker.price}`}
+                  {sold ? "Comprado" : `Comprar $${price}`}
                 </button>
               </div>
             );
@@ -174,6 +175,7 @@ export function Shop({
         <div className={styles.offers}>
           {PACK_DEFINITIONS.map((pack) => {
             const sold = soldPackIds.includes(pack.id);
+            const price = getJokerPrice(pack.price, vouchers);
             return (
               <div key={pack.id} className={styles.offerCard}>
                 <span className={styles.rarity} style={{ color: "var(--color-accent)" }}>
@@ -189,9 +191,9 @@ export function Shop({
                   type="button"
                   className={styles.buyButton}
                   onClick={() => openPack(pack)}
-                  disabled={sold || consumablesFull || money < pack.price}
+                  disabled={sold || consumablesFull || money < price}
                 >
-                  {sold ? "Comprado" : consumablesFull ? "Sin hueco" : `Comprar $${pack.price}`}
+                  {sold ? "Comprado" : consumablesFull ? "Sin hueco" : `Comprar $${price}`}
                 </button>
               </div>
             );
