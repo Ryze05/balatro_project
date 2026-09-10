@@ -1,15 +1,12 @@
 .root {
-    max-height: 100vh;
+    flex: 1;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    background:
-        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
-    padding: 32px 20px;
+    font-family: var(--font-ui);
+    padding: var(--space-6) 20px;
     box-sizing: border-box;
 }
 
@@ -21,12 +18,44 @@
 
 .topBar {
     width: 100%;
-    max-width: 720px;
+    max-width: none;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 20px;
     flex-wrap: wrap;
+}
+
+.consumableBar {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin: 12px 0;
+    padding: 10px;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.targetHint {
+    font-size: 12px;
+    color: var(--color-accent);
+    font-weight: 700;
+}
+
+.cancelTarget {
+    margin-left: 8px;
+    background: transparent;
+    border: 2px solid var(--color-border);
+    color: var(--color-text-muted);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-family: inherit;
+    cursor: pointer;
 }
 
 .counters {
@@ -37,10 +66,10 @@
 .counter {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 12px;
-    color: #8fa89a;
-    background: #14181b;
-    border: 2px solid #2b322f;
-    border-radius: 8px;
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
     padding: 6px 10px;
 }
 
@@ -48,10 +77,10 @@
     margin-top: 18px;
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 14px;
-    color: #8fd18f;
-    background: #14181b;
-    border: 2px solid #2b322f;
-    border-radius: 8px;
+    color: var(--color-success);
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
     padding: 8px 16px;
     animation: fadeIn 0.2s ease;
 }
@@ -71,7 +100,7 @@
     align-items: flex-end;
     flex-wrap: wrap;
     max-width: 820px;
-    margin: 32px 0 44px;
+    margin: var(--space-6) 0 44px;
     /* negative margin lets the cards overlap slightly like a real hand,
        flex-wrap keeps it usable on narrow screens */
     row-gap: 28px;
@@ -84,16 +113,14 @@
 
 .card {
     position: relative;
-    width: 76px;
-    height: 108px;
+    width: 94px;
+    height: 132px;
     border-radius: 9px;
     background:
         radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 40%),
-        linear-gradient(160deg, #fffdf7 0%, #efe6d0 100%);
-    border: 1.5px solid rgba(27, 31, 35, 0.55);
-    box-shadow:
-        0 3px 0 rgba(0, 0, 0, 0.28),
-        0 8px 16px rgba(0, 0, 0, 0.45);
+        linear-gradient(160deg, var(--color-card) 0%, var(--color-card-shadow) 100%);
+    border: 1.5px solid color-mix(in srgb, var(--color-card-text) 55%, transparent);
+    box-shadow: var(--shadow-card);
     padding: 6px;
     display: flex;
     align-items: center;
@@ -112,9 +139,9 @@
 
 .cardSelected {
     transform: translateY(-26px);
-    border-color: #e3b23c;
+    border-color: var(--color-accent);
     box-shadow:
-        0 0 0 2px #e3b23c,
+        0 0 0 2px var(--color-accent),
         0 3px 0 rgba(0, 0, 0, 0.28),
         0 16px 26px rgba(0, 0, 0, 0.55);
 }
@@ -143,26 +170,26 @@
 }
 
 .cardRank {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
 }
 
 .cardCornerSuit {
-    font-size: 12px;
+    font-size: 13px;
     margin-top: 1px;
 }
 
 .cardCenterSuit {
-    font-size: 32px;
+    font-size: 36px;
     line-height: 1;
 }
 
 .cardRed {
-    color: #c1121f;
+    color: var(--color-danger);
 }
 
 .cardBlack {
-    color: #1b1f23;
+    color: var(--color-card-text);
 }
 
 .actions {
@@ -183,12 +210,12 @@
 
 .discardButton {
     background: transparent;
-    border: 2px solid #2b322f;
-    color: #b7c2bb;
+    border: 2px solid var(--color-border);
+    color: var(--color-text-muted);
 }
 
 .discardButton:hover:not(:disabled) {
-    border-color: #6b7570;
+    border-color: var(--color-text-subtle);
 }
 
 .discardButton:disabled,
@@ -198,9 +225,9 @@
 }
 
 .playButton {
-    background: #c1121f;
-    border: 2px solid #c1121f;
-    color: #f5ede0;
+    background: var(--color-danger);
+    border: 2px solid var(--color-danger);
+    color: var(--color-text);
 }
 
 .playButton:hover:not(:disabled) {
@@ -210,16 +237,16 @@
 .devWinButton {
     margin-top: 24px;
     padding: 8px 14px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 11px;
-    color: #6b7570;
+    color: var(--color-text-subtle);
     background: transparent;
-    border: 1px dashed #2b322f;
+    border: 1px dashed var(--color-border);
     cursor: pointer;
 }
 
 .devWinButton:hover {
-    color: #8fa89a;
-    border-color: #6b7570;
+    color: var(--color-text-muted);
+    border-color: var(--color-text-subtle);
 }

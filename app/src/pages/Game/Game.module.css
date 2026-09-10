@@ -6,23 +6,33 @@
 }
 
 .sidebarColumn {
-    width: 33.333%;
+    width: 20%;
     flex-shrink: 0;
     height: 100vh;
 }
 
 .mainColumn {
-    width: 66.666%;
-    flex-grow: 1;
+    flex: 1;
     min-width: 0;
     height: 100vh;
     overflow-y: auto;
-    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
     box-sizing: border-box;
+    background: var(--gradient-bg);
 }
 
-/* En pantallas estrechas, el sidebar pasa a ir arriba en vez de al lado */
-@media (max-width: 720px) {
+.screenArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+}
+
+/* En portrait móvil el RotatePrompt bloquea la partida y pide girar. */
+@media (max-width: 720px) and (orientation: portrait) {
     .layout {
         flex-direction: column;
     }
@@ -34,5 +44,15 @@
 
     .sidebarColumn {
         max-height: 320px;
+        overflow-y: auto;
+    }
+}
+
+/* Landscape móvil: sidebar estrecho pero con espacio suficiente para sus datos. */
+@media (max-width: 900px) and (orientation: landscape) {
+    .sidebarColumn {
+        width: 25%;
+        max-height: 100vh;
+        overflow-y: auto;
     }
 }

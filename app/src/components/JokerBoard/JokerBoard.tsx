@@ -1,10 +1,14 @@
 import { useState, type DragEvent, type JSX } from "react";
 import styles from "./JokerBoard.module.css";
 import type { Joker } from "../../types/joker";
+import type { Consumable } from "../../types/consumable";
 
 interface JokerBoardProps {
   jokers: Joker[];
+  consumables: Consumable[];
+  maxConsumableSlots: number;
   onReorder: (fromIndex: number, toIndex: number) => void;
+  onUseConsumable: (consumable: Consumable) => void;
 }
 
 const RARITY_LABEL: Record<Joker["rarity"], string> = {
@@ -14,23 +18,25 @@ const RARITY_LABEL: Record<Joker["rarity"], string> = {
   legendary: "Legendario",
 };
 
-//* Huecos de Consumibles (Cartas de Tarot / Planeta). Por ahora es solo
-//* maquetación: no hay tipo, ni estado, ni lógica de compra o uso.
-//* Se deja el espacio preparado al lado de los comodines para cuando
-//* se implemente el sistema de consumibles en la siguiente parte.
-const CONSUMABLE_SLOT_COUNT = 2;
-
-export function JokerBoard({ jokers, onReorder }: JokerBoardProps): JSX.Element {
+export function JokerBoard({
+  jokers,
+  consumables,
+  maxConsumableSlots,
+  onReorder,
+  onUseConsumable,
+}: JokerBoardProps): JSX.Element {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
 
   const handleDragStart = (index: number) => (e: DragEvent<HTMLLIElement>) => {
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
   };
 
   const handleDragOver = (index: number) => (e: DragEvent<HTMLLIElement>) => {
     e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
     if (index !== overIndex) setOverIndex(index);
   };
 
@@ -46,16 +52,6 @@ export function JokerBoard({ jokers, onReorder }: JokerBoardProps): JSX.Element 
   const handleDragEnd = (): void => {
     setDraggedIndex(null);
     setOverIndex(null);
-  };
-
-  //* Al pasar la fila de comodines a horizontal, "arriba/abajo" pasa a
-  //* ser "izquierda/derecha", pero la lógica de reordenar es la misma.
-  const moveLeft = (index: number): void => {
-    if (index > 0) onReorder(index, index - 1);
-  };
-
-  const moveRight = (index: number): void => {
-    if (index < jokers.length - 1) onReorder(index, index + 1);
   };
 
   return (
@@ -74,7 +70,7 @@ export function JokerBoard({ jokers, onReorder }: JokerBoardProps): JSX.Element 
           <ul className={styles.jokerList}>
             {jokers.map((joker, index) => (
               <li
-                key={joker.id}
+                key={`${joker.id}-${index}`}
                 className={`${styles.jokerItem} ${styles[`rarity_${joker.rarity}`]} ${
                   draggedIndex === index ? styles.dragging : ""
                 } ${
@@ -88,37 +84,24 @@ export function JokerBoard({ jokers, onReorder }: JokerBoardProps): JSX.Element 
                 onDrop={handleDrop(index)}
                 onDragEnd={handleDragEnd}
               >
-                <div className={styles.cardHeader}>
-                  <span className={styles.dragHandle} aria-hidden="true">⠿</span>
-                  <span className={styles.cardGlyph} aria-hidden="true">🃏</span>
-                  <span className={styles.positionBadge}>#{index + 1}</span>
+                <div className={styles.jokerArtwork}>
+                  <span className={styles.jokerLabelTop} aria-hidden="true">
+                    {"JOKER".split("").map((letter, letterIndex) => (
+                      <span key={letterIndex}>{letter}</span>
+                    ))}
+                  </span>
+                  <img src="/caraJoker.png" alt="" className={styles.jokerImage} />
+                  <span className={styles.jokerLabelBottom} aria-hidden="true">
+                    {"JOKER".split("").map((letter, letterIndex) => (
+                      <span key={letterIndex}>{letter}</span>
+                    ))}
+                  </span>
                 </div>
 
                 <div className={styles.cardBody}>
                   <span className={styles.jokerName}>{joker.name}</span>
                   <span className={styles.jokerRarity}>{RARITY_LABEL[joker.rarity]}</span>
                   <p className={styles.jokerDescription}>{joker.description}</p>
-                </div>
-
-                <div className={styles.reorderButtons}>
-                  <button
-                    type="button"
-                    className={styles.reorderButton}
-                    onClick={() => moveLeft(index)}
-                    disabled={index === 0}
-                    aria-label={`Mover ${joker.name} a la izquierda`}
-                  >
-                    ◀
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.reorderButton}
-                    onClick={() => moveRight(index)}
-                    disabled={index === jokers.length - 1}
-                    aria-label={`Mover ${joker.name} a la derecha`}
-                  >
-                    ▶
-                  </button>
                 </div>
               </li>
             ))}
@@ -127,21 +110,45 @@ export function JokerBoard({ jokers, onReorder }: JokerBoardProps): JSX.Element 
       </div>
 
       {/* ------------------------------------------------------------ */}
-      {/* Espacio de Consumibles (Tarot / Planeta). De momento solo hay  */}
-      {/* huecos vacíos: sin datos, sin estado y sin lógica de uso.      */}
-      {/* Se conecta aquí porque visualmente van al lado de los          */}
-      {/* comodines, igual que en Balatro.                               */}
+      {/* Consumibles (Tarot / Planeta): las cartas que tienes, listas  */}
+      {/* para usar. Al pulsarlas se activa el uso (con carta objetivo  */}
+      {/* si es un tarot de carta, coordinado desde Game.tsx).          */}
       {/* ------------------------------------------------------------ */}
       <div className={styles.consumableArea}>
         <div className={styles.areaHeader}>
           <span className={styles.areaTitle}>Consumibles</span>
-          <span className={styles.areaCount}>0/{CONSUMABLE_SLOT_COUNT}</span>
+          <span className={styles.areaCount}>
+            {consumables.length}/{maxConsumableSlots}
+          </span>
         </div>
 
         <div className={styles.consumableSlots}>
-          {Array.from({ length: CONSUMABLE_SLOT_COUNT }).map((_, i) => (
-            <div key={i} className={styles.consumableSlot}>
-              <span className={styles.consumableGlyph} aria-hidden="true">🔮</span>
+          {consumables.map((consumable, index) => (
+            <button
+              key={`${consumable.id}-${index}`}
+              type="button"
+              className={`${styles.consumableSlot} ${styles.consumableSlotFilled} ${consumable.kind === "tarot" ? styles.consumableTarot : styles.consumablePlanet}`}
+              onClick={() => onUseConsumable(consumable)}
+            >
+              <img
+                src={consumable.kind === "tarot" ? "/tarot.png" : "/planeta.png"}
+                alt=""
+                className={styles.consumableImage}
+              />
+              <span className={styles.consumableName}>{consumable.name}</span>
+              <span className={styles.consumableDescription}>
+                {consumable.description}
+              </span>
+            </button>
+          ))}
+
+          {Array.from({
+            length: Math.max(0, maxConsumableSlots - consumables.length),
+          }).map((_, i) => (
+            <div key={`empty-${i}`} className={styles.consumableSlot}>
+              <span className={styles.consumableGlyph} aria-hidden="true">
+                ·
+              </span>
             </div>
           ))}
         </div>

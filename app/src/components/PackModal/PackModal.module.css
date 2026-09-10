@@ -1,0 +1,114 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: var(--space-5);
+}
+
+.modal {
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    max-width: 520px;
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.title {
+    color: var(--color-accent);
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.closeButton {
+    background: transparent;
+    border: none;
+    color: var(--color-text-subtle);
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+
+.card {
+    width: 140px;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: center;
+    font-family: inherit;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.card:hover:not(:disabled) {
+    transform: translateY(-3px);
+    border-color: var(--color-accent);
+}
+
+.card:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.kind {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.cardName {
+    color: var(--color-text);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.cardDescription {
+    color: var(--color-text-muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.warning {
+    color: var(--color-danger);
+    font-size: 12px;
+    text-align: center;
+    margin: 0 0 14px;
+}
+
+.skipButton {
+    width: 100%;
+    padding: 10px 0;
+    background: transparent;
+    border: 2px solid var(--color-border);
+    color: var(--color-text-muted);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}

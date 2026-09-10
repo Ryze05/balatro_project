@@ -1,14 +1,11 @@
 .root {
-    min-height: 100vh;
+    flex: 1;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background:
-        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
-    padding: 48px 20px;
+    font-family: var(--font-ui);
+    padding: var(--space-7) 20px;
     box-sizing: border-box;
 }
 
@@ -25,31 +22,51 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    background: #14181b;
-    border: 2px solid #2b322f;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
     border-radius: 14px;
     padding: 36px 28px 28px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    box-shadow: var(--shadow-panel);
+}
+
+.glyphRow {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 4px;
 }
 
 .glyph {
     font-size: 52px;
-    color: #c1121f;
-    margin-bottom: 4px;
-    animation: floatGlyph 3s ease-in-out infinite;
+    animation: floatGlyph 1.9s ease-in-out infinite;
+}
+
+.glyphRed {
+    color: var(--color-danger);
+    animation-delay: 0s;
+}
+
+.glyphBlue {
+    color: var(--color-info);
+    animation-delay: 0.22s;
+}
+
+.glyphYellow {
+    color: var(--color-accent);
+    animation-delay: 0.44s;
 }
 
 @keyframes floatGlyph {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-10px); }
 }
 
 .title {
+    font-family: var(--font-display);
     font-weight: 900;
-    font-size: clamp(32px, 7vw, 42px);
-    letter-spacing: 2px;
-    color: #e3b23c;
-    text-shadow: 3px 3px 0 #7a1620, 6px 6px 0 rgba(0, 0, 0, 0.5);
+    font-size: clamp(18px, 4vw, 24px);
+    letter-spacing: 1px;
+    color: var(--color-accent);
+    text-shadow: 3px 3px 0 var(--color-danger), 6px 6px 0 rgba(0, 0, 0, 0.5);
     margin: 10px 0 8px;
 }
 
@@ -57,7 +74,7 @@
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 12px;
     letter-spacing: 1px;
-    color: #8fa89a;
+    color: var(--color-text-muted);
     margin: 0 0 28px;
 }
 
@@ -74,8 +91,8 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    background: #1b1f23;
-    border: 2px solid #2b322f;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 10px;
     padding: 12px 8px;
 }
@@ -85,13 +102,13 @@
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #6b7570;
+    color: var(--color-text-subtle);
 }
 
 .statValue {
     font-weight: 900;
     font-size: 20px;
-    color: #f5ede0;
+    color: var(--color-text);
     font-variant-numeric: tabular-nums;
 }
 
@@ -99,7 +116,7 @@
     font-family: "Courier New", ui-monospace, monospace;
     font-weight: 700;
     font-size: 20px;
-    color: #8fd18f;
+    color: var(--color-success);
 }
 
 .jokerRow {
@@ -116,19 +133,19 @@
     font-size: 12px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #e3b23c;
+    color: var(--color-accent);
 }
 
 .emptyText {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 12px;
-    color: #6b7570;
+    color: var(--color-text-subtle);
     margin: 0;
 }
 
 .jokerChips {
     display: flex;
-    gap: 8px;
+    gap: var(--space-2);
     flex-wrap: wrap;
     justify-content: center;
 }
@@ -136,19 +153,19 @@
 .jokerChip {
     font-size: 11px;
     font-weight: 700;
-    color: #f5ede0;
-    background: #1b1f23;
-    border: 2px solid #2b322f;
+    color: var(--color-text);
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 999px;
     padding: 5px 12px;
 }
 
-.rarity_common { border-color: #6b7570; }
-.rarity_uncommon { border-color: #2f5f8f; }
-.rarity_rare { border-color: #7a1620; }
+.rarity_common { border-color: var(--color-text-subtle); }
+.rarity_uncommon { border-color: var(--color-info); }
+.rarity_rare { border-color: var(--color-danger); }
 .rarity_legendary {
-    border-color: #a5761f;
-    box-shadow: 0 0 0 1px #e3b23c;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent);
 }
 
 .actions {
@@ -171,18 +188,18 @@
 
 .menuButton {
     background: transparent;
-    border: 2px solid #2b322f;
-    color: #b7c2bb;
+    border: 2px solid var(--color-border);
+    color: var(--color-text-muted);
 }
 
 .menuButton:hover {
-    border-color: #6b7570;
+    border-color: var(--color-text-subtle);
 }
 
 .restartButton {
-    background: #c1121f;
-    border: 2px solid #c1121f;
-    color: #f5ede0;
+    background: var(--color-danger);
+    border: 2px solid var(--color-danger);
+    color: var(--color-text);
 }
 
 .restartButton:hover {

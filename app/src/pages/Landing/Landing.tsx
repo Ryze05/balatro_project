@@ -10,7 +10,7 @@ export default function Landing() {
           Un juego de póker y construcción de mazo, proyecto de estudio.
         </p>
         <Link to="/game" className={styles.playLink}>
-          Ir al Menu
+          Ir al Menú
         </Link>
       </div>
  

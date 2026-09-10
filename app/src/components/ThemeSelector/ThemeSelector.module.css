@@ -1,0 +1,41 @@
+.root {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.label {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+}
+
+.options {
+    display: flex;
+    gap: 6px;
+}
+
+.option {
+    padding: 8px 14px;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.option:hover {
+    border-color: var(--color-border-strong);
+}
+
+.optionActive {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+    background: var(--color-surface-raised);
+}
