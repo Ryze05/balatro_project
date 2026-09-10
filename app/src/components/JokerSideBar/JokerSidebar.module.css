@@ -1,15 +1,15 @@
 .sidebar {
     width: 100%;
     min-height: 100vh;
-    background: #14181b;
-    border-right: 2px solid #2b322f;
-    padding: 24px 18px;
+    background: var(--color-surface);
+    border-right: 2px solid var(--color-border);
+    padding: var(--space-5) 18px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: var(--font-ui);
 }
 
 .sidebar *,
@@ -28,9 +28,9 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background: #14181b;
-    border: 2px solid #2b322f;
-    border-radius: 12px;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
     padding: 14px 16px 16px;
     position: relative;
     overflow: hidden;
@@ -45,9 +45,9 @@
     height: 4px;
 }
 
-.scorePanel_small::before { background: #8fa89a; }
-.scorePanel_big::before { background: #4c8fd1; }
-.scorePanel_boss::before { background: #c1121f; }
+.scorePanel_small::before { background: var(--color-text-subtle); }
+.scorePanel_big::before { background: var(--color-info); }
+.scorePanel_boss::before { background: var(--color-danger); }
 
 .scorePanelHeader {
     display: flex;
@@ -62,13 +62,13 @@
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #6b7570;
+    color: var(--color-text-subtle);
 }
 
 .scoreBlindName {
     font-weight: 800;
     font-size: 15px;
-    color: #f5ede0;
+    color: var(--color-text);
 }
 
 .scoreMain {
@@ -76,11 +76,11 @@
     flex-direction: column;
     align-items: center;
     gap: 2px;
-    background: linear-gradient(160deg, #2f5f8f 0%, #1d3b57 100%);
-    border: 2px solid #1b1f23;
+    background: var(--color-score);
+    border: 2px solid var(--color-surface-raised);
     border-radius: 10px;
     padding: 10px 0 12px;
-    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
 }
 
 .scoreMainLabel {
@@ -88,13 +88,14 @@
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(245, 237, 224, 0.65);
+    color: var(--color-text);
+    opacity: 0.65;
 }
 
 .scoreMainValue {
     font-weight: 900;
     font-size: 26px;
-    color: #f5ede0;
+    color: var(--color-text);
     text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
     font-variant-numeric: tabular-nums;
 }
@@ -102,15 +103,15 @@
 .scoreProgressTrack {
     width: 100%;
     height: 10px;
-    background: #0f1214;
-    border: 2px solid #2b322f;
+    background: var(--color-surface-muted);
+    border: 2px solid var(--color-border);
     border-radius: 999px;
     overflow: hidden;
 }
 
 .scoreProgressFill {
     height: 100%;
-    background: linear-gradient(90deg, #8fd18f, #e3b23c);
+    background: var(--color-accent);
     transition: width 0.25s ease;
 }
 
@@ -118,9 +119,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(160deg, #7a1620 0%, #4d0d14 100%);
-    border: 2px solid #1b1f23;
-    border-radius: 8px;
+    background: var(--color-danger);
+    border: 2px solid var(--color-surface-raised);
+    border-radius: var(--radius-md);
     padding: 6px 12px;
     box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
 }
@@ -130,13 +131,14 @@
     font-size: 10px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: rgba(245, 237, 224, 0.7);
+    color: var(--color-text);
+    opacity: 0.7;
 }
 
 .scoreTargetValue {
     font-weight: 800;
     font-size: 15px;
-    color: #f5ede0;
+    color: var(--color-text);
 }
 
 /* ---------------------------------------------------------------- */
@@ -153,8 +155,8 @@
     gap: 6px;
     text-align: center;
     font-family: "Courier New", ui-monospace, monospace;
-    background: #1b1f23;
-    border: 2px solid #2b322f;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 10px;
     padding: 12px 10px;
 }
@@ -162,23 +164,23 @@
 .previewHint {
     font-size: 11px;
     letter-spacing: 0.5px;
-    color: #6b7570;
+    color: var(--color-text-subtle);
 }
 
 .previewWarning {
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.5px;
-    color: #c1121f;
+    color: var(--color-danger);
 }
 
 .previewHandType {
     font-size: 10px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #8fa89a;
-    background: #14181b;
-    border: 2px solid #2b322f;
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
     border-radius: 999px;
     padding: 4px 12px;
 }
@@ -186,20 +188,20 @@
 .previewFormula {
     font-size: 15px;
     font-weight: 700;
-    color: #f5ede0;
+    color: var(--color-text);
 }
 
 .previewChips {
-    color: #8fd18f;
+    color: var(--color-success);
 }
 
 .previewMultiplier {
-    color: #e3b23c;
+    color: var(--color-accent);
 }
 
 .previewTotal {
     font-size: 17px;
-    color: #f5ede0;
+    color: var(--color-text);
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
 }
 
@@ -211,25 +213,26 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #1b1f23;
-    border: 2px solid #2b322f;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 10px;
     padding: 14px 16px;
 }
 
 .moneyLabel {
-    font-family: "Courier New", ui-monospace, monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: #6b7570;
+    color: var(--color-text-muted);
 }
 
 .moneyValue {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 20px;
     font-weight: 700;
-    color: #8fd18f;
+    color: var(--color-success);
 }
 
 /* ---------------------------------------------------------------- */
@@ -240,8 +243,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #1b1f23;
-    border: 2px solid #2b322f;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 10px;
     padding: 12px 16px;
     font-family: inherit;
@@ -249,22 +252,22 @@
     font-size: 13px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #b7c2bb;
+    color: var(--color-text-muted);
     cursor: pointer;
     transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
 .vouchersButton:hover {
-    border-color: #e3b23c;
+    border-color: var(--color-accent);
     transform: translateY(-2px);
 }
 
 .vouchersCount {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 12px;
-    color: #e3b23c;
-    background: #14181b;
-    border: 1px solid #2b322f;
+    color: var(--color-accent);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 999px;
     padding: 2px 9px;
 }

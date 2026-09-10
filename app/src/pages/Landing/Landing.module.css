@@ -4,10 +4,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background:
-        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    background: var(--gradient-bg);
+    font-family: var(--font-ui);
     padding: 56px 20px;
     box-sizing: border-box;
 }
@@ -25,11 +23,12 @@
 }
 
 .title {
+    font-family: var(--font-display);
     font-weight: 900;
-    font-size: clamp(32px, 8vw, 48px);
-    letter-spacing: 2px;
-    color: #e3b23c;
-    text-shadow: 2px 2px 0 #7a1620, 4px 4px 0 rgba(0, 0, 0, 0.5);
+    font-size: clamp(20px, 4.5vw, 30px);
+    letter-spacing: 1px;
+    color: var(--color-accent);
+    text-shadow: 2px 2px 0 var(--color-danger), 4px 4px 0 rgba(0, 0, 0, 0.5);
     margin: 0 0 14px;
 }
 
@@ -37,7 +36,7 @@
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 13px;
     letter-spacing: 1px;
-    color: #8fa89a;
+    color: var(--color-text-muted);
     line-height: 1.6;
     margin: 0;
 }
@@ -51,9 +50,9 @@
     font-weight: 700;
     font-size: 15px;
     text-decoration: none;
-    background: #c1121f;
-    border: 2px solid #c1121f;
-    color: #f5ede0;
+    background: var(--color-danger);
+    border: 2px solid var(--color-danger);
+    color: var(--color-text);
     transition: transform 0.15s ease;
 }
 
@@ -71,15 +70,15 @@
     font-size: 11px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #6b7570;
+    color: var(--color-text-subtle);
     text-align: center;
     margin: 0 0 12px;
 }
 
 .presentationCard {
-    background: #14181b;
-    border: 2px solid #2b322f;
-    border-radius: 12px;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
     padding: 12px;
 }
 
@@ -87,9 +86,9 @@
     position: relative;
     width: 100%;
     padding-top: 56.25%; /* ratio 16:9 */
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     overflow: hidden;
-    border: 2px solid #1b1f23;
+    border: 2px solid var(--color-surface-raised);
 }
 
 .presentationFrame {

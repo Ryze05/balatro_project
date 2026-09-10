@@ -59,7 +59,7 @@ export function RulesPanel({ onClose }: RulesPanelProps): JSX.Element {
           </section>
 
           <section className={styles.section}>
-            <h3 className={styles.sectionTitle}>Cómo juegar una ronda</h3>
+            <h3 className={styles.sectionTitle}>Cómo jugar una ronda</h3>
             <p className={styles.text}>
               Cada Ciega te da un número limitado de manos y descartes. Selecciona hasta 5
               cartas de tu mano: puedes jugarlas para que se evalúen como una jugada de póker, o

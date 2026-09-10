@@ -4,11 +4,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background:
-        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
-    padding: 48px 20px;
+    background: var(--gradient-bg);
+    font-family: var(--font-ui);
+    padding: var(--space-7) 20px;
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
@@ -50,55 +48,36 @@
     left: 50%;
     width: 76px;
     height: 108px;
-    background: #f5ede0;
-    border-radius: 8px;
-    border: 2px solid #1b1f23;
+    background: var(--color-card);
+    border-radius: var(--radius-md);
+    border: 2px solid var(--color-card-text);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 2px;
-    padding: 8px;
-    font-size: 20px;
-    font-weight: 700;
-    color: #1b1f23;
-    animation: menuFloat 4.5s ease-in-out infinite;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    animation: menuFloat 1.9s ease-in-out infinite;
 }
 
-.fanCard::before {
-    content: "🃏";
-    font-size: 16px;
-    font-weight: 900;
-    line-height: 1;
-}
-
-.fanCard span {
-    line-height: 1.15;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    word-break: break-word;
+.fanCardImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .fanCardC0 {
-    transform: translateX(-130px) rotate(-20deg);
+    transform: translateX(-92px) rotate(-18deg);
     animation-delay: 0s;
 }
 
 .fanCardC1 {
-    transform: translateX(-46px) rotate(-7deg);
-    animation-delay: 0.3s;
+    transform: translateX(0) rotate(0deg);
+    animation-delay: 0.22s;
 }
 
 .fanCardC2 {
-    transform: translateX(38px) rotate(7deg);
-    animation-delay: 0.6s;
-}
-
-.fanCardC3 {
-    transform: translateX(122px) rotate(20deg);
-    animation-delay: 0.9s;
+    transform: translateX(92px) rotate(18deg);
+    animation-delay: 0.44s;
 }
 
 @keyframes menuFloat {
@@ -117,13 +96,13 @@
 }
 
 .title {
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: var(--font-display);
     font-weight: 900;
     font-stretch: condensed;
-    font-size: clamp(40px, 10vw, 58px);
-    letter-spacing: 2px;
-    color: #e3b23c;
-    text-shadow: 3px 3px 0 #7a1620, 6px 6px 0 rgba(0, 0, 0, 0.5);
+    font-size: clamp(20px, 4.5vw, 30px);
+    letter-spacing: 1px;
+    color: var(--color-accent);
+    text-shadow: 3px 3px 0 var(--color-danger), 6px 6px 0 rgba(0, 0, 0, 0.5);
     margin: 0;
 }
 
@@ -132,7 +111,7 @@
     font-size: 12px;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: #8fa89a;
+    color: var(--color-text-muted);
     margin-top: 10px;
 }
 
@@ -149,11 +128,11 @@
     align-items: center;
     gap: 14px;
     width: 100%;
-    padding: 16px 20px;
-    background: #14181b;
-    border: 2px solid #2b322f;
+    padding: var(--space-4) 20px;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
     border-radius: 10px;
-    color: #f5ede0;
+    color: var(--color-text);
     font-family: inherit;
     font-size: 18px;
     font-weight: 600;
@@ -166,8 +145,8 @@
     width: 30px;
     height: 30px;
     border-radius: 6px;
-    background: #f5ede0;
-    color: #1b1f23;
+    background: var(--color-card);
+    color: var(--color-card-text);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -179,7 +158,7 @@
     margin-left: auto;
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 11px;
-    color: #6b7570;
+    color: var(--color-text-subtle);
     font-weight: 400;
     display: none;
 }
@@ -187,38 +166,32 @@
 .menuItem:hover,
 .menuItem:focusVisible {
     transform: translateX(6px);
-    border-color: #e3b23c;
-    background: #1a201d;
+    border-color: var(--color-accent);
+    background: var(--color-surface-raised);
 }
 
 .menuItem:focusVisible {
-    outline: 2px solid #e3b23c;
+    outline: 2px solid var(--color-accent);
     outline-offset: 3px;
 }
 
 .menuItemActive {
-    border-color: #c1121f;
+    border-color: var(--color-danger);
 }
 
 .footer {
     margin-top: 36px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
 }
 
 .suitRow {
     display: flex;
-    gap: 8px;
+    gap: var(--space-2);
     font-size: 16px;
-    color: #4b534f;
-}
-
-.version {
-    font-family: "Courier New", ui-monospace, monospace;
-    font-size: 11px;
-    color: #4b534f;
-    letter-spacing: 1px;
+    color: var(--color-text-subtle);
 }
 
 @media (min-width: 480px) {

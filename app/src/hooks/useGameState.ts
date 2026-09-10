@@ -352,7 +352,7 @@ export function useGameState() {
   }, []);
 
   //* Usar consumible (tarot con carta objetivo opcional, planeta sin objetivo)
-  const useConsumable = useCallback((consumableId: string, targetCardId?: string) => {
+  const applyConsumable = useCallback((consumableId: string, targetCardId?: string) => {
     setGameState((prev) => {
       const consumable = prev.consumables.find((i) => i.id === consumableId);
       if (!consumable) return prev;
@@ -401,6 +401,14 @@ export function useGameState() {
     });
   }, []);
 
+  //* Gastar dinero (sobres, reroll de tienda, etc.)
+  const spendMoney = useCallback((amount: number) => {
+    setGameState((prev) => {
+      if (prev.money < amount) return prev;
+      return { ...prev, money: prev.money - amount };
+    });
+  }, []);
+
   //* Cambiar fase
   const setGamePhase = useCallback((phase: GamePhase) => {
     setGameState((prev) => ({ ...prev, status: phase }));
@@ -415,8 +423,9 @@ export function useGameState() {
     buyJoker,
     buyConsumable,
     addConsumable,
-    useConsumable,
+    applyConsumable,
     buyVoucher,
+    spendMoney,
     reorderJokers,
     advanceToNextBlind,
     setGamePhase,

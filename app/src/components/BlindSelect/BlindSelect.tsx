@@ -22,7 +22,7 @@ export function BlindSelect({ level, blinds, blindIndex, onPlay, onSkip }: Blind
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <span className={styles.levelLabel}>Level {level}</span>
+        <span className={styles.levelLabel}>Nivel {level}</span>
       </div>
 
       <div className={styles.row}>
@@ -35,10 +35,10 @@ export function BlindSelect({ level, blinds, blindIndex, onPlay, onSkip }: Blind
             >
               <span className={styles.blindType}>{TYPE_LABEL[blind.type]}</span>
               <span className={styles.blindName}>{blind.name}</span>
-              <span className={styles.targetLabel}>Target</span>
+              <span className={styles.targetLabel}>Objetivo</span>
               <span className={styles.targetScore}>{blind.targetScore.toLocaleString()}</span>
-              {state === "done" && <span className={styles.badge}>Cleared</span>}
-              {state === "upcoming" && <span className={styles.badge}>Locked</span>}
+              {state === "done" && <span className={styles.badge}>Superada</span>}
+              {state === "upcoming" && <span className={styles.badge}>Bloqueada</span>}
             </div>
           );
         })}
@@ -52,12 +52,12 @@ export function BlindSelect({ level, blinds, blindIndex, onPlay, onSkip }: Blind
               className={styles.skipButton}
               onClick={() => onSkip(currentBlind)}
               disabled={!currentBlind.skippable}
-              title={currentBlind.skippable ? "Skip this blind" : "Boss blinds cannot be skipped"}
+              title={currentBlind.skippable ? "Saltar esta ciega" : "La Ciega Jefe no se puede saltar"}
             >
-              Skip
+              Saltar
             </button>
             <button type="button" className={styles.playButton} onClick={() => onPlay(currentBlind)}>
-              Select Blind
+              Jugar Ciega
             </button>
           </div>
         </div>
