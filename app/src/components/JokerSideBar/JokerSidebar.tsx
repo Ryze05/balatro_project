@@ -7,6 +7,7 @@ import type { Voucher } from "../../types/voucher";
 import { evaluateHand } from "../../logic/handEvaluator";
 import { calculateScore, getFinalScore } from "../../logic/score";
 import { VouchersPanel } from "../VouchersPanel/VouchersPanel";
+import { FullscreenToggle } from "../FullscreenToggle/FullscreenToggle";
 
 interface JokerSidebarProps {
   money: number;
@@ -151,6 +152,8 @@ export function JokerSidebar({
         <span>Vouchers</span>
         <span className={styles.vouchersCount}>{vouchers.length}</span>
       </button>
+
+      <FullscreenToggle />
 
       {showVouchers && (
         <VouchersPanel vouchers={vouchers} onClose={() => setShowVouchers(false)} />
