@@ -124,8 +124,8 @@ export function JokerSidebar({
             <>
               <span className={styles.previewHandType}>
                 {HAND_LABEL[preview.handType]}
-                {(handLevels[preview.handType] ?? 1) > 1 &&
-                  ` · Nv.${handLevels[preview.handType]}`}
+                {(handLevels?.[preview.handType] ?? 1) > 1 &&
+                  ` · Nv.${handLevels?.[preview.handType]}`}
               </span>
               <span className={styles.previewFormula}>
                 <span className={styles.previewChips}>{preview.chips}</span>
