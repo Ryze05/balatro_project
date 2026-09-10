@@ -1,5 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&family=Press+Start+2P&display=swap");
+
 :root,
 [data-theme="retro-casino"] {
+  --font-ui: "Oxanium", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Press Start 2P", "Oxanium", system-ui, sans-serif;
+
   --color-bg: #0b0e10;
   --color-surface: #14181b;
   --color-surface-raised: #1b1f23;
@@ -16,6 +21,7 @@
   --color-danger: #c1121f;
   --color-success: #8fd18f;
   --color-info: #4c8fd1;
+  --color-score: #4c8fd1;
   --color-special: #9b72cf;
 
   --color-card: #fffdf7;
@@ -38,8 +44,8 @@
   --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.35);
 
   --gradient-bg:
-    radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
+    radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.5) 100%),
+    #0b0e10;
 }
 
 [data-theme="neon-night"] {
@@ -59,6 +65,7 @@
   --color-danger: #ff4f81;
   --color-success: #62e6a8;
   --color-info: #55c7ff;
+  --color-score: #3b5bdb;
   --color-special: #d27bff;
 
   --color-card: #fffaff;
@@ -81,8 +88,8 @@
   --shadow-panel: 0 8px 28px rgba(0, 0, 0, 0.45);
 
   --gradient-bg:
-    radial-gradient(ellipse at 50% 30%, #241743 0%, #0d0b16 62%),
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 2px, transparent 2px, transparent 6px);
+    radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.55) 100%),
+    #0d0b16;
 }
 
 *, *::before, *::after {

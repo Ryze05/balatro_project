@@ -5,7 +5,7 @@
     flex-direction: column;
     align-items: center;
     background: var(--gradient-bg);
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: var(--font-ui);
     padding: 56px 20px;
     box-sizing: border-box;
 }
@@ -23,9 +23,10 @@
 }
 
 .title {
+    font-family: var(--font-display);
     font-weight: 900;
-    font-size: clamp(32px, 8vw, 48px);
-    letter-spacing: 2px;
+    font-size: clamp(20px, 4.5vw, 30px);
+    letter-spacing: 1px;
     color: var(--color-accent);
     text-shadow: 2px 2px 0 var(--color-danger), 4px 4px 0 rgba(0, 0, 0, 0.5);
     margin: 0 0 14px;

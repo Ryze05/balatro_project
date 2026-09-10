@@ -19,7 +19,7 @@ export function DeckSelectPanel({ onConfirm, onCancel }: DeckSelectPanelProps): 
     return (
         <div className={styles.overlay}>
             <div className={styles.panel}>
-                <h2 className={styles.title}>Choose your deck</h2>
+                <h2 className={styles.title}>Elige tu baraja</h2>
 
                 <div className={styles.selector}>
                     <button
@@ -27,7 +27,7 @@ export function DeckSelectPanel({ onConfirm, onCancel }: DeckSelectPanelProps): 
                         className={styles.arrow}
                         onClick={goPrev}
                         disabled={!hasMultiple}
-                        aria-label="Previous deck"
+                        aria-label="Baraja anterior"
                     >
                         ‹
                     </button>
@@ -47,7 +47,7 @@ export function DeckSelectPanel({ onConfirm, onCancel }: DeckSelectPanelProps): 
                         className={styles.arrow}
                         onClick={goNext}
                         disabled={!hasMultiple}
-                        aria-label="Next deck"
+                        aria-label="Baraja siguiente"
                     >
                         ›
                     </button>
@@ -64,10 +64,10 @@ export function DeckSelectPanel({ onConfirm, onCancel }: DeckSelectPanelProps): 
 
                 <div className={styles.actions}>
                     <button type="button" className={styles.cancelButton} onClick={onCancel}>
-                        Back
+                        Atrás
                     </button>
                     <button type="button" className={styles.confirmButton} onClick={() => onConfirm(deck)}>
-                        Play
+                        Jugar
                     </button>
                 </div>
             </div>

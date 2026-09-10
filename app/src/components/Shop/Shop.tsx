@@ -104,7 +104,7 @@ export function Shop({
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Shop</h2>
+        <h2 className={styles.title}>Tienda</h2>
       </div>
 
       <section className={styles.section}>
@@ -125,7 +125,7 @@ export function Shop({
                   onClick={() => buyJoker(joker)}
                   disabled={sold || money < joker.price}
                 >
-                  {sold ? "Comprado" : `Buy $${joker.price}`}
+                  {sold ? "Comprado" : `Comprar $${joker.price}`}
                 </button>
               </div>
             );
@@ -158,7 +158,7 @@ export function Shop({
                   onClick={() => buyConsumable(consumable)}
                   disabled={sold || consumablesFull || money < price}
                 >
-                  {sold ? "Comprado" : consumablesFull ? "Sin hueco" : `Buy $${price}`}
+                  {sold ? "Comprado" : consumablesFull ? "Sin hueco" : `Comprar $${price}`}
                 </button>
               </div>
             );
@@ -191,7 +191,7 @@ export function Shop({
                   onClick={() => openPack(pack)}
                   disabled={sold || consumablesFull || money < pack.price}
                 >
-                  {sold ? "Comprado" : consumablesFull ? "Sin hueco" : `Buy $${pack.price}`}
+                  {sold ? "Comprado" : consumablesFull ? "Sin hueco" : `Comprar $${pack.price}`}
                 </button>
               </div>
             );
@@ -227,7 +227,7 @@ export function Shop({
                   onClick={() => onBuyVoucher(voucher)}
                   disabled={owned || money < voucher.price}
                 >
-                  {owned ? "Comprado" : `Buy $${voucher.price}`}
+                  {owned ? "Comprado" : `Comprar $${voucher.price}`}
                 </button>
               </div>
             );
@@ -245,7 +245,7 @@ export function Shop({
           Reroll (${rerollCost})
         </button>
         <button type="button" className={styles.continueButton} onClick={onContinue}>
-          Next Round
+          Siguiente ronda
         </button>
       </div>
     </div>

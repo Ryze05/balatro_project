@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: var(--font-ui);
     padding: var(--space-7) 20px;
     box-sizing: border-box;
 }
@@ -61,9 +61,10 @@
 }
 
 .title {
+    font-family: var(--font-display);
     font-weight: 900;
-    font-size: clamp(32px, 7vw, 42px);
-    letter-spacing: 2px;
+    font-size: clamp(18px, 4vw, 24px);
+    letter-spacing: 1px;
     color: var(--color-accent);
     text-shadow: 3px 3px 0 var(--color-danger), 6px 6px 0 rgba(0, 0, 0, 0.5);
     margin: 10px 0 8px;

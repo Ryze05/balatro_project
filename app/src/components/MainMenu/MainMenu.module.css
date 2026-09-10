@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: center;
     background: var(--gradient-bg);
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: var(--font-ui);
     padding: var(--space-7) 20px;
     position: relative;
     overflow: hidden;
@@ -96,11 +96,11 @@
 }
 
 .title {
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: var(--font-display);
     font-weight: 900;
     font-stretch: condensed;
-    font-size: clamp(40px, 10vw, 58px);
-    letter-spacing: 2px;
+    font-size: clamp(20px, 4.5vw, 30px);
+    letter-spacing: 1px;
     color: var(--color-accent);
     text-shadow: 3px 3px 0 var(--color-danger), 6px 6px 0 rgba(0, 0, 0, 0.5);
     margin: 0;

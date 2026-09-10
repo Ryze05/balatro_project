@@ -24,8 +24,8 @@ const SUIT_SYMBOLS: Record<Suit, string> = {
 };
 
 const MENU_ITEMS: MenuItem[] = [
-  { label: "Play", option: "play", suit: "spades", hint: "Start a new game" },
-  { label: "Rules", option: "rules", suit: "hearts", hint: "How cards are scored" },
+  { label: "Jugar", option: "play", suit: "spades", hint: "Empezar una partida" },
+  { label: "Reglas", option: "rules", suit: "hearts", hint: "Cómo puntúan las cartas" },
 ];
 
 const FAN_CARDS = [

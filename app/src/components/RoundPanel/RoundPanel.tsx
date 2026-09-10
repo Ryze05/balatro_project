@@ -39,8 +39,8 @@ export function RoundPanel({
     <div className={styles.root}>
       <div className={styles.topBar}>
         <div className={styles.counters}>
-          <span className={styles.counter}>Hands: {handsLeft}</span>
-          <span className={styles.counter}>Discards: {discardsLeft}</span>
+          <span className={styles.counter}>Manos: {handsLeft}</span>
+          <span className={styles.counter}>Descartes: {discardsLeft}</span>
         </div>
       </div>
 
@@ -112,7 +112,7 @@ export function RoundPanel({
           onClick={onDiscard}
           disabled={discardsLeft <= 0}
         >
-          Discard
+          Descartar
         </button>
         <button
           type="button"
@@ -120,7 +120,7 @@ export function RoundPanel({
           onClick={onPlayHand}
           disabled={handsLeft <= 0}
         >
-          Play Hand
+          Jugar mano
         </button>
       </div>
     </div>

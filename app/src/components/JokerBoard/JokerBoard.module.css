@@ -5,7 +5,7 @@
     align-items: stretch;
     flex-wrap: wrap;
     margin-bottom: 28px;
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: var(--font-ui);
 }
 
 .board *,
@@ -42,9 +42,10 @@
 }
 
 .areaTitle {
+    font-family: var(--font-display);
     font-weight: 800;
-    font-size: 13px;
-    letter-spacing: 2px;
+    font-size: 9px;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--color-accent);
 }
@@ -56,8 +57,9 @@
 }
 
 .emptyText {
-    font-family: "Courier New", ui-monospace, monospace;
-    font-size: 12px;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
     line-height: 1.6;
     color: var(--color-text-subtle);
     margin: 0;

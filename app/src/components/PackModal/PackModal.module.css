@@ -27,7 +27,8 @@
 
 .title {
     color: var(--color-accent);
-    font-size: 18px;
+    font-family: var(--font-display);
+    font-size: 12px;
     font-weight: 800;
     margin: 0;
 }

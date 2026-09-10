@@ -32,10 +32,10 @@
 }
 
 .title {
-    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: var(--font-display);
     font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 3px;
+    font-size: 10px;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--color-text-muted);
     margin: 0 0 22px;
@@ -186,7 +186,7 @@
     }
 
     .title {
-        font-size: 13px;
+        font-size: 9px;
         margin-bottom: 12px;
     }
 
