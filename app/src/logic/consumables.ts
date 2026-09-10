@@ -68,7 +68,8 @@ export function applyConsumableEffect(
   targetCardId?: string,
 ): { money?: number; hand?: Card[]; consumables?: Consumable[] } {
   const effect = consumable.effect;
-  const remaining = consumables.filter((i) => i.id !== consumable.id);
+  const consumableIndex = consumables.findIndex((i) => i.id === consumable.id);
+  const remaining = consumables.filter((_, i) => i !== consumableIndex);
 
   if (effect.type === "add_money") {
     return { money: effect.value, consumables: remaining };
