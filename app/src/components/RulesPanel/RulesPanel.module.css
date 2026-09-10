@@ -15,11 +15,10 @@
     width: 100%;
     max-width: 520px;
     max-height: 84vh;
-    background:
-        radial-gradient(ellipse at 50% 20%, #163425 0%, #0b0e10 70%);
-    border: 2px solid #2b322f;
+    background: var(--gradient-bg);
+    border: 2px solid var(--color-border);
     border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    box-shadow: var(--shadow-panel);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -36,8 +35,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 24px 24px 16px;
-    border-bottom: 2px solid #2b322f;
+    padding: var(--space-5) var(--space-5) var(--space-4);
+    border-bottom: 2px solid var(--color-border);
 }
 
 .title {
@@ -45,7 +44,7 @@
     font-size: 15px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: #8fa89a;
+    color: var(--color-text-muted);
     margin: 0;
 }
 
@@ -53,9 +52,9 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #14181b;
-    border: 2px solid #2b322f;
-    color: #e3b23c;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    color: var(--color-accent);
     font-size: 18px;
     line-height: 1;
     cursor: pointer;
@@ -63,13 +62,13 @@
 }
 
 .closeButton:hover {
-    border-color: #e3b23c;
+    border-color: var(--color-accent);
     transform: scale(1.08);
 }
 
 .scrollArea {
     overflow-y: auto;
-    padding: 20px 24px 28px;
+    padding: 20px var(--space-5) 28px;
     display: flex;
     flex-direction: column;
     gap: 22px;
@@ -78,13 +77,13 @@
 .section {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--space-2);
 }
 
 .sectionTitle {
     font-weight: 800;
     font-size: 14px;
-    color: #e3b23c;
+    color: var(--color-accent);
     margin: 0;
 }
 
@@ -92,13 +91,13 @@
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 12px;
     line-height: 1.6;
-    color: #b7c2bb;
+    color: var(--color-text-muted);
     margin: 0;
 }
 
 .handTable {
-    background: #14181b;
-    border: 2px solid #2b322f;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -113,19 +112,19 @@
 }
 
 .handRowHeader {
-    color: #6b7570;
+    color: var(--color-text-subtle);
     letter-spacing: 1px;
     text-transform: uppercase;
     font-size: 10px;
-    border-bottom: 2px solid #2b322f;
+    border-bottom: 2px solid var(--color-border);
 }
 
 .handRow {
-    color: #f5ede0;
+    color: var(--color-text);
 }
 
 .handRow:not(:last-child) {
-    border-bottom: 1px solid #1b1f23;
+    border-bottom: 1px solid var(--color-surface-raised);
 }
 
 .handName {
@@ -133,6 +132,6 @@
 }
 
 .handValue {
-    color: #8fd18f;
+    color: var(--color-success);
     font-weight: 700;
 }

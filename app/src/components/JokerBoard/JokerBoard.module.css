@@ -1,7 +1,7 @@
 .board {
     width: 100%;
     display: flex;
-    gap: 16px;
+    gap: var(--space-4);
     align-items: stretch;
     flex-wrap: wrap;
     margin-bottom: 28px;
@@ -16,9 +16,9 @@
 
 .jokerArea,
 .consumableArea {
-    background: #14181b;
-    border: 2px solid #2b322f;
-    border-radius: 12px;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
     padding: 14px 16px 16px;
     display: flex;
     flex-direction: column;
@@ -46,20 +46,20 @@
     font-size: 13px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #e3b23c;
+    color: var(--color-accent);
 }
 
 .areaCount {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 12px;
-    color: #6b7570;
+    color: var(--color-text-subtle);
 }
 
 .emptyText {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 12px;
     line-height: 1.6;
-    color: #6b7570;
+    color: var(--color-text-subtle);
     margin: 0;
 }
 
@@ -81,18 +81,13 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    width: 140px;
+    width: 112px;
     flex-shrink: 0;
-    background:
-        radial-gradient(circle at 30% 15%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 45%),
-        linear-gradient(160deg, #fffdf7 0%, #efe6d0 100%);
-    border: 2px solid #1b1f23;
-    border-radius: 10px;
-    padding: 10px 12px 12px;
-    box-shadow:
-        0 3px 0 rgba(0, 0, 0, 0.28),
-        0 8px 16px rgba(0, 0, 0, 0.45);
+    background: var(--color-card);
+    border: 2px solid var(--color-card-text);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
     cursor: grab;
     transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 }
@@ -108,15 +103,15 @@
     cursor: grabbing;
 }
 
-.rarity_common { border-color: #6b7570; }
-.rarity_uncommon { border-color: #2f5f8f; }
-.rarity_rare { border-color: #7a1620; }
+.rarity_common { border-color: var(--color-text-subtle); }
+.rarity_uncommon { border-color: var(--color-info); }
+.rarity_rare { border-color: var(--color-danger); }
 .rarity_legendary {
-    border-color: #a5761f;
+    border-color: var(--color-accent);
     box-shadow:
         0 3px 0 rgba(0, 0, 0, 0.28),
-        0 0 0 1px #e3b23c,
-        0 10px 20px rgba(227, 178, 60, 0.25);
+        0 0 0 1px var(--color-accent),
+        0 10px 20px color-mix(in srgb, var(--color-accent) 25%, transparent);
 }
 
 .dragging {
@@ -127,18 +122,59 @@
     transform: translateY(-3px);
     box-shadow:
         0 3px 0 rgba(0, 0, 0, 0.28),
-        0 0 0 2px #e3b23c,
+        0 0 0 2px var(--color-accent),
         0 12px 20px rgba(0, 0, 0, 0.5);
 }
 
 .cardHeader {
+    display: none;
+}
+
+.jokerArtwork {
+    width: 100%;
+    height: 118px;
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    background: var(--color-card-shadow);
+    overflow: hidden;
+}
+
+.jokerImage {
+    width: 86px;
+    height: 86px;
+    object-fit: contain;
+    display: block;
+}
+
+.jokerLabelTop,
+.jokerLabelBottom {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-card-text);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.jokerLabelTop {
+    top: 8px;
+    left: 6px;
+}
+
+.jokerLabelBottom {
+    right: 6px;
+    bottom: 8px;
+    flex-direction: column-reverse;
 }
 
 .dragHandle {
-    color: rgba(27, 31, 35, 0.5);
+    color: var(--color-card-text);
+    opacity: 0.5;
     font-size: 14px;
     line-height: 1;
     user-select: none;
@@ -153,9 +189,10 @@
     margin-left: auto;
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 10px;
-    color: rgba(27, 31, 35, 0.6);
-    background: rgba(27, 31, 35, 0.08);
-    border: 1px solid rgba(27, 31, 35, 0.25);
+    color: var(--color-card-text);
+    opacity: 0.6;
+    background: color-mix(in srgb, var(--color-card-text) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-card-text) 25%, transparent);
     border-radius: 5px;
     padding: 1px 6px;
 }
@@ -163,28 +200,31 @@
 .cardBody {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
+    padding: 7px 8px 9px;
 }
 
 .jokerName {
     font-weight: 700;
-    font-size: 12px;
-    color: #1b1f23;
+    font-size: 11px;
+    color: var(--color-card-text);
 }
 
 .jokerRarity {
     font-family: "Courier New", ui-monospace, monospace;
-    font-size: 9px;
+    font-size: 8px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: rgba(27, 31, 35, 0.55);
+    color: var(--color-card-text);
+    opacity: 0.55;
 }
 
 .jokerDescription {
     font-family: "Courier New", ui-monospace, monospace;
-    font-size: 10px;
+    font-size: 9px;
     line-height: 1.4;
-    color: rgba(27, 31, 35, 0.75);
+    color: var(--color-card-text);
+    opacity: 0.75;
     margin: 2px 0 0;
 }
 
@@ -199,17 +239,17 @@
     width: 22px;
     height: 18px;
     padding: 0;
-    background: rgba(255, 253, 247, 0.85);
-    border: 1px solid rgba(27, 31, 35, 0.35);
-    border-radius: 4px;
-    color: #1b1f23;
+    background: var(--color-card);
+    border: 1px solid color-mix(in srgb, var(--color-card-text) 35%, transparent);
+    border-radius: var(--radius-sm);
+    color: var(--color-card-text);
     font-size: 9px;
     cursor: pointer;
     transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
 .reorderButton:hover:not(:disabled) {
-    border-color: #c1121f;
+    border-color: var(--color-danger);
     transform: scale(1.08);
 }
 
@@ -219,8 +259,7 @@
 }
 
 /* ---------------------------------------------------------------- */
-/* Consumibles: de momento solo huecos vacíos (sin lógica), con el    */
-/* mismo aspecto "bloqueado" que los placeholders de la Shop.         */
+/* Consumibles: tarots y planetas con sus slots.                      */
 /* ---------------------------------------------------------------- */
 
 .consumableSlots {
@@ -230,43 +269,65 @@
 }
 
 .consumableSlot {
-    width: 60px;
-    height: 84px;
-    border-radius: 8px;
-    border: 2px dashed #2b322f;
-    background: #0f1214;
+    width: 112px;
+    height: 150px;
+    border-radius: var(--radius-lg);
+    border: 2px dashed var(--color-border);
+    background: var(--color-surface-muted);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 4px;
     opacity: 0.6;
+    padding: 6px;
 }
 
 .consumableSlotFilled {
-    border: 2px solid #2b322f;
-    background: #1b1f23;
+    border: 2px solid var(--color-border);
+    background: var(--color-surface-raised);
     opacity: 1;
     cursor: pointer;
     font-family: inherit;
     transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
-.consumableSlotFilled:hover {
-    transform: translateY(-2px);
-    border-color: #e3b23c;
+.consumableTarot {
+    border-color: var(--color-special);
+    background: color-mix(in srgb, var(--color-special) 16%, var(--color-card));
 }
 
-.consumableGlyph {
-    font-size: 22px;
-    filter: grayscale(1);
+.consumablePlanet {
+    border-color: var(--color-info);
+    background: color-mix(in srgb, var(--color-info) 16%, var(--color-card));
+}
+
+.consumableSlotFilled:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-accent);
+}
+
+.consumableImage {
+    width: 100%;
+    height: 108px;
+    object-fit: contain;
+    display: block;
 }
 
 .consumableName {
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
-    color: #f5ede0;
+    color: var(--color-card-text);
     text-align: center;
     line-height: 1.2;
+    word-break: break-word;
+}
+
+.consumableDescription {
+    font-size: 9px;
+    line-height: 1.35;
+    color: var(--color-card-text);
+    opacity: 0.75;
+    text-align: center;
     word-break: break-word;
 }

@@ -5,11 +5,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background:
-        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
+    background: var(--gradient-bg);
     font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
-    padding: 48px 20px;
+    padding: var(--space-7) 20px;
     box-sizing: border-box;
     text-align: center;
 }
@@ -22,7 +20,7 @@
 
 .cardGlyph {
     font-size: 64px;
-    color: #c1121f;
+    color: var(--color-danger);
     margin-bottom: 4px;
     animation: floatGlyph 3s ease-in-out infinite;
 }
@@ -31,25 +29,25 @@
     font-weight: 900;
     font-size: clamp(56px, 14vw, 96px);
     letter-spacing: 4px;
-    color: #e3b23c;
-    text-shadow: 3px 3px 0 #7a1620, 6px 6px 0 rgba(0, 0, 0, 0.5);
+    color: var(--color-accent);
+    text-shadow: 3px 3px 0 var(--color-danger), 6px 6px 0 rgba(0, 0, 0, 0.5);
     margin: 0;
 }
 
 .title {
     font-weight: 800;
     font-size: 20px;
-    color: #f5ede0;
+    color: var(--color-text);
     margin: 12px 0 8px;
 }
 
 .description {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 13px;
-    color: #8fa89a;
+    color: var(--color-text-muted);
     max-width: 380px;
     line-height: 1.6;
-    margin: 0 0 32px;
+    margin: 0 0 var(--space-6);
 }
 
 .homeLink {
@@ -60,9 +58,9 @@
     font-weight: 700;
     font-size: 14px;
     text-decoration: none;
-    background: #c1121f;
-    border: 2px solid #c1121f;
-    color: #f5ede0;
+    background: var(--color-danger);
+    border: 2px solid var(--color-danger);
+    color: var(--color-text);
     transition: transform 0.15s ease;
 }
 

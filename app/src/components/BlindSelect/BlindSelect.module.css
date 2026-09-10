@@ -5,7 +5,7 @@
     flex-direction: column;
     align-items: center;
     font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
-    padding: 48px 20px;
+    padding: var(--space-7) 20px;
     box-sizing: border-box;
 }
 
@@ -21,21 +21,21 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 32px;
+    margin-bottom: var(--space-6);
 }
 
 .levelLabel {
     font-weight: 900;
     font-size: 22px;
     letter-spacing: 2px;
-    color: #e3b23c;
-    text-shadow: 2px 2px 0 #7a1620;
+    color: var(--color-accent);
+    text-shadow: 2px 2px 0 var(--color-danger);
 }
 
 .money {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 16px;
-    color: #8fd18f;
+    color: var(--color-success);
     font-weight: 700;
 }
 
@@ -50,9 +50,9 @@
 
 .blindCard {
     width: 168px;
-    background: #14181b;
-    border: 2px solid #2b322f;
-    border-radius: 12px;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
     padding: 18px 14px;
     display: flex;
     flex-direction: column;
@@ -62,13 +62,13 @@
     transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 }
 
-.blindCard_small { border-top: 4px solid #8fa89a; }
-.blindCard_big { border-top: 4px solid #4c8fd1; }
-.blindCard_boss { border-top: 4px solid #c1121f; }
+.blindCard_small { border-top: 4px solid var(--color-text-subtle); }
+.blindCard_big { border-top: 4px solid var(--color-info); }
+.blindCard_boss { border-top: 4px solid var(--color-danger); }
 
 .state_current {
-    border-color: #e3b23c;
-    box-shadow: 0 0 0 1px #e3b23c, 0 10px 24px rgba(0, 0, 0, 0.55);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent), 0 10px 24px rgba(0, 0, 0, 0.55);
     transform: translateY(-6px);
 }
 
@@ -85,13 +85,13 @@
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #6b7570;
+    color: var(--color-text-subtle);
 }
 
 .blindName {
     font-weight: 800;
     font-size: 16px;
-    color: #f5ede0;
+    color: var(--color-text);
     margin: 6px 0 14px;
 }
 
@@ -99,33 +99,33 @@
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 10px;
     letter-spacing: 1px;
-    color: #6b7570;
+    color: var(--color-text-subtle);
 }
 
 .targetScore {
     font-weight: 900;
     font-size: 22px;
-    color: #e3b23c;
+    color: var(--color-accent);
     margin: 2px 0 10px;
 }
 
 .reward {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 12px;
-    color: #8fd18f;
+    color: var(--color-success);
 }
 
 .badge {
     position: absolute;
     top: -10px;
     right: -10px;
-    background: #1b1f23;
-    border: 2px solid #2b322f;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 6px;
     padding: 2px 8px;
     font-size: 10px;
     letter-spacing: 1px;
-    color: #b7c2bb;
+    color: var(--color-text-muted);
     text-transform: uppercase;
 }
 
@@ -134,13 +134,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: var(--space-4);
 }
 
 .description {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 12px;
-    color: #8fa89a;
+    color: var(--color-text-muted);
     margin: 0;
 }
 
@@ -162,12 +162,12 @@
 
 .skipButton {
     background: transparent;
-    border: 2px solid #2b322f;
-    color: #b7c2bb;
+    border: 2px solid var(--color-border);
+    color: var(--color-text-muted);
 }
 
 .skipButton:hover:not(:disabled) {
-    border-color: #6b7570;
+    border-color: var(--color-text-subtle);
 }
 
 .skipButton:disabled {
@@ -176,9 +176,9 @@
 }
 
 .playButton {
-    background: #c1121f;
-    border: 2px solid #c1121f;
-    color: #f5ede0;
+    background: var(--color-danger);
+    border: 2px solid var(--color-danger);
+    color: var(--color-text);
 }
 
 .playButton:hover {

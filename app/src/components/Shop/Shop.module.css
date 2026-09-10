@@ -5,7 +5,7 @@
     flex-direction: column;
     align-items: center;
     font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
-    padding: 40px 20px;
+    padding: var(--space-7) 20px;
     box-sizing: border-box;
 }
 
@@ -28,8 +28,8 @@
     font-weight: 900;
     font-size: 22px;
     letter-spacing: 2px;
-    color: #e3b23c;
-    text-shadow: 2px 2px 0 #7a1620;
+    color: var(--color-accent);
+    text-shadow: 2px 2px 0 var(--color-danger);
     margin: 0;
 }
 
@@ -43,7 +43,7 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    margin-bottom: 32px;
+    margin-bottom: var(--space-6);
 }
 
 .sectionHeader {
@@ -58,29 +58,29 @@
     font-size: 13px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #e3b23c;
+    color: var(--color-accent);
     margin: 0;
 }
 
 .offers {
     display: flex;
-    gap: 16px;
+    gap: var(--space-4);
     flex-wrap: wrap;
     justify-content: center;
 }
 
 .emptyMessage {
     font-family: "Courier New", ui-monospace, monospace;
-    color: #6b7570;
+    color: var(--color-text-subtle);
     font-size: 13px;
 }
 
 .offerCard {
     width: 176px;
-    background: #14181b;
-    border: 2px solid #2b322f;
-    border-radius: 12px;
-    padding: 16px 14px;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -97,7 +97,7 @@
 .jokerName {
     font-size: 15px;
     font-weight: 800;
-    color: #f5ede0;
+    color: var(--color-text);
     margin: 8px 0 6px;
 }
 
@@ -105,7 +105,7 @@
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 11px;
     line-height: 1.5;
-    color: #b7c2bb;
+    color: var(--color-text-muted);
     margin: 0 0 14px;
     min-height: 48px;
 }
@@ -113,14 +113,14 @@
 .buyButton {
     width: 100%;
     padding: 10px 0;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     font-family: inherit;
     font-weight: 700;
     font-size: 13px;
     cursor: pointer;
-    background: #c1121f;
-    border: 2px solid #c1121f;
-    color: #f5ede0;
+    background: var(--color-danger);
+    border: 2px solid var(--color-danger);
+    color: var(--color-text);
     transition: transform 0.15s ease;
 }
 
@@ -131,36 +131,36 @@
 .buyButton:disabled {
     opacity: 0.35;
     cursor: not-allowed;
-    background: #2b322f;
-    border-color: #2b322f;
+    background: var(--color-border);
+    border-color: var(--color-border);
 }
 
 .ownedRow {
     width: 100%;
     max-width: 720px;
-    margin-top: 32px;
+    margin-top: var(--space-6);
 }
 
 .ownedLabel {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 11px;
     letter-spacing: 1px;
-    color: #6b7570;
+    color: var(--color-text-subtle);
     text-transform: uppercase;
 }
 
 .ownedList {
     display: flex;
-    gap: 8px;
+    gap: var(--space-2);
     flex-wrap: wrap;
     margin-top: 10px;
 }
 
 .ownedChip {
     font-size: 12px;
-    color: #f5ede0;
-    background: #1b1f23;
-    border: 2px solid #2b322f;
+    color: var(--color-text);
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     border-radius: 999px;
     padding: 6px 12px;
 }
@@ -170,7 +170,7 @@
 /* ---------------------------------------------------------------- */
 
 .actions {
-    margin-top: 8px;
+    margin-top: var(--space-2);
     display: flex;
     gap: 14px;
 }
@@ -188,12 +188,12 @@
 
 .rerollButton {
     background: transparent;
-    border: 2px solid #2b322f;
-    color: #b7c2bb;
+    border: 2px solid var(--color-border);
+    color: var(--color-text-muted);
 }
 
 .rerollButton:hover:not(:disabled) {
-    border-color: #6b7570;
+    border-color: var(--color-text-subtle);
 }
 
 .rerollButton:disabled {
@@ -202,9 +202,9 @@
 }
 
 .continueButton {
-    background: #e3b23c;
-    border: 2px solid #e3b23c;
-    color: #1b1f23;
+    background: var(--color-accent);
+    border: 2px solid var(--color-accent);
+    color: var(--color-bg);
 }
 
 .continueButton:hover {

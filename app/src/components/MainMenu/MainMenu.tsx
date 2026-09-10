@@ -6,6 +6,7 @@ import type { DeckDefinition, DeckId } from "../../types/deck";
 import type { Joker } from "../../types/joker";
 import { DeckSelectPanel } from "../DeckSelectPanel/DeckSelectPanel"
 import { RulesPanel } from "../RulesPanel/RulesPanel"
+import { ThemeSelector } from "../ThemeSelector/ThemeSelector"
 import { getShopJokers } from "../../logic/joker";
 
 interface MenuItem {
@@ -104,12 +105,12 @@ export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
         </nav>
 
         <footer className={styles.footer}>
+          <ThemeSelector />
           <div className={styles.suitRow}>
             {SUITS.map((suit) => (
               <span key={suit}>{SUIT_SYMBOLS[suit]}</span>
             ))}
           </div>
-          <span className={styles.version}>v0.1 — draft</span>
         </footer>
       </div>
 

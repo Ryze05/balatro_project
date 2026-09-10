@@ -6,7 +6,7 @@
 }
 
 .sidebarColumn {
-    width: 23%;
+    width: 20%;
     flex-shrink: 0;
     height: 100vh;
 }
@@ -20,9 +20,7 @@
     flex-direction: column;
     padding: 20px;
     box-sizing: border-box;
-    background:
-        radial-gradient(ellipse at 50% 30%, #163425 0%, #0b0e10 62%),
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
+    background: var(--gradient-bg);
 }
 
 .screenArea {

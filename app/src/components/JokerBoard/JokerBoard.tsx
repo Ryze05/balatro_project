@@ -31,10 +31,12 @@ export function JokerBoard({
   const handleDragStart = (index: number) => (e: DragEvent<HTMLLIElement>) => {
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
   };
 
   const handleDragOver = (index: number) => (e: DragEvent<HTMLLIElement>) => {
     e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
     if (index !== overIndex) setOverIndex(index);
   };
 
@@ -50,16 +52,6 @@ export function JokerBoard({
   const handleDragEnd = (): void => {
     setDraggedIndex(null);
     setOverIndex(null);
-  };
-
-  //* Al pasar la fila de comodines a horizontal, "arriba/abajo" pasa a
-  //* ser "izquierda/derecha", pero la lógica de reordenar es la misma.
-  const moveLeft = (index: number): void => {
-    if (index > 0) onReorder(index, index - 1);
-  };
-
-  const moveRight = (index: number): void => {
-    if (index < jokers.length - 1) onReorder(index, index + 1);
   };
 
   return (
@@ -78,7 +70,7 @@ export function JokerBoard({
           <ul className={styles.jokerList}>
             {jokers.map((joker, index) => (
               <li
-                key={joker.id}
+                key={`${joker.id}-${index}`}
                 className={`${styles.jokerItem} ${styles[`rarity_${joker.rarity}`]} ${
                   draggedIndex === index ? styles.dragging : ""
                 } ${
@@ -92,37 +84,24 @@ export function JokerBoard({
                 onDrop={handleDrop(index)}
                 onDragEnd={handleDragEnd}
               >
-                <div className={styles.cardHeader}>
-                  <span className={styles.dragHandle} aria-hidden="true">⠿</span>
-                  <span className={styles.cardGlyph} aria-hidden="true">🃏</span>
-                  <span className={styles.positionBadge}>#{index + 1}</span>
+                <div className={styles.jokerArtwork}>
+                  <span className={styles.jokerLabelTop} aria-hidden="true">
+                    {"JOKER".split("").map((letter, letterIndex) => (
+                      <span key={letterIndex}>{letter}</span>
+                    ))}
+                  </span>
+                  <img src="/caraJoker.png" alt="" className={styles.jokerImage} />
+                  <span className={styles.jokerLabelBottom} aria-hidden="true">
+                    {"JOKER".split("").map((letter, letterIndex) => (
+                      <span key={letterIndex}>{letter}</span>
+                    ))}
+                  </span>
                 </div>
 
                 <div className={styles.cardBody}>
                   <span className={styles.jokerName}>{joker.name}</span>
                   <span className={styles.jokerRarity}>{RARITY_LABEL[joker.rarity]}</span>
                   <p className={styles.jokerDescription}>{joker.description}</p>
-                </div>
-
-                <div className={styles.reorderButtons}>
-                  <button
-                    type="button"
-                    className={styles.reorderButton}
-                    onClick={() => moveLeft(index)}
-                    disabled={index === 0}
-                    aria-label={`Mover ${joker.name} a la izquierda`}
-                  >
-                    ◀
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.reorderButton}
-                    onClick={() => moveRight(index)}
-                    disabled={index === jokers.length - 1}
-                    aria-label={`Mover ${joker.name} a la derecha`}
-                  >
-                    ▶
-                  </button>
                 </div>
               </li>
             ))}
@@ -144,17 +123,22 @@ export function JokerBoard({
         </div>
 
         <div className={styles.consumableSlots}>
-          {consumables.map((consumable) => (
+          {consumables.map((consumable, index) => (
             <button
-              key={consumable.id}
+              key={`${consumable.id}-${index}`}
               type="button"
-              className={`${styles.consumableSlot} ${styles.consumableSlotFilled}`}
+              className={`${styles.consumableSlot} ${styles.consumableSlotFilled} ${consumable.kind === "tarot" ? styles.consumableTarot : styles.consumablePlanet}`}
               onClick={() => onUseConsumable(consumable)}
             >
-              <span className={styles.consumableGlyph} aria-hidden="true">
-                {consumable.kind === "tarot" ? "🔮" : "🪐"}
-              </span>
+              <img
+                src={consumable.kind === "tarot" ? "/tarot.png" : "/planeta.png"}
+                alt=""
+                className={styles.consumableImage}
+              />
               <span className={styles.consumableName}>{consumable.name}</span>
+              <span className={styles.consumableDescription}>
+                {consumable.description}
+              </span>
             </button>
           ))}
 
@@ -163,7 +147,7 @@ export function JokerBoard({
           }).map((_, i) => (
             <div key={`empty-${i}`} className={styles.consumableSlot}>
               <span className={styles.consumableGlyph} aria-hidden="true">
-                🔮
+                ·
               </span>
             </div>
           ))}
