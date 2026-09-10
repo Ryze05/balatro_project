@@ -15,6 +15,7 @@ interface JokerSidebarProps {
   blind: Blind;
   score: number;
   vouchers: Voucher[];
+  handLevels: Partial<Record<HandType, number>>;
 }
 
 const BLIND_TYPE_LABEL: Record<Blind["type"], string> = {
@@ -47,6 +48,7 @@ export function JokerSidebar({
   blind,
   score,
   vouchers,
+  handLevels,
 }: JokerSidebarProps): JSX.Element {
   const [showVouchers, setShowVouchers] = useState(false);
 
@@ -68,7 +70,7 @@ export function JokerSidebar({
   let preview: { handType: HandType; chips: number; multiplier: number; total: number } | null = null;
   if (hasValidSelection) {
     const { handType, scoringCards } = evaluateHand(selectedCards);
-    const scoreContext = calculateScore(handType, scoringCards, jokers);
+    const scoreContext = calculateScore(handType, scoringCards, jokers, handLevels);
     preview = {
       handType,
       chips: scoreContext.chips,
@@ -119,7 +121,11 @@ export function JokerSidebar({
 
           {preview && (
             <>
-              <span className={styles.previewHandType}>{HAND_LABEL[preview.handType]}</span>
+              <span className={styles.previewHandType}>
+                {HAND_LABEL[preview.handType]}
+                {(handLevels[preview.handType] ?? 1) > 1 &&
+                  ` · Nv.${handLevels[preview.handType]}`}
+              </span>
               <span className={styles.previewFormula}>
                 <span className={styles.previewChips}>{preview.chips}</span>
                 {" × "}

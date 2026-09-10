@@ -6,6 +6,7 @@ import type { DeckDefinition, DeckId } from "../../types/deck";
 import { DeckSelectPanel } from "../DeckSelectPanel/DeckSelectPanel"
 import { RulesPanel } from "../RulesPanel/RulesPanel"
 import { ThemeSelector } from "../ThemeSelector/ThemeSelector"
+import { FullscreenToggle } from "../FullscreenToggle/FullscreenToggle"
 
 interface MenuItem {
   label: string;
@@ -106,6 +107,7 @@ export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
 
         <footer className={styles.footer}>
           <ThemeSelector />
+          <FullscreenToggle />
           <div className={styles.suitRow}>
             {SUITS.map((suit) => (
               <span key={suit}>{SUIT_SYMBOLS[suit]}</span>
