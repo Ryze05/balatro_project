@@ -1,15 +1,27 @@
-.button {
+.controls {
     position: fixed;
     bottom: var(--space-4);
     right: var(--space-4);
     z-index: 50;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     background: var(--color-surface);
     border: 2px solid var(--color-border);
+    border-radius: 999px;
+    padding: 6px 14px 6px 6px;
+    box-shadow: var(--shadow-panel);
+}
+
+.button {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
     color: var(--color-text);
-    font-size: 18px;
+    font-size: 15px;
     cursor: pointer;
     transition: border-color 0.15s ease, transform 0.15s ease;
 }
@@ -17,4 +29,10 @@
 .button:hover {
     border-color: var(--color-accent);
     transform: scale(1.06);
+}
+
+.slider {
+    width: 90px;
+    accent-color: var(--color-accent);
+    cursor: pointer;
 }
