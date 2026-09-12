@@ -13,6 +13,17 @@
     box-shadow: var(--shadow-panel);
 }
 
+.trackTitle {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 6px;
+}
+
 .button {
     flex-shrink: 0;
     width: 32px;
@@ -31,8 +42,95 @@
     transform: scale(1.06);
 }
 
+.buttonActive {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-surface);
+}
+
 .slider {
     width: 90px;
     accent-color: var(--color-accent);
     cursor: pointer;
+}
+
+.mobileTrigger,
+.mobileClose {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .controls {
+        padding: 6px 10px 6px 6px;
+        gap: 6px;
+    }
+
+    .trackTitle {
+        display: none;
+    }
+
+    .slider {
+        width: 60px;
+    }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+    .controls {
+        display: none;
+        right: 8px;
+        bottom: 8px;
+        gap: 4px;
+        padding: 4px 6px;
+    }
+
+    .controls.mobileOpen {
+        display: flex;
+    }
+
+    .mobileTrigger {
+        display: block;
+        position: fixed;
+        right: 8px;
+        bottom: 8px;
+        z-index: 50;
+        width: 36px;
+        height: 36px;
+        border: 2px solid var(--color-border);
+        border-radius: 50%;
+        background: var(--color-surface);
+        color: var(--color-text);
+        box-shadow: var(--shadow-panel);
+        cursor: pointer;
+    }
+
+    .mobileClose {
+        display: block;
+        align-self: center;
+        flex-shrink: 0;
+        width: 27px;
+        height: 27px;
+        padding: 0;
+        border: 2px solid var(--color-border);
+        border-radius: 50%;
+        background: var(--color-surface-raised);
+        color: var(--color-text);
+        cursor: pointer;
+        font-size: 12px;
+        line-height: 1;
+    }
+
+    .trackTitle {
+        max-width: 90px;
+        font-size: 11px;
+    }
+
+    .button {
+        width: 27px;
+        height: 27px;
+        font-size: 12px;
+    }
+
+    .slider {
+        width: 52px;
+    }
 }
