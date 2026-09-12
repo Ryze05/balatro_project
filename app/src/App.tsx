@@ -3,12 +3,14 @@ import Landing from './pages/Landing/Landing'
 import Game from './pages/Game/Game'
 import NotFound from './pages/NotFound/NotFound'
 import RotatePrompt from './components/RotatePrompt/RotatePrompt'
+import BackgroundMusic from './components/BackgroundMusic/BackgroundMusic'
 
 function App() {
 
   return (
     <>
       <RotatePrompt />
+      <BackgroundMusic/>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/game" element={<Game />} />
