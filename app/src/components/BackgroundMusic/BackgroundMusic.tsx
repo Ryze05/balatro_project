@@ -19,6 +19,7 @@ function getStoredVolume(): number {
 export function BackgroundMusic(): JSX.Element {
   const location = useLocation();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const hasStartedPlayingRef = useRef(false);
   const [trackIndex, setTrackIndex] = useState<number>(() => {
     const stored = localStorage.getItem(TRACK_KEY);
     const index = TRACK_LIST.findIndex((track) => track.id === stored);
@@ -50,35 +51,44 @@ export function BackgroundMusic(): JSX.Element {
     }
 
     if (!muted && volume > 0) {
-      audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      audio.play().then(() => {
+        hasStartedPlayingRef.current = true;
+        setPlaying(true);
+      }).catch(() => setPlaying(false));
     }
   }, [isOnLanding, muted, volume, track.src]);
 
-  //* Aplica volumen/mute al elemento de audio cada vez que cambian
+  //* Aplica volumen, mute y bucle al elemento de audio (también al cambiar de pista)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
     audio.volume = volume;
     audio.muted = muted;
-  }, [volume, muted]);
+    audio.loop = loop;
+  }, [volume, muted, loop, track.src]);
 
-  //* Fallback por si el navegador bloqueó el autoplay
+  //* Fallback por si el navegador bloqueó el autoplay: solo desbloquea una vez
   useEffect(() => {
-    const resume = (): void => {
+    if (hasStartedPlayingRef.current) return;
+
+    const resumeOnce = (event: PointerEvent): void => {
+      if (hasStartedPlayingRef.current) return;
+      const target = event.target;
+      if (target instanceof Element && target.closest("[data-music-control]")) {
+        return;
+      }
+
       const audio = audioRef.current;
       if (!audio || muted || volume === 0 || isOnLanding) return;
-      if (audio.paused) audio.play().then(() => setPlaying(true)).catch(() => {});
+      audio.play().then(() => {
+        hasStartedPlayingRef.current = true;
+        setPlaying(true);
+        window.removeEventListener("pointerdown", resumeOnce);
+      }).catch(() => {});
     };
-    window.addEventListener("pointerdown", resume);
-    return () => window.removeEventListener("pointerdown", resume);
+    window.addEventListener("pointerdown", resumeOnce);
+    return () => window.removeEventListener("pointerdown", resumeOnce);
   }, [muted, volume, isOnLanding]);
-
-  //* Aplica bucle al elemento de audio cuando cambia
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.loop = loop;
-  }, [loop]);
 
   //* Al acabar la pista, pasa a la siguiente (loop de playlist)
   useEffect(() => {
@@ -100,7 +110,10 @@ export function BackgroundMusic(): JSX.Element {
     const audio = audioRef.current;
     if (!audio) return;
     if (audio.paused) {
-      audio.play().then(() => setPlaying(true)).catch(() => {});
+      audio.play().then(() => {
+        hasStartedPlayingRef.current = true;
+        setPlaying(true);
+      }).catch(() => {});
     } else {
       audio.pause();
       setPlaying(false);
@@ -148,13 +161,17 @@ export function BackgroundMusic(): JSX.Element {
           <button
             type="button"
             className={styles.mobileTrigger}
+            data-music-control
             onClick={() => setMobileOpen(true)}
             aria-label="Abrir controles de música"
           >
             {effectivelyMuted ? "🔇" : "🔊"}
           </button>
 
-          <div className={`${styles.controls} ${mobileOpen ? styles.mobileOpen : ""}`}>
+          <div
+            className={`${styles.controls} ${mobileOpen ? styles.mobileOpen : ""}`}
+            data-music-control
+          >
             <button
               type="button"
               className={styles.mobileClose}
