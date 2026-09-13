@@ -185,12 +185,18 @@ export function useGameState() {
 
   //* Selecciona carta
   const selectCard = useCallback((cardId: string) => {
-    setGameState((prev) => ({
-      ...prev,
-      hand: prev.hand.map((card) =>
-        card.id === cardId ? { ...card, selected: !card.selected } : card,
-      ),
-    }));
+    setGameState((prev) => {
+      const selectedCount = prev.hand.filter((i) => i.selected).length;
+      const card = prev.hand.find((i) => i.id === cardId);
+      if (!card) return prev;
+      if (!card.selected && selectedCount >= 5) return prev;
+      return {
+        ...prev,
+        hand: prev.hand.map((i) =>
+          i.id === cardId ? { ...i, selected: !i.selected } : i,
+        ),
+      };
+    });
   }, []);
 
   const playHand = useCallback(() => {
