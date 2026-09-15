@@ -38,6 +38,14 @@ const PACK_DEFINITIONS: PackDefinition[] = [
 
 const REROLL_BASE_COST = 5;
 
+function EmptyOfferSlot(): JSX.Element {
+  return (
+    <div className={styles.emptyOfferSlot}>
+      <span>Agotado</span>
+    </div>
+  );
+}
+
 export function Shop({
   money,
   consumables,
@@ -117,6 +125,9 @@ export function Shop({
               </div>
             );
           })}
+          {Array.from({ length: Math.max(0, 3 - shopOffers.jokers.length) }).map((_, index) => (
+            <EmptyOfferSlot key={`empty-joker-${index}`} />
+          ))}
         </div>
       </section>
 
@@ -149,6 +160,9 @@ export function Shop({
               </div>
             );
           })}
+          {Array.from({ length: Math.max(0, 2 - shopOffers.consumables.length) }).map((_, index) => (
+            <EmptyOfferSlot key={`empty-consumable-${index}`} />
+          ))}
         </div>
       </section>
 
@@ -219,6 +233,9 @@ export function Shop({
               </div>
             );
           })}
+          {Array.from({ length: Math.max(0, 1 - shopOffers.vouchers.length) }).map((_, index) => (
+            <EmptyOfferSlot key={`empty-voucher-${index}`} />
+          ))}
         </div>
       </section>
 
