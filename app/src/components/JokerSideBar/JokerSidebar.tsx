@@ -53,18 +53,12 @@ export function JokerSidebar({
 }: JokerSidebarProps): JSX.Element {
   const [showVouchers, setShowVouchers] = useState(false);
 
-  //* El panel de puntuación solo se muestra si hay un blind activo
-  //* (evita mostrar "None" / 0 mientras se está en menú, tienda, etc.)
   const hasActiveBlind = blind.id !== "none";
   const progress =
     hasActiveBlind && blind.targetScore > 0
       ? Math.min(100, (score / blind.targetScore) * 100)
       : 0;
 
-  //* Previsualización de puntuación: se recalcula en cada render con la
-  //* misma lógica que se usa al jugar la mano de verdad (playHand en
-  //* useGameState). Antes vivía en RoundPanel, ahora se mueve a la
-  //* barra lateral junto al resto del marcador.
   const selectedCards = hand.filter((card) => card.selected === true);
   const hasValidSelection = selectedCards.length >= 1 && selectedCards.length <= 5;
 

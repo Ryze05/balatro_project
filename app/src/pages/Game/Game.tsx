@@ -91,14 +91,6 @@ export default function Game() {
     );
   }
 
-  // Layout de dos columnas:
-  // - Izquierda: marcador del blind, previsualización de la jugada,
-  //   dinero y el botón que abre el panel de Vouchers comprados.
-  // - Derecha: el tablero, que ahora empieza con la fila fija de
-  //   Comodines + Consumibles (como en Balatro) y debajo la pantalla
-  //   activa (selección de blind, ronda o tienda).
-  // Ambas columnas ya son responsive vía Game.module.css (se apilan en
-  // pantallas estrechas) y JokerBoard hace flex-wrap en su fila.
   return (
     <div className={styles.layout}>
       <div className={styles.sidebarColumn}>
