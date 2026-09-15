@@ -3,9 +3,9 @@ import styles from "./Shop.module.css";
 import type { Joker } from "../../types/joker";
 import type { Consumable } from "../../types/consumable";
 import type { Voucher } from "../../types/voucher";
-import { getShopJokers } from "../../logic/joker";
-import { getShopConsumables, getArcanaPack, getCelestialPack } from "../../logic/consumables";
-import { getShopVouchers, getConsumablePrice, getJokerPrice, hasVoucher } from "../../logic/vouchers";
+import type { ShopOffers } from "../../types/game";
+import { getArcanaPack, getCelestialPack } from "../../logic/consumables";
+import { getConsumablePrice, getJokerPrice, hasVoucher } from "../../logic/vouchers";
 import PackModal from "../PackModal/PackModal";
 
 interface ShopProps {
@@ -13,11 +13,13 @@ interface ShopProps {
   consumables: Consumable[];
   vouchers: Voucher[];
   maxConsumableSlots: number;
+  shopOffers: ShopOffers;
   onBuy: (joker: Joker) => void;
   onBuyConsumable: (consumable: Consumable) => void;
   onBuyVoucher: (voucher: Voucher) => void;
   onSpendMoney: (amount: number) => void;
   onAddConsumable: (consumable: Consumable) => void;
+  onReroll: (cost: number) => void;
   onContinue: () => void;
 }
 
@@ -34,9 +36,6 @@ const PACK_DEFINITIONS: PackDefinition[] = [
   { id: "pack-celestial", name: "Celestial Pack", price: 5, kind: "celestial" },
 ];
 
-const JOKER_OFFER_COUNT = 3;
-const CONSUMABLE_OFFER_COUNT = 2;
-const VOUCHER_OFFER_COUNT = 1;
 const REROLL_BASE_COST = 5;
 
 export function Shop({
@@ -44,47 +43,35 @@ export function Shop({
   consumables,
   vouchers,
   maxConsumableSlots,
+  shopOffers,
   onBuy,
   onBuyConsumable,
   onBuyVoucher,
   onSpendMoney,
   onAddConsumable,
+  onReroll,
   onContinue,
 }: ShopProps): JSX.Element {
-  const [jokerOffers, setJokerOffers] = useState<Joker[]>(() => getShopJokers(JOKER_OFFER_COUNT));
-  //* Las ofertas de Cartas Especiales y Vouchers se generan al entrar a la tienda. Los comodines y consumibles se pueden rerollear; los vouchers no.
-  const [consumableOffers, setConsumableOffers] = useState<Consumable[]>(() => getShopConsumables(CONSUMABLE_OFFER_COUNT));
-  const [voucherOffers] = useState<Voucher[]>(() => getShopVouchers(VOUCHER_OFFER_COUNT));
   const [openedPack, setOpenedPack] = useState<{
     name: string;
     cards: Consumable[];
   } | null>(null);
-  const [soldJokerIds, setSoldJokerIds] = useState<string[]>([]);
-  const [soldConsumableIds, setSoldConsumableIds] = useState<string[]>([]);
   const [soldPackIds, setSoldPackIds] = useState<string[]>([]);
-  const [rerollCount, setRerollCount] = useState(0);
 
   const consumablesFull = consumables.length >= maxConsumableSlots;
-  const rerollCost = REROLL_BASE_COST + rerollCount;
+  const rerollCost = REROLL_BASE_COST + shopOffers.rerollCount;
 
   const reroll = (): void => {
     if (money < rerollCost) return;
-    onSpendMoney(rerollCost);
-    setJokerOffers(getShopJokers(JOKER_OFFER_COUNT));
-    setConsumableOffers(getShopConsumables(CONSUMABLE_OFFER_COUNT));
-    setSoldJokerIds([]);
-    setSoldConsumableIds([]);
-    setRerollCount((count) => count + 1);
+    onReroll(rerollCost);
   };
 
   const buyJoker = (joker: Joker): void => {
     onBuy(joker);
-    setSoldJokerIds((prev) => [...prev, joker.id]);
   };
 
   const buyConsumable = (consumable: Consumable): void => {
     onBuyConsumable(consumable);
-    setSoldConsumableIds((prev) => [...prev, consumable.id]);
   };
 
   //* Comprar un sobre: descuenta el dinero y abre el modal con sus cartas
@@ -113,8 +100,7 @@ export function Shop({
         </div>
 
         <div className={styles.offers}>
-          {jokerOffers.map((joker) => {
-            const sold = soldJokerIds.includes(joker.id);
+          {shopOffers.jokers.map((joker) => {
             const price = getJokerPrice(joker.price, vouchers);
             return (
               <div key={joker.id} className={styles.offerCard}>
@@ -124,9 +110,9 @@ export function Shop({
                   type="button"
                   className={styles.buyButton}
                   onClick={() => buyJoker(joker)}
-                  disabled={sold || money < price}
+                  disabled={money < price}
                 >
-                  {sold ? "Comprado" : `Comprar $${price}`}
+                  Comprar ${price}
                 </button>
               </div>
             );
@@ -140,9 +126,8 @@ export function Shop({
         </div>
 
         <div className={styles.offers}>
-          {consumableOffers.map((consumable) => {
+          {shopOffers.consumables.map((consumable) => {
             const price = getConsumablePrice(consumable, vouchers);
-            const sold = soldConsumableIds.includes(consumable.id);
             return (
               <div key={consumable.id} className={styles.offerCard}>
                 <span
@@ -157,9 +142,9 @@ export function Shop({
                   type="button"
                   className={styles.buyButton}
                   onClick={() => buyConsumable(consumable)}
-                  disabled={sold || consumablesFull || money < price}
+                  disabled={consumablesFull || money < price}
                 >
-                  {sold ? "Comprado" : consumablesFull ? "Sin hueco" : `Comprar $${price}`}
+                  {consumablesFull ? "Sin hueco" : `Comprar $${price}`}
                 </button>
               </div>
             );
@@ -217,7 +202,7 @@ export function Shop({
         </div>
 
         <div className={styles.offers}>
-          {voucherOffers.map((voucher) => {
+          {shopOffers.vouchers.map((voucher) => {
             const owned = hasVoucher(vouchers, voucher.id);
             return (
               <div key={voucher.id} className={styles.offerCard}>

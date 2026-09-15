@@ -19,6 +19,13 @@ export interface Blind {
   description?: string;
 }
 
+export interface ShopOffers {
+  jokers: Joker[];
+  consumables: Consumable[];
+  vouchers: Voucher[];
+  rerollCount: number;
+}
+
 export interface GameState {
   deck: Card[];
   hand: Card[];
@@ -26,6 +33,7 @@ export interface GameState {
   jokers: Joker[];
   consumables: Consumable[];
   vouchers: Voucher[];
+  shopOffers: ShopOffers | null;
   handLevels: Partial<Record<HandType, number>>;
   deckId: DeckId;
   level: number;
