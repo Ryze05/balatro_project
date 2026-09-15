@@ -2,6 +2,7 @@ import type { Consumable } from "../types/consumable";
 import type { Card } from "../types/card";
 import type { HandType } from "../types/game";
 import { shuffle } from "../utils/shuffle";
+import { getCardScore } from "./deck";
 
 const TAROT_DEFINITIONS: Consumable[] = [
   { id: "tarot-chariot", name: "The Chariot", description: "Cambia el palo de una carta a Picas", price: 3, kind: "tarot", effect: { type: "set_suit", suit: "spades" } },
@@ -86,7 +87,8 @@ export function applyConsumableEffect(
   const updated = hand.map((card, index) => {
     if (index !== cardIndex) return card;
     if (effect.type === "set_suit") return { ...card, suit: effect.suit };
-    if (effect.type === "set_rank") return { ...card, rank: effect.rank };
+    if (effect.type === "set_rank")
+      return { ...card, rank: effect.rank, chipValue: getCardScore(effect.rank) };
     return card;
   });
 
