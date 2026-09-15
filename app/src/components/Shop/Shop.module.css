@@ -72,9 +72,26 @@
 }
 
 .emptyMessage {
+    width: 100%;
     font-family: "Courier New", ui-monospace, monospace;
     color: var(--color-text-subtle);
     font-size: 13px;
+    text-align: center;
+}
+
+.emptyOfferSlot {
+    width: 176px;
+    min-height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-subtle);
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    opacity: 0.7;
 }
 
 .offerCard {

@@ -109,11 +109,6 @@ export function JokerBoard({
         )}
       </div>
 
-      {/* ------------------------------------------------------------ */}
-      {/* Consumibles (Tarot / Planeta): las cartas que tienes, listas  */}
-      {/* para usar. Al pulsarlas se activa el uso (con carta objetivo  */}
-      {/* si es un tarot de carta, coordinado desde Game.tsx).          */}
-      {/* ------------------------------------------------------------ */}
       <div className={styles.consumableArea}>
         <div className={styles.areaHeader}>
           <span className={styles.areaTitle}>Consumibles</span>

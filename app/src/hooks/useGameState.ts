@@ -15,7 +15,10 @@ import {
   getConsumableSlots,
   getJokerPrice,
   getConsumablePrice,
+  getShopVouchers,
 } from "../logic/vouchers";
+import { getShopJokers } from "../logic/joker";
+import { getShopConsumables } from "../logic/consumables";
 import {
   createBossPool,
   pickNextBossName,
@@ -55,6 +58,7 @@ function makeInitialState(): GameState {
     jokers: [],
     consumables: [],
     vouchers: [],
+    shopOffers: null,
     handLevels: {},
     deckId: "red",
     level: 1,
@@ -166,6 +170,7 @@ export function useGameState() {
         jokers: [],
         consumables: [],
         vouchers: [],
+        shopOffers: null,
         handLevels: {},
         deckId,
         level: 1,
@@ -233,6 +238,12 @@ export function useGameState() {
         return {
           ...next,
           money: prev.money + prev.currentBlind.reward,
+          shopOffers: {
+            jokers: getShopJokers(3),
+            consumables: getShopConsumables(2),
+            vouchers: getShopVouchers(1),
+            rerollCount: 0,
+          },
           status: "shop",
         };
       }
@@ -278,6 +289,12 @@ export function useGameState() {
         ...prev,
         money: prev.money - price,
         jokers: [...prev.jokers, joker],
+        shopOffers: prev.shopOffers
+          ? {
+              ...prev.shopOffers,
+              jokers: prev.shopOffers.jokers.filter((i) => i.id !== joker.id),
+            }
+          : prev.shopOffers,
       };
     });
   }, []);
@@ -316,6 +333,7 @@ export function useGameState() {
           ...makeRoundState(prev),
           blindIndex: nextIndex,
           currentBlind: prev.blinds[nextIndex],
+          shopOffers: null,
           status: "blindSelect",
         };
       }
@@ -333,6 +351,7 @@ export function useGameState() {
         blindIndex: 0,
         currentBlind: blinds[0],
         round: prev.round + 1,
+        shopOffers: null,
         status: "blindSelect",
         bossNamesRemaining: remaining,
       };
@@ -349,6 +368,14 @@ export function useGameState() {
         ...prev,
         money: prev.money - price,
         consumables: [...prev.consumables, consumable],
+        shopOffers: prev.shopOffers
+          ? {
+              ...prev.shopOffers,
+              consumables: prev.shopOffers.consumables.filter(
+                (i) => i.id !== consumable.id,
+              ),
+            }
+          : prev.shopOffers,
       };
     });
   }, []);
@@ -411,6 +438,12 @@ export function useGameState() {
         ...prev,
         money: prev.money - voucher.price,
         vouchers: [...prev.vouchers, voucher],
+        shopOffers: prev.shopOffers
+          ? {
+              ...prev.shopOffers,
+              vouchers: prev.shopOffers.vouchers.filter((i) => i.id !== voucher.id),
+            }
+          : prev.shopOffers,
       };
     });
   }, []);
@@ -420,6 +453,24 @@ export function useGameState() {
     setGameState((prev) => {
       if (prev.money < amount) return prev;
       return { ...prev, money: prev.money - amount };
+    });
+  }, []);
+
+  //* Rerroll de tienda: regenera ofertas de jokers y consumibles
+  const rerollShop = useCallback((cost: number) => {
+    setGameState((prev) => {
+      if (prev.money < cost) return prev;
+      if (!prev.shopOffers) return prev;
+      return {
+        ...prev,
+        money: prev.money - cost,
+        shopOffers: {
+          jokers: getShopJokers(3),
+          consumables: getShopConsumables(2),
+          vouchers: prev.shopOffers.vouchers,
+          rerollCount: prev.shopOffers.rerollCount + 1,
+        },
+      };
     });
   }, []);
 
@@ -440,6 +491,7 @@ export function useGameState() {
     applyConsumable,
     buyVoucher,
     spendMoney,
+    rerollShop,
     reorderJokers,
     advanceToNextBlind,
     setGamePhase,

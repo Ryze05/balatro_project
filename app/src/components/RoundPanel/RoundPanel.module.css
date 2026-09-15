@@ -250,3 +250,30 @@
     color: var(--color-text-muted);
     border-color: var(--color-text-subtle);
 }
+
+@media (min-width: 901px) {
+    .handArea {
+        max-width: 1000px;
+    }
+
+    .cardSlot {
+        margin: 0 -12px;
+    }
+
+    .card {
+        width: 120px;
+        height: 168px;
+    }
+
+    .cardRank {
+        font-size: 20px;
+    }
+
+    .cardCornerSuit {
+        font-size: 16px;
+    }
+
+    .cardCenterSuit {
+        font-size: 46px;
+    }
+}
