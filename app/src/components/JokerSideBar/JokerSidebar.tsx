@@ -65,7 +65,7 @@ export function JokerSidebar({
   let preview: { handType: HandType; chips: number; multiplier: number; total: number } | null = null;
   if (hasValidSelection) {
     const { handType, scoringCards } = evaluateHand(selectedCards);
-    const scoreContext = calculateScore(handType, scoringCards, jokers, handLevels);
+    const scoreContext = calculateScore(handType, scoringCards, jokers, handLevels, blind);
     preview = {
       handType,
       chips: scoreContext.chips,

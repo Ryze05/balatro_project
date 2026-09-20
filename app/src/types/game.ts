@@ -3,6 +3,7 @@ import type { Joker } from "./joker";
 import type { Consumable } from "./consumable";
 import type { Voucher } from "./voucher";
 import type { DeckId } from "./deck";
+import type { BossEffect } from "./boss";
 
 export type GamePhase = "menu" | "blindSelect" | "playing" | "rules" | "shop" | "gameover";
 
@@ -17,6 +18,8 @@ export interface Blind {
   skippable: boolean;
   skipTag?: string;
   description?: string;
+  bossId?: string;
+  effect?: BossEffect;
 }
 
 export interface ShopOffers {
@@ -46,7 +49,8 @@ export interface GameState {
   money: number;
   score: number;
   status: GamePhase;
-  bossNamesRemaining: string[];
+  bossIdsRemaining: string[];
+  playedHandTypesThisRound: HandType[];
 }
 
 export type MenuOption = "play" | "rules" | "options";
