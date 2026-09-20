@@ -46,6 +46,7 @@ export default function Game() {
     jokers,
     consumables,
     vouchers,
+    playedHandTypesThisRound,
     status,
   } = gameState;
 
@@ -130,7 +131,9 @@ export default function Game() {
         {status === "playing" && currentBlind && (
           <div className={styles.screenArea}>
             <RoundPanel
+              blind={currentBlind}
               hand={hand}
+              playedHandTypes={playedHandTypesThisRound}
               handsLeft={handsLeft}
               discardsLeft={discardsLeft}
               targetConsumable={targetConsumable}

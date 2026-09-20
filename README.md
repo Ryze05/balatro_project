@@ -48,7 +48,7 @@ src/
 ├── hooks/
 │   └── useGameState.ts      # Estado y acciones principales de la partida
 ├── logic/                   # Reglas del dominio del juego
-│   ├── blinds.ts            # Niveles, blinds y bosses
+│   ├── blinds.ts            # Niveles, blinds, bosses y sus efectos
 │   ├── deck.ts              # Creación, barajado y robo de cartas
 │   ├── handEvaluator.ts     # Detección de manos de poker
 │   ├── joker.ts             # Catálogo y ofertas de jokers
@@ -59,7 +59,7 @@ src/
 │   └── NotFound/            # Ruta inexistente
 ├── storage/
 │   └── localStorage.ts      # Guardado y carga de partidas
-├── types/                   # Tipos TypeScript del dominio
+├── types/                   # Tipos TypeScript del dominio (card, deck, game, joker, boss)
 └── utils/
     └── shuffle.ts           # Utilidad genérica para barajar arrays
 ```
@@ -194,16 +194,28 @@ El catálogo está en `src/logic/joker.ts`.
 
 La tienda muestra ofertas reales y permite comprar si el jugador tiene suficiente dinero. Al comprar, el joker se añade a `gameState.jokers` y el precio se resta de `gameState.money`.
 
-## Bosses sin repetición
+## Bosses y sus efectos
 
-Los bosses se guardan como una lista serializable en `bossNamesRemaining`.
+Cada boss se define en `types/boss.ts` (`BossDefinition`) y el catálogo está en `logic/blinds.ts` (`BOSS_CATALOG`). Cada uno declara un `anteMinimo` y un `effect`:
 
-1. Al comenzar una partida se baraja la lista de bosses.
+- **The Wall**: objetivo ×2 (total ×4).
+- **The Needle**: solo 1 mano.
+- **The Water**: empiezas sin descartes.
+- **The Manacle**: una carta menos en la mano.
+- **The Hook**: descarta 2 cartas al azar cada vez que juegas una mano.
+- **The Plant**: las figuras (J, Q, K) no puntúan.
+- **The Goad / The Head / The Window / The Club**: un palo no puntúa.
+- **The Eye**: no se puede repetir tipo de jugada en la ronda.
+- **The Mouth**: solo se puede jugar el tipo de la primera mano.
+
+Los bosses se guardan como una lista serializable en `bossIdsRemaining`.
+
+1. Al comenzar una partida se barajan los bosses disponibles para el Ante (`anteMinimo <= level`).
 2. Cada nuevo level extrae un boss de la lista.
 3. El boss extraído se elimina del pool.
 4. Cuando la lista queda vacía, se vuelve a barajar.
 
-Así no se repite un boss hasta que todos los bosses disponibles han aparecido. Al estar guardado como `string[]`, el pool también puede persistirse en localStorage.
+Así no se repite un boss hasta que todos los disponibles han aparecido, y los bosses de Antes altos no salen antes de tiempo. Al estar guardado como `string[]`, el pool también puede persistirse en localStorage.
 
 ## Guardado en localStorage
 
@@ -244,16 +256,16 @@ Implementado:
 - Estado centralizado mediante `useGameState`.
 - Guardado y carga con localStorage.
 - Generación de niveles y blinds.
-- Bosses aleatorios sin repetición dentro de cada ciclo.
+- Bosses aleatorios sin repetición, con efectos propios y filtrado por Ante.
 - Creación, selección, juego y descarte de cartas.
 - Evaluación de manos de poker.
 - Cálculo de score con jokers.
+- Cálculo de score con cartas debuffeadas por el Boss.
 - Tienda con ofertas y compra de jokers.
 - Bonuses iniciales de las barajas Red, Blue y Yellow.
 
 Pendiente o simplificado:
 
-- Los efectos especiales de los Boss Blinds todavía son placeholders.
 - La lista de bosses es reducida respecto al juego original.
 - Los niveles Endless posteriores al 12 utilizan una aproximación.
 - Las pantallas de Rules y Options todavía no tienen una vista propia.

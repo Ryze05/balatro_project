@@ -37,6 +37,9 @@ export function BlindSelect({ level, blinds, blindIndex, onPlay, onSkip }: Blind
               <span className={styles.blindName}>{blind.name}</span>
               <span className={styles.targetLabel}>Objetivo</span>
               <span className={styles.targetScore}>{blind.targetScore.toLocaleString()}</span>
+              {blind.type === "boss" && blind.description && (
+                <span className={styles.description}>{blind.description}</span>
+              )}
               {state === "done" && <span className={styles.badge}>Superada</span>}
               {state === "upcoming" && <span className={styles.badge}>Bloqueada</span>}
             </div>

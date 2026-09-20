@@ -17,6 +17,22 @@ export function saveGame(state: GameState): void {
   }
 }
 
+//* Comprueba que un guardado tiene el esquema esperado
+function isValidGameState(value: unknown): value is GameState {
+  if (!value || typeof value !== "object") return false;
+  const state = value as Record<string, unknown>;
+  return (
+    Array.isArray(state.deck) &&
+    Array.isArray(state.hand) &&
+    Array.isArray(state.jokers) &&
+    Array.isArray(state.blinds) &&
+    Array.isArray(state.bossIdsRemaining) &&
+    Array.isArray(state.playedHandTypesThisRound) &&
+    typeof state.money === "number" &&
+    typeof state.status === "string"
+  );
+}
+
 export function loadGame(): GameState | null {
   const item = localStorage.getItem(STORAGE_KEY);
   if (!item) return null;
@@ -24,6 +40,10 @@ export function loadGame(): GameState | null {
   try {
     const parsed = JSON.parse(item) as Partial<SavedGame>;
     if (parsed?.version !== SAVE_VERSION || !parsed.state) {
+      clearSavedGame();
+      return null;
+    }
+    if (!isValidGameState(parsed.state)) {
       clearSavedGame();
       return null;
     }

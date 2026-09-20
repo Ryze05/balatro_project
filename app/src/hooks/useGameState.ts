@@ -21,8 +21,11 @@ import { getShopJokers } from "../logic/joker";
 import { getShopConsumables } from "../logic/consumables";
 import {
   createBossPool,
-  pickNextBossName,
+  pickNextBoss,
   generateBlindsForLevel,
+  getHandSizeDelta,
+  getResourceOverrides,
+  checkPlayAllowed,
 } from "../logic/blinds";
 import { saveGame, loadGame, clearSavedGame } from "../storage/localStorage";
 
@@ -71,7 +74,8 @@ function makeInitialState(): GameState {
     money: BASE_MONEY,
     score: 0,
     status: "menu",
-    bossNamesRemaining: [],
+    bossIdsRemaining: [],
+    playedHandTypesThisRound: [],
   };
 }
 
@@ -99,32 +103,40 @@ function drawCards(
   return { drawn, deck: currentDeck, discardPile: currentDiscard };
 }
 
-//* Estado para nivel nuevo, con pick para devolver partes específicas
+//* Estado de una ronda nueva para un blind concreto (reparte mano y aplica efectos)
 function makeRoundState(
   state: GameState,
+  blind: Blind,
 ): Pick<
   GameState,
-  "deck" | "hand" | "discardPile" | "handsLeft" | "discardsLeft" | "score"
+  | "deck"
+  | "hand"
+  | "discardPile"
+  | "handsLeft"
+  | "discardsLeft"
+  | "score"
+  | "playedHandTypesThisRound"
 > {
   const recycled = shuffleCards([
     ...state.deck,
     ...state.discardPile,
     ...state.hand,
   ]);
-  const { drawn, deck } = drawCards(recycled, HAND_SIZE);
+  const handSize = HAND_SIZE + getHandSizeDelta(blind);
+  const { drawn, deck } = drawCards(recycled, handSize);
+  const overrides = getResourceOverrides(blind);
   return {
     deck,
     hand: drawn,
     discardPile: [],
-    handsLeft: getHands(
-      BASE_HANDS + DECK_BONUS[state.deckId].hands,
-      state.vouchers,
-    ),
-    discardsLeft: getDiscards(
-      BASE_DISCARDS + DECK_BONUS[state.deckId].discards,
-      state.vouchers,
-    ),
+    handsLeft:
+      overrides.hands ??
+      getHands(BASE_HANDS + DECK_BONUS[state.deckId].hands, state.vouchers),
+    discardsLeft:
+      overrides.discards ??
+      getDiscards(BASE_DISCARDS + DECK_BONUS[state.deckId].discards, state.vouchers),
     score: 0,
+    playedHandTypesThisRound: [],
   };
 }
 
@@ -154,19 +166,25 @@ export function useGameState() {
 
   //* Empezar nueva partida
   const startNewGame = useCallback((deckId: DeckId = "red") => {
-    const deck = createDeck();
-    const { drawn, deck: remainingDeck } = drawCards(deck, HAND_SIZE);
-
     setGameState((prev) => {
-      const bossPool = createBossPool();
-      const { bossName, remaining } = pickNextBossName(bossPool);
-      const blinds = generateBlindsForLevel(1, bossName);
+      const bossPool = createBossPool(1);
+      const { bossId, remaining } = pickNextBoss(bossPool, 1);
+      const blinds = generateBlindsForLevel(1, bossId);
+      const firstBlind = blinds[0];
 
       return {
         ...prev,
-        deck: remainingDeck,
-        hand: drawn,
-        discardPile: [],
+        ...makeRoundState(
+          {
+            ...prev,
+            deck: createDeck(),
+            hand: [],
+            discardPile: [],
+            vouchers: [],
+            deckId,
+          },
+          firstBlind,
+        ),
         jokers: [],
         consumables: [],
         vouchers: [],
@@ -176,14 +194,11 @@ export function useGameState() {
         level: 1,
         blinds,
         blindIndex: 0,
-        currentBlind: blinds[0],
+        currentBlind: firstBlind,
         round: 1,
-        handsLeft: getHands(BASE_HANDS + DECK_BONUS[deckId].hands, []),
-        discardsLeft: getDiscards(BASE_DISCARDS + DECK_BONUS[deckId].discards, []),
         money: BASE_MONEY + DECK_BONUS[deckId].money,
-        score: 0,
         status: "blindSelect",
-        bossNamesRemaining: remaining,
+        bossIdsRemaining: remaining,
       };
     });
   }, []);
@@ -211,17 +226,40 @@ export function useGameState() {
 
       //* Calculamos puntuación
       const { handType, scoringCards } = evaluateHand(selected);
-      const score = calculateScore(handType, scoringCards, prev.jokers, prev.handLevels);
+
+      //* Restricciones del boss (The Eye / The Mouth)
+      const allowed = checkPlayAllowed(handType, prev.playedHandTypesThisRound, prev.currentBlind);
+      if (!allowed.allowed) return prev;
+
+      const score = calculateScore(
+        handType,
+        scoringCards,
+        prev.jokers,
+        prev.handLevels,
+        prev.currentBlind,
+      );
       const roundScore = getFinalScore(score);
 
       const newScore = prev.score + roundScore;
       const newHandsLeft = prev.handsLeft - 1;
 
+      //* The Hook: al jugar, descarta cartas al azar y se reponen
+      let remaining = prev.hand.filter((i) => i.selected === false);
+      const extraDiscarded: Card[] = [];
+      const effect = prev.currentBlind.effect;
+      if (effect?.type === "discard_random_on_play" && remaining.length > 0) {
+        const count = Math.min(effect.count, remaining.length);
+        const shuffled = shuffleCards(remaining);
+        extraDiscarded.push(...shuffled.slice(0, count));
+        const discardedIds = new Set(extraDiscarded.map((i) => i.id));
+        remaining = remaining.filter((i) => !discardedIds.has(i.id));
+      }
+
       //* Cogemos cartas del mazo y actualizamos estado
-      const remaining = prev.hand.filter((i) => i.selected === false);
+      const handSize = HAND_SIZE + getHandSizeDelta(prev.currentBlind);
       const { drawn, deck, discardPile } = drawCards(
         prev.deck,
-        HAND_SIZE - remaining.length,
+        handSize - remaining.length,
         prev.discardPile,
       );
 
@@ -229,9 +267,10 @@ export function useGameState() {
         ...prev,
         deck,
         hand: [...remaining, ...drawn],
-        discardPile: [...discardPile, ...selected],
+        discardPile: [...discardPile, ...selected, ...extraDiscarded],
         score: newScore,
         handsLeft: newHandsLeft,
+        playedHandTypesThisRound: [...prev.playedHandTypesThisRound, handType],
       };
 
       if (newScore >= prev.currentBlind.targetScore) {
@@ -328,32 +367,34 @@ export function useGameState() {
       //* Sigue dentro del mismo nivel, siguiente blind.
       //* Se reinicia la ronda: mazo completo barajado y mano nueva.
       if (nextIndex < prev.blinds.length) {
+        const nextBlind = prev.blinds[nextIndex];
         return {
           ...prev,
-          ...makeRoundState(prev),
+          ...makeRoundState(prev, nextBlind),
           blindIndex: nextIndex,
-          currentBlind: prev.blinds[nextIndex],
+          currentBlind: nextBlind,
           shopOffers: null,
           status: "blindSelect",
         };
       }
 
       //* Nuevo nivel, generar los nuevos blinds
-      const { bossName, remaining } = pickNextBossName(prev.bossNamesRemaining);
       const nextLevel = prev.level + 1;
-      const blinds = generateBlindsForLevel(nextLevel, bossName);
+      const { bossId, remaining } = pickNextBoss(prev.bossIdsRemaining, nextLevel);
+      const blinds = generateBlindsForLevel(nextLevel, bossId);
+      const firstBlind = blinds[0];
 
       return {
         ...prev,
-        ...makeRoundState(prev),
+        ...makeRoundState(prev, firstBlind),
         level: nextLevel,
         blinds,
         blindIndex: 0,
-        currentBlind: blinds[0],
+        currentBlind: firstBlind,
         round: prev.round + 1,
         shopOffers: null,
         status: "blindSelect",
-        bossNamesRemaining: remaining,
+        bossIdsRemaining: remaining,
       };
     });
   }, []);
