@@ -85,7 +85,7 @@
     flex-direction: column;
     width: 112px;
     flex-shrink: 0;
-    background: var(--color-card);
+    background: var(--color-card-shadow);
     border: 2px solid var(--color-card-text);
     border-radius: var(--radius-md);
     overflow: hidden;
@@ -154,7 +154,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-card-shadow);
+    background: inherit;
     overflow: hidden;
 }
 
@@ -219,6 +219,7 @@
     flex-direction: column;
     gap: 3px;
     padding: 7px 8px 9px;
+    background: inherit;
 }
 
 .jokerName {
@@ -303,7 +304,7 @@
 
 .consumableSlotFilled {
     border: 2px solid var(--color-border);
-    background: var(--color-surface-raised);
+    background: var(--color-card-shadow);
     opacity: 1;
     cursor: pointer;
     font-family: inherit;
@@ -312,17 +313,14 @@
 
 .consumableTarot {
     border-color: var(--color-special);
-    background: color-mix(in srgb, var(--color-special) 16%, var(--color-card));
 }
 
 .consumablePlanet {
     border-color: var(--color-info);
-    background: color-mix(in srgb, var(--color-info) 16%, var(--color-card));
 }
 
 .consumableSpectral {
     border-color: #6a4c93;
-    background: color-mix(in srgb, #6a4c93 22%, var(--color-card));
     box-shadow: 0 0 0 1px color-mix(in srgb, #6a4c93 40%, transparent);
 }
 

@@ -205,6 +205,35 @@
     }
 }
 
+@media (max-width: 380px) {
+    .fan {
+        width: 290px;
+        height: 132px;
+    }
+
+    .fanCard {
+        left: calc(50% - 32px);
+        width: 64px;
+        height: 92px;
+    }
+
+    .fanCardC0 {
+        transform: translateX(-108px) rotate(-27deg);
+    }
+
+    .fanCardC1 {
+        transform: translateX(-36px) rotate(-9deg);
+    }
+
+    .fanCardC2 {
+        transform: translateX(36px) rotate(9deg);
+    }
+
+    .fanCardC3 {
+        transform: translateX(108px) rotate(27deg);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .fanCard {
         animation: none;
