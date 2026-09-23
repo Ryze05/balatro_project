@@ -83,6 +83,10 @@ export function JokerSidebar({
             <span className={styles.scoreBlindName}>{blind.name}</span>
           </div>
 
+          {blind.type === "boss" && blind.description && (
+            <p className={styles.scoreBlindDescription}>{blind.description}</p>
+          )}
+
           <div className={styles.scoreMain}>
             <span className={styles.scoreMainLabel}>Puntos</span>
             <span className={styles.scoreMainValue}>{score.toLocaleString()}</span>
