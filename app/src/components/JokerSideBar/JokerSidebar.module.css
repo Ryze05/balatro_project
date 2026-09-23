@@ -71,6 +71,15 @@
     color: var(--color-text);
 }
 
+.scoreBlindDescription {
+    margin: 8px 0 0;
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 11px;
+    line-height: 1.35;
+    text-align: center;
+    color: var(--color-text-muted);
+}
+
 .scoreMain {
     display: flex;
     flex-direction: column;

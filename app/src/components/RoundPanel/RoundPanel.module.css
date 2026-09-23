@@ -193,7 +193,6 @@
 }
 
 .cardDebuffed {
-    filter: grayscale(0.85) brightness(0.75);
     border-color: #c1121f;
 }
 
@@ -345,4 +344,5 @@
         right: 4px;
         font-size: 11px;
     }
+
 }
