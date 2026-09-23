@@ -6,7 +6,6 @@ import RotatePrompt from './components/RotatePrompt/RotatePrompt'
 import BackgroundMusic from './components/BackgroundMusic/BackgroundMusic'
 
 function App() {
-
   return (
     <>
       <RotatePrompt />

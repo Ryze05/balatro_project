@@ -13,8 +13,12 @@ import styles from "./Game.module.css";
 import JokerSidebar from "../../components/JokerSideBar/JokerSidebar";
 import JokerBoard from "../../components/JokerBoard/JokerBoard";
 import GameOverPanel from "../../components/GameOverPanel/GameOverPanel";
+import IntroSplash from "../../components/IntroSplash/IntroSplash";
 
 export default function Game() {
+  const [showIntro, setShowIntro] = useState(false);
+  const [showMenuTransition, setShowMenuTransition] = useState(false);
+
   const {
     gameState,
     startNewGame,
@@ -93,22 +97,36 @@ export default function Game() {
 
   const handleMenuSelect = (option: MenuOption, deckId?: DeckId): void => {
     if (option === "play") {
+      setShowMenuTransition(false);
       startNewGame(deckId);
+      setShowIntro(true);
       return;
     }
     setGamePhase("menu");
+  };
+
+  const handleReturnToMenu = (): void => {
+    setGamePhase("menu");
+    setShowMenuTransition(true);
   };
 
   if (status === "menu") {
     return (
       <div>
         <MainMenu onSelect={handleMenuSelect} />
+        {showMenuTransition && (
+          <IntroSplash
+            variant="menu"
+            onComplete={() => setShowMenuTransition(false)}
+          />
+        )}
       </div>
     );
   }
 
   return (
     <div className={styles.layout}>
+      {showIntro && <IntroSplash onComplete={() => setShowIntro(false)} />}
       <div className={styles.sidebarColumn}>
         <JokerSidebar
           money={money}
@@ -207,7 +225,7 @@ export default function Game() {
               money={money}
               jokers={jokers}
               onRestart={() => startNewGame(gameState.deckId)}
-              onMenu={() => setGamePhase("menu")}
+              onMenu={handleReturnToMenu}
             />
           </div>
         )}

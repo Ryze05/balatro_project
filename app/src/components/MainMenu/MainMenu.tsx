@@ -33,6 +33,7 @@ const FAN_CARDS = [
   { id: "fan-joker", image: "/caraJoker.png" },
   { id: "fan-tarot", image: "/tarot.png" },
   { id: "fan-planeta", image: "/planeta.png" },
+  { id: "fan-espectral", image: "/espectral.png" },
 ];
 
 interface MainMenuProps {
