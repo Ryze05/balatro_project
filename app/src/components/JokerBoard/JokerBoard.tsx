@@ -37,7 +37,7 @@ const CONSUMABLE_KIND_LABEL: Record<Consumable["kind"], string> = {
 function getConsumableImage(kind: Consumable["kind"]): string {
   if (kind === "tarot") return "/tarot.png";
   if (kind === "planet") return "/planeta.png";
-  return "/espectral.svg";
+  return "/espectral.png";
 }
 
 function getConsumableStyle(kind: Consumable["kind"]): string {
