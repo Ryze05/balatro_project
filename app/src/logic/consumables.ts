@@ -8,6 +8,8 @@ import { getRandomJoker } from "./joker";
 
 const SUITS_FOR_RANDOM: Suit[] = ["hearts", "diamonds", "clubs", "spades"];
 
+export type ConsumableTargetKind = "card" | "joker" | "none";
+
 const TAROT_DEFINITIONS: Consumable[] = [
   { id: "tarot-chariot", name: "The Chariot", description: "Cambia el palo de una carta a Picas", price: 3, kind: "tarot", effect: { type: "set_suit", suit: "spades" } },
   { id: "tarot-lovers", name: "The Lovers", description: "Cambia el palo de una carta a Corazones", price: 3, kind: "tarot", effect: { type: "set_suit", suit: "hearts" } },
@@ -34,7 +36,6 @@ const PLANET_DEFINITIONS: Consumable[] = [
   { id: "planet-pluto", name: "Pluto", description: "Sube de nivel Carta Alta", price: 4, kind: "planet", effect: { type: "level_hand", handType: "HighCard" } },
 ];
 
-//* Cartas espectrales: solo aparecen en el Spectral Pack de la tienda.
 const SPECTRAL_DEFINITIONS: Consumable[] = [
   {
     id: "spectral-grim",
@@ -92,7 +93,6 @@ export function getCelestialPack(count: number = 3): Consumable[] {
   return shuffle(PLANET_DEFINITIONS).slice(0, count).map((i) => ({ ...i }));
 }
 
-//* Sobre espectral: 2 cartas a elegir 1 (igual que Arcana/Celestial)
 export function getSpectralPack(count: number = 2): Consumable[] {
   return shuffle(SPECTRAL_DEFINITIONS).slice(0, count).map((i) => ({ ...i }));
 }
@@ -103,13 +103,6 @@ export function getConsumableById(id: string): Consumable | undefined {
   );
 }
 
-export type ConsumableTargetKind = "card" | "joker" | "none";
-
-//* A qué hay que apuntar para poder aplicar el efecto: una carta de la
-//* mano, un comodín, o nada (se aplica directamente). Game.tsx y
-//* JokerBoard.tsx usan esto para saber cuándo un consumible NO se puede
-//* usar todavía (por ejemplo, un efecto "card" fuera de la ronda, donde
-//* la mano no está visible).
 export function getConsumableTargetKind(consumable: Consumable): ConsumableTargetKind {
   switch (consumable.effect.type) {
     case "set_suit":
@@ -123,11 +116,6 @@ export function getConsumableTargetKind(consumable: Consumable): ConsumableTarge
     default:
       return "none";
   }
-}
-
-//* Se mantiene por compatibilidad
-export function requiresTarget(consumable: Consumable): boolean {
-  return getConsumableTargetKind(consumable) !== "none";
 }
 
 export function getHandType(consumable: Consumable): HandType | undefined {
@@ -156,8 +144,6 @@ export function applyConsumableEffect(
     return { consumables: remaining };
   }
 
-  //* --- Espectrales sin objetivo ---
-
   if (effect.type === "add_random_joker") {
     return { jokers: [...jokers, getRandomJoker()], consumables: remaining };
   }
@@ -170,8 +156,6 @@ export function applyConsumableEffect(
     };
   }
 
-  //* --- Espectrales que apuntan a un comodín ---
-
   if (effect.type === "destroy_joker") {
     if (targetJokerIndex === undefined || !jokers[targetJokerIndex]) return {};
     return {
@@ -183,12 +167,14 @@ export function applyConsumableEffect(
   if (effect.type === "duplicate_joker") {
     if (targetJokerIndex === undefined || !jokers[targetJokerIndex]) return {};
     return {
-      jokers: [...jokers, { ...jokers[targetJokerIndex] }],
+      jokers: [
+        ...jokers.slice(0, targetJokerIndex + 1),
+        { ...jokers[targetJokerIndex] },
+        ...jokers.slice(targetJokerIndex + 1),
+      ],
       consumables: remaining,
     };
   }
-
-  //* --- Efectos que apuntan a una carta de la mano (tarots + Grim) ---
 
   const target = hand.find((card) => card.id === targetCardId);
   if (!target) return {};

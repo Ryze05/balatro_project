@@ -50,29 +50,16 @@ export default function Game() {
     status,
   } = gameState;
 
-  //* Huecos reales de consumibles (tiene en cuenta el voucher Grabber),
-  //* misma función que ya usa useGameState internamente para bloquear
-  //* la compra cuando no hay hueco.
   const maxConsumableSlots = getConsumableSlots(MAX_CONSUMABLES, vouchers);
 
   const [targetConsumable, setTargetConsumable] = useState<Consumable | null>(null);
 
-  //* A qué tenemos que apuntar para poder usar el consumible activo:
-  //* "card" (tarots + Grim), "joker" (Ectoplasm/Ankh) o "none".
   const targetKind = targetConsumable ? getConsumableTargetKind(targetConsumable) : "none";
 
-  //* FIX: si sales de la ronda, se cancela el modo "elige carta objetivo"
-  //* (la mano deja de estar visible). El modo "elige comodín" NO se cancela
-  //* aquí porque los comodines son visibles en cualquier fase.
   useEffect(() => {
-    if (status !== "playing" && targetKind === "card") setTargetConsumable(null);
-  }, [status, targetKind]);
+    setTargetConsumable(null);
+  }, [status]);
 
-  //* FIX PRINCIPAL: antes se entraba en modo "elige objetivo" siempre que el
-  //* consumible lo pidiera, sin comprobar si en ese momento existía algo que
-  //* elegir. Si usabas Grim fuera de una ronda (sin mano visible) o
-  //* Ectoplasm/Ankh sin comodines, el aviso se quedaba colgado para siempre
-  //* porque nunca podía completarse un target. Ahora se comprueba antes.
   const canUseConsumable = (consumable: Consumable): boolean => {
     const kind = getConsumableTargetKind(consumable);
     if (kind === "card") return status === "playing" && hand.length > 0;

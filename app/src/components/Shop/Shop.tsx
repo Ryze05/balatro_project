@@ -23,7 +23,6 @@ interface ShopProps {
   onContinue: () => void;
 }
 
-//* Sobres disponibles en la tienda (Arcana, Celestial y Spectral)
 interface PackDefinition {
   id: string;
   name: string;
@@ -95,7 +94,6 @@ export function Shop({
     onBuyConsumable(consumable);
   };
 
-  //* Comprar un sobre: descuenta el dinero y abre el modal con sus cartas
   const openPack = (pack: PackDefinition): void => {
     onSpendMoney(getJokerPrice(pack.price, vouchers));
     setSoldPackIds((prev) => [...prev, pack.id]);

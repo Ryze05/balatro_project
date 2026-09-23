@@ -10,8 +10,8 @@ export type ConsumableEffect =
   | { type: "add_money"; value: number }
   | { type: "destroy_card" }
   | { type: "level_hand"; handType: HandType }
-  //* Nuevos efectos para las cartas espectrales
-  | { type: "enhance_card"; chipBonus: number } //* Mejora una carta: le añade fichas permanentes
+  //* cartas espectrales
+  | { type: "enhance_card"; chipBonus: number } //* Añade fichas permanentes
   | { type: "convert_hand_suit" } //* Convierte toda la mano a un palo aleatorio
   | { type: "destroy_joker" } //* Destruye el comodín seleccionado
   | { type: "duplicate_joker" } //* Duplica el comodín seleccionado
