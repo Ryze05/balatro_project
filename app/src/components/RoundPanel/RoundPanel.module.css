@@ -206,6 +206,13 @@
     color: #c1121f;
 }
 
+.cardEnhanced {
+    border-color: var(--color-special);
+    box-shadow:
+        0 0 0 2px var(--color-special),
+        0 0 14px color-mix(in srgb, var(--color-special) 65%, transparent);
+}
+
 .restrictionWarning {
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 12px;

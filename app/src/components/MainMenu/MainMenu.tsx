@@ -30,9 +30,10 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 const FAN_CARDS = [
-  { id: "fan-joker", image: "/caraJoker.png" },
-  { id: "fan-tarot", image: "/tarot.png" },
-  { id: "fan-planeta", image: "/planeta.png" },
+  { id: "fan-joker", image: "/caraJoker.png", label: "Comodín" },
+  { id: "fan-tarot", image: "/tarot.png", label: "Carta de tarot" },
+  { id: "fan-planeta", image: "/planeta.png", label: "Carta de planeta" },
+  { id: "fan-espectral", image: "/espectral.png", label: "Carta espectral" },
 ];
 
 interface MainMenuProps {
@@ -81,7 +82,7 @@ export function MainMenu({ onSelect }: MainMenuProps): JSX.Element {
         <div className={styles.fan}>
           {FAN_CARDS.map((card, i) => (
             <div key={card.id} className={`${styles.fanCard} ${styles[`fanCardC${i}`]}`}>
-              <img src={card.image} alt="" className={styles.fanCardImage} />
+              <img src={card.image} alt={card.label} className={styles.fanCardImage} />
             </div>
           ))}
         </div>

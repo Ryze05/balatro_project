@@ -38,7 +38,7 @@
 .fan {
     position: relative;
     height: 150px;
-    width: 240px;
+    width: 340px;
     margin-bottom: -18px;
 }
 
@@ -66,18 +66,23 @@
 }
 
 .fanCardC0 {
-    transform: translateX(-92px) rotate(-18deg);
+    transform: translateX(-138px) rotate(-27deg);
     animation-delay: 0s;
 }
 
 .fanCardC1 {
-    transform: translateX(0) rotate(0deg);
+    transform: translateX(-46px) rotate(-9deg);
     animation-delay: 0.22s;
 }
 
 .fanCardC2 {
-    transform: translateX(92px) rotate(18deg);
+    transform: translateX(46px) rotate(9deg);
     animation-delay: 0.44s;
+}
+
+.fanCardC3 {
+    transform: translateX(138px) rotate(27deg);
+    animation-delay: 0.66s;
 }
 
 @keyframes menuFloat {
@@ -197,6 +202,35 @@
 @media (min-width: 480px) {
     .hint {
         display: block;
+    }
+}
+
+@media (max-width: 380px) {
+    .fan {
+        width: 290px;
+        height: 132px;
+    }
+
+    .fanCard {
+        left: calc(50% - 32px);
+        width: 64px;
+        height: 92px;
+    }
+
+    .fanCardC0 {
+        transform: translateX(-108px) rotate(-27deg);
+    }
+
+    .fanCardC1 {
+        transform: translateX(-36px) rotate(-9deg);
+    }
+
+    .fanCardC2 {
+        transform: translateX(36px) rotate(9deg);
+    }
+
+    .fanCardC3 {
+        transform: translateX(108px) rotate(27deg);
     }
 }
 

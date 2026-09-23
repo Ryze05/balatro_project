@@ -101,9 +101,9 @@ export function RoundPanel({
                 type="button"
                 className={`${styles.card} ${isSelected ? styles.cardSelected : ""} ${
                   isDebuffed ? styles.cardDebuffed : ""
-                }`}
+                } ${card.enhanced ? styles.cardEnhanced : ""}`}
                 onClick={() => (targetConsumable ? onTargetCard(card.id) : onToggleCard(card.id))}
-                aria-label={`${card.rank} of ${card.suit}${isDebuffed ? ", debuffed, 0 chips" : ""}`}
+                aria-label={`${card.rank} of ${card.suit}${isDebuffed ? ", debuffed, 0 chips" : ""}${card.enhanced ? ", enhanced card" : ""}`}
               >
                 <span
                   className={`${styles.cardCorner} ${styles.cardCornerTL} ${isRed ? styles.cardRed : styles.cardBlack}`}
