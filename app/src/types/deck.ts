@@ -9,7 +9,7 @@ export interface DeckDefinition {
 
 
 export const DECKS: DeckDefinition[] = [
-    { id: "red", name: "Red Deck", description: "+1 discard every round.", color: "#c1121f" },
-    { id: "blue", name: "Blue Deck", description: "+1 hand every round.", color: "#4c8fd1" },
-    { id: "yellow", name: "Yellow Deck", description: "Start with $10 extra.", color: "#e3b23c" },
+    { id: "red", name: "Baraja Roja", description: "+1 descarte por ronda.", color: "#c1121f" },
+    { id: "blue", name: "Baraja Azul", description: "+1 mano por ronda.", color: "#4c8fd1" },
+    { id: "yellow", name: "Baraja Amarilla", description: "Empieza con 10$ extra.", color: "#e3b23c" },
 ];

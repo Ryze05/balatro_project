@@ -52,6 +52,7 @@ src/
 │   ├── deck.ts              # Creación, barajado y robo de cartas
 │   ├── handEvaluator.ts     # Detección de manos de poker
 │   ├── joker.ts             # Catálogo y ofertas de jokers
+│   ├── consumables.ts       # Tarots, planetas y cartas espectrales
 │   └── score.ts             # Cálculo de chips, multiplicador y score
 ├── pages/
 │   ├── Game/                # Pantalla principal de la partida
@@ -115,6 +116,10 @@ El tipo `GameState` (`src/types/game.ts`) contiene toda la información necesari
 - `hand`: cartas que tiene el jugador.
 - `discardPile`: cartas jugadas o descartadas.
 - `jokers`: jokers comprados.
+- `consumables`: tarots, planetas y cartas espectrales disponibles.
+- `vouchers`: vouchers comprados.
+- `shopOffers`: ofertas actuales de la tienda.
+- `handLevels`: niveles de cada tipo de mano.
 - `deckId`: baraja elegida.
 - `level`: nivel/Ante actual.
 - `blinds`: los tres blinds del nivel actual.
@@ -125,7 +130,8 @@ El tipo `GameState` (`src/types/game.ts`) contiene toda la información necesari
 - `money`: dinero del jugador.
 - `score`: puntuación acumulada contra el blind actual.
 - `status`: pantalla o fase actual.
-- `bossNamesRemaining`: bosses que todavía no han aparecido en el ciclo actual.
+- `bossIdsRemaining`: bosses que todavía no han aparecido en el ciclo actual.
+- `playedHandTypesThisRound`: tipos de mano jugados en la ronda actual.
 
 ## Hook `useGameState`
 
@@ -155,9 +161,9 @@ Los componentes no modifican el estado directamente. Por ejemplo, `RoundPanel` r
 
 Las barajas están definidas en `src/types/deck.ts`:
 
-- `Red Deck`: una descarte adicional por nivel.
-- `Blue Deck`: una mano adicional por nivel.
-- `Yellow Deck`: 10 dólares adicionales al comenzar.
+- `Baraja Roja`: un descarte adicional por nivel.
+- `Baraja Azul`: una mano adicional por nivel.
+- `Baraja Amarilla`: 10 dólares adicionales al comenzar.
 
 La selección visual se realiza en `DeckSelectPanel`. El `deckId` llega a `startNewGame`, donde se aplican sus bonuses al estado inicial.
 
@@ -193,6 +199,25 @@ El catálogo está en `src/logic/joker.ts`.
 - Cada joker tiene un id estable, precio, rareza y efecto.
 
 La tienda muestra ofertas reales y permite comprar si el jugador tiene suficiente dinero. Al comprar, el joker se añade a `gameState.jokers` y el precio se resta de `gameState.money`.
+
+## Consumibles y Spectral Packs
+
+El catálogo de consumibles está en `src/logic/consumables.ts` y sus tipos en `src/types/consumable.ts`.
+
+- Los tarots pueden modificar cartas, destruirlas o dar dinero.
+- Los planetas suben el nivel de un tipo de mano.
+- El `Spectral Pack` ofrece 2 cartas espectrales y permite elegir 1.
+- Las cartas espectrales no aparecen en las ofertas normales de consumibles.
+
+Cartas espectrales implementadas:
+
+- **Grim**: mejora una carta seleccionada con +20 chips permanentes.
+- **Sigil**: convierte todas las cartas de la mano a un palo aleatorio.
+- **Ectoplasm**: destruye el joker seleccionado.
+- **Ankh**: duplica el joker seleccionado y coloca la copia junto al original.
+- **The Soul**: añade un joker aleatorio gratis.
+
+Los consumibles que requieren objetivo distinguen entre carta, joker o ningún objetivo mediante `getConsumableTargetKind`. El modo de selección se cancela al cambiar de fase sin consumir la carta.
 
 ## Bosses y sus efectos
 
@@ -262,6 +287,9 @@ Implementado:
 - Cálculo de score con jokers.
 - Cálculo de score con cartas debuffeadas por el Boss.
 - Tienda con ofertas y compra de jokers.
+- Tarots, planetas y Spectral Packs con selección de cartas.
+- Efectos espectrales sobre cartas, jokers y la mano completa.
+- Selección de objetivos para consumibles y duplicación ordenada de jokers.
 - Bonuses iniciales de las barajas Red, Blue y Yellow.
 
 Pendiente o simplificado:
@@ -270,3 +298,4 @@ Pendiente o simplificado:
 - Los niveles Endless posteriores al 12 utilizan una aproximación.
 - Las pantallas de Rules y Options todavía no tienen una vista propia.
 - Faltan tests automatizados.
+- La rotación aleatoria de packs de la tienda todavía está pendiente.
