@@ -78,3 +78,9 @@ export function getShopJokers(count: number = 3): Joker[] {
 export function getJokerById(id: string): Joker | undefined {
   return JOKER_DEFINITIONS.find((joker) => joker.id === id);
 }
+
+//* Comodín aleatorio del catálogo completo, usado por "The Soul".
+export function getRandomJoker(): Joker {
+  const [joker] = shuffle(JOKER_DEFINITIONS);
+  return { ...joker };
+}

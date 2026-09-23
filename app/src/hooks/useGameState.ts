@@ -432,43 +432,50 @@ export function useGameState() {
     });
   }, []);
 
-  //* Usar consumible (tarot con carta objetivo opcional, planeta sin objetivo)
-  const applyConsumable = useCallback((consumableId: string, targetCardId?: string) => {
-    setGameState((prev) => {
-      const consumable = prev.consumables.find((i) => i.id === consumableId);
-      if (!consumable) return prev;
+  //* Usar consumible. targetCardId para efectos sobre una carta de la mano
+  //* (tarots + Grim), targetJokerIndex para efectos sobre un comodín
+  //* (Ectoplasm/Ankh). Los planetas y The Soul no necesitan ninguno.
+  const applyConsumable = useCallback(
+    (consumableId: string, targetCardId?: string, targetJokerIndex?: number) => {
+      setGameState((prev) => {
+        const consumable = prev.consumables.find((i) => i.id === consumableId);
+        if (!consumable) return prev;
 
-      const handType = getHandType(consumable);
-      if (handType) {
-        const consumableIndex = prev.consumables.findIndex((i) => i.id === consumableId);
+        const handType = getHandType(consumable);
+        if (handType) {
+          const consumableIndex = prev.consumables.findIndex((i) => i.id === consumableId);
+          return {
+            ...prev,
+            handLevels: {
+              ...prev.handLevels,
+              [handType]: (prev.handLevels[handType] ?? 1) + 1,
+            },
+            consumables: prev.consumables.filter((_, i) => i !== consumableIndex),
+          };
+        }
+
+        const result = applyConsumableEffect(
+          consumable,
+          prev.hand,
+          prev.consumables,
+          prev.jokers,
+          targetCardId,
+          targetJokerIndex,
+        );
+
+        if (!result.consumables) return prev;
+
         return {
           ...prev,
-          handLevels: {
-            ...prev.handLevels,
-            [handType]: (prev.handLevels[handType] ?? 1) + 1,
-          },
-          consumables: prev.consumables.filter((_, i) => i !== consumableIndex),
+          money: prev.money + (result.money ?? 0),
+          hand: result.hand ?? prev.hand,
+          jokers: result.jokers ?? prev.jokers,
+          consumables: result.consumables,
         };
-      }
-
-      const result = applyConsumableEffect(
-        consumable,
-        prev.hand,
-        prev.consumables,
-        targetCardId,
-      );
-
-      if (!result.consumables) return prev;
-
-      return {
-        ...prev,
-        money: prev.money + (result.money ?? 0),
-        hand: result.hand ?? prev.hand,
-        consumables: result.consumables,
-      };
-      
-    });
-  }, []);
+      });
+    },
+    [],
+  );
 
   //* Comprar voucher en la tienda (solo una vez)
   const buyVoucher = useCallback((voucher: Voucher) => {

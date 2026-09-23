@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import styles from "./PackModal.module.css";
-import type { Consumable } from "../../types/consumable";
+import type { Consumable, ConsumableKind } from "../../types/consumable";
 
 interface PackModalProps {
   packName: string;
@@ -9,6 +9,18 @@ interface PackModalProps {
   onPick: (card: Consumable) => void;
   onClose: () => void;
 }
+
+const KIND_LABEL: Record<ConsumableKind, string> = {
+  tarot: "Tarot",
+  planet: "Planeta",
+  spectral: "Espectral",
+};
+
+const KIND_COLOR: Record<ConsumableKind, string> = {
+  tarot: "#c1121f",
+  planet: "#4c8fd1",
+  spectral: "#6a4c93",
+};
 
 export function PackModal({
   packName,
@@ -36,11 +48,8 @@ export function PackModal({
               onClick={() => onPick(card)}
               disabled={!canTake}
             >
-              <span
-                className={styles.kind}
-                style={{ color: card.kind === "tarot" ? "#c1121f" : "#4c8fd1" }}
-              >
-                {card.kind === "tarot" ? "Tarot" : "Planeta"}
+              <span className={styles.kind} style={{ color: KIND_COLOR[card.kind] }}>
+                {KIND_LABEL[card.kind]}
               </span>
               <span className={styles.cardName}>{card.name}</span>
               <span className={styles.cardDescription}>{card.description}</span>
