@@ -10,12 +10,12 @@ export type ConsumableEffect =
   | { type: "add_money"; value: number }
   | { type: "destroy_card" }
   | { type: "level_hand"; handType: HandType }
-  //* Nuevos efectos para las cartas espectrales
-  | { type: "enhance_card"; chipBonus: number } //* Mejora una carta: le añade fichas permanentes
-  | { type: "convert_hand_suit" } //* Convierte toda la mano a un palo aleatorio
-  | { type: "destroy_joker" } //* Destruye el comodín seleccionado
-  | { type: "duplicate_joker" } //* Duplica el comodín seleccionado
-  | { type: "add_random_joker" }; //* Añade un comodín aleatorio gratis
+  //* Efectos espectrales
+  | { type: "enhance_card"; chipBonus: number } //* Grim: mejora una carta
+  | { type: "convert_hand_suit" } //* Sigil: convierte la mano a un palo aleatorio
+  | { type: "destroy_joker" } //* Ectoplasm: destruye el comodín elegido
+  | { type: "duplicate_joker" } //* Ankh: duplica el comodín elegido
+  | { type: "add_random_joker" }; //* The Soul: añade un comodín aleatorio gratis
 
 export interface Consumable {
   id: string;

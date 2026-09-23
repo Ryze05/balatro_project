@@ -31,6 +31,32 @@
     min-width: 0;
 }
 
+.jokerTargetBanner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 10px 16px;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-special);
+    border-radius: var(--radius-lg);
+    color: var(--color-special);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.jokerTargetBannerCancel {
+    background: transparent;
+    border: 2px solid var(--color-border);
+    color: var(--color-text-muted);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-family: inherit;
+    cursor: pointer;
+}
+
 /* En portrait móvil el RotatePrompt bloquea la partida y pide girar. */
 @media (max-width: 720px) and (orientation: portrait) {
     .layout {
