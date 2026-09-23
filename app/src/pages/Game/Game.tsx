@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import type { MenuOption } from "../../types/game";
 import type { DeckId } from "../../types/deck";
 import type { Consumable } from "../../types/consumable";
-import { requiresTarget } from "../../logic/consumables";
+import { getConsumableTargetKind } from "../../logic/consumables";
 import MainMenu from "../../components/MainMenu/MainMenu";
 import BlindSelect from "../../components/BlindSelect/BlindSelect";
 import RoundPanel from "../../components/RoundPanel/RoundPanel";
@@ -46,23 +46,31 @@ export default function Game() {
     jokers,
     consumables,
     vouchers,
+    playedHandTypesThisRound,
     status,
   } = gameState;
 
-  //* Huecos reales de consumibles (tiene en cuenta el voucher Grabber),
-  //* misma función que ya usa useGameState internamente para bloquear
-  //* la compra cuando no hay hueco.
   const maxConsumableSlots = getConsumableSlots(MAX_CONSUMABLES, vouchers);
 
   const [targetConsumable, setTargetConsumable] = useState<Consumable | null>(null);
 
-  //* Si sales de la ronda, se cancela el modo "elige carta objetivo"
+  const targetKind = targetConsumable ? getConsumableTargetKind(targetConsumable) : "none";
+
   useEffect(() => {
-    if (status !== "playing") setTargetConsumable(null);
+    setTargetConsumable(null);
   }, [status]);
 
+  const canUseConsumable = (consumable: Consumable): boolean => {
+    const kind = getConsumableTargetKind(consumable);
+    if (kind === "card") return status === "playing" && hand.length > 0;
+    if (kind === "joker") return jokers.length > 0;
+    return true;
+  };
+
   const handleUseConsumable = (consumable: Consumable): void => {
-    if (requiresTarget(consumable)) {
+    if (!canUseConsumable(consumable)) return;
+
+    if (getConsumableTargetKind(consumable) !== "none") {
       setTargetConsumable(consumable);
       return;
     }
@@ -72,6 +80,13 @@ export default function Game() {
   const handleTargetCard = (cardId: string): void => {
     if (targetConsumable) {
       applyConsumable(targetConsumable.id, cardId);
+      setTargetConsumable(null);
+    }
+  };
+
+  const handleTargetJoker = (jokerIndex: number): void => {
+    if (targetConsumable) {
+      applyConsumable(targetConsumable.id, undefined, jokerIndex);
       setTargetConsumable(null);
     }
   };
@@ -107,12 +122,30 @@ export default function Game() {
       </div>
 
       <div className={styles.mainColumn}>
+        {targetConsumable && targetKind === "joker" && (
+          <div className={styles.jokerTargetBanner}>
+            <span>Elige un comodín para {targetConsumable.name}</span>
+            <button
+              type="button"
+              className={styles.jokerTargetBannerCancel}
+              onClick={() => setTargetConsumable(null)}
+            >
+              Cancelar
+            </button>
+          </div>
+        )}
+
         <JokerBoard
           jokers={jokers}
           consumables={consumables}
           maxConsumableSlots={maxConsumableSlots}
           onReorder={reorderJokers}
           onUseConsumable={handleUseConsumable}
+          targetJokerMode={targetKind === "joker"}
+          onTargetJoker={handleTargetJoker}
+          //* FIX: JokerBoard usa esto para deshabilitar (en vez de dejar
+          //* "muerto") el botón de un consumible que no se puede usar ahora.
+          canUseConsumable={canUseConsumable}
         />
 
         {status === "blindSelect" && (
@@ -130,10 +163,12 @@ export default function Game() {
         {status === "playing" && currentBlind && (
           <div className={styles.screenArea}>
             <RoundPanel
+              blind={currentBlind}
               hand={hand}
+              playedHandTypes={playedHandTypesThisRound}
               handsLeft={handsLeft}
               discardsLeft={discardsLeft}
-              targetConsumable={targetConsumable}
+              targetConsumable={targetKind === "card" ? targetConsumable : null}
               onToggleCard={selectCard}
               onPlayHand={playHand}
               onDiscard={discardCards}

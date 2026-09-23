@@ -1,8 +1,14 @@
 import type { Consumable } from "../types/consumable";
-import type { Card } from "../types/card";
+import type { Card, Suit } from "../types/card";
 import type { HandType } from "../types/game";
+import type { Joker } from "../types/joker";
 import { shuffle } from "../utils/shuffle";
 import { getCardScore } from "./deck";
+import { getRandomJoker } from "./joker";
+
+const SUITS_FOR_RANDOM: Suit[] = ["hearts", "diamonds", "clubs", "spades"];
+
+export type ConsumableTargetKind = "card" | "joker" | "none";
 
 const TAROT_DEFINITIONS: Consumable[] = [
   { id: "tarot-chariot", name: "The Chariot", description: "Cambia el palo de una carta a Picas", price: 3, kind: "tarot", effect: { type: "set_suit", suit: "spades" } },
@@ -30,6 +36,49 @@ const PLANET_DEFINITIONS: Consumable[] = [
   { id: "planet-pluto", name: "Pluto", description: "Sube de nivel Carta Alta", price: 4, kind: "planet", effect: { type: "level_hand", handType: "HighCard" } },
 ];
 
+const SPECTRAL_DEFINITIONS: Consumable[] = [
+  {
+    id: "spectral-grim",
+    name: "Grim",
+    description: "Mejora una carta seleccionada: +20 fichas permanentes",
+    price: 4,
+    kind: "spectral",
+    effect: { type: "enhance_card", chipBonus: 20 },
+  },
+  {
+    id: "spectral-sigil",
+    name: "Sigil",
+    description: "Convierte todas las cartas de tu mano a un palo aleatorio",
+    price: 4,
+    kind: "spectral",
+    effect: { type: "convert_hand_suit" },
+  },
+  {
+    id: "spectral-ectoplasm",
+    name: "Ectoplasm",
+    description: "Destruye el comodín seleccionado",
+    price: 4,
+    kind: "spectral",
+    effect: { type: "destroy_joker" },
+  },
+  {
+    id: "spectral-ankh",
+    name: "Ankh",
+    description: "Duplica el comodín seleccionado",
+    price: 6,
+    kind: "spectral",
+    effect: { type: "duplicate_joker" },
+  },
+  {
+    id: "spectral-soul",
+    name: "The Soul",
+    description: "Añade un comodín aleatorio gratis",
+    price: 6,
+    kind: "spectral",
+    effect: { type: "add_random_joker" },
+  },
+];
+
 export function getShopConsumables(count: number = 2): Consumable[] {
   return shuffle([...TAROT_DEFINITIONS, ...PLANET_DEFINITIONS])
     .slice(0, count)
@@ -44,16 +93,29 @@ export function getCelestialPack(count: number = 3): Consumable[] {
   return shuffle(PLANET_DEFINITIONS).slice(0, count).map((i) => ({ ...i }));
 }
 
-export function getConsumableById(id: string): Consumable | undefined {
-  return [...TAROT_DEFINITIONS, ...PLANET_DEFINITIONS].find((i) => i.id === id);
+export function getSpectralPack(count: number = 2): Consumable[] {
+  return shuffle(SPECTRAL_DEFINITIONS).slice(0, count).map((i) => ({ ...i }));
 }
 
-export function requiresTarget(consumable: Consumable): boolean {
-  return (
-    consumable.effect.type === "set_suit" ||
-    consumable.effect.type === "set_rank" ||
-    consumable.effect.type === "destroy_card"
+export function getConsumableById(id: string): Consumable | undefined {
+  return [...TAROT_DEFINITIONS, ...PLANET_DEFINITIONS, ...SPECTRAL_DEFINITIONS].find(
+    (i) => i.id === id,
   );
+}
+
+export function getConsumableTargetKind(consumable: Consumable): ConsumableTargetKind {
+  switch (consumable.effect.type) {
+    case "set_suit":
+    case "set_rank":
+    case "destroy_card":
+    case "enhance_card":
+      return "card";
+    case "destroy_joker":
+    case "duplicate_joker":
+      return "joker";
+    default:
+      return "none";
+  }
 }
 
 export function getHandType(consumable: Consumable): HandType | undefined {
@@ -66,8 +128,10 @@ export function applyConsumableEffect(
   consumable: Consumable,
   hand: Card[],
   consumables: Consumable[],
+  jokers: Joker[],
   targetCardId?: string,
-): { money?: number; hand?: Card[]; consumables?: Consumable[] } {
+  targetJokerIndex?: number,
+): { money?: number; hand?: Card[]; consumables?: Consumable[]; jokers?: Joker[] } {
   const effect = consumable.effect;
   const consumableIndex = consumables.findIndex((i) => i.id === consumable.id);
   const remaining = consumables.filter((_, i) => i !== consumableIndex);
@@ -80,6 +144,38 @@ export function applyConsumableEffect(
     return { consumables: remaining };
   }
 
+  if (effect.type === "add_random_joker") {
+    return { jokers: [...jokers, getRandomJoker()], consumables: remaining };
+  }
+
+  if (effect.type === "convert_hand_suit") {
+    const suit = SUITS_FOR_RANDOM[Math.floor(Math.random() * SUITS_FOR_RANDOM.length)];
+    return {
+      hand: hand.map((card) => ({ ...card, suit })),
+      consumables: remaining,
+    };
+  }
+
+  if (effect.type === "destroy_joker") {
+    if (targetJokerIndex === undefined || !jokers[targetJokerIndex]) return {};
+    return {
+      jokers: jokers.filter((_, i) => i !== targetJokerIndex),
+      consumables: remaining,
+    };
+  }
+
+  if (effect.type === "duplicate_joker") {
+    if (targetJokerIndex === undefined || !jokers[targetJokerIndex]) return {};
+    return {
+      jokers: [
+        ...jokers.slice(0, targetJokerIndex + 1),
+        { ...jokers[targetJokerIndex] },
+        ...jokers.slice(targetJokerIndex + 1),
+      ],
+      consumables: remaining,
+    };
+  }
+
   const target = hand.find((card) => card.id === targetCardId);
   if (!target) return {};
 
@@ -89,6 +185,8 @@ export function applyConsumableEffect(
     if (effect.type === "set_suit") return { ...card, suit: effect.suit };
     if (effect.type === "set_rank")
       return { ...card, rank: effect.rank, chipValue: getCardScore(effect.rank) };
+    if (effect.type === "enhance_card")
+      return { ...card, enhanced: true, chipValue: card.chipValue + effect.chipBonus };
     return card;
   });
 

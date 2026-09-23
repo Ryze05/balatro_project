@@ -65,7 +65,7 @@ export function JokerSidebar({
   let preview: { handType: HandType; chips: number; multiplier: number; total: number } | null = null;
   if (hasValidSelection) {
     const { handType, scoringCards } = evaluateHand(selectedCards);
-    const scoreContext = calculateScore(handType, scoringCards, jokers, handLevels);
+    const scoreContext = calculateScore(handType, scoringCards, jokers, handLevels, blind);
     preview = {
       handType,
       chips: scoreContext.chips,
@@ -82,6 +82,10 @@ export function JokerSidebar({
             <span className={styles.scoreBlindType}>{BLIND_TYPE_LABEL[blind.type]}</span>
             <span className={styles.scoreBlindName}>{blind.name}</span>
           </div>
+
+          {blind.type === "boss" && blind.description && (
+            <p className={styles.scoreBlindDescription}>{blind.description}</p>
+          )}
 
           <div className={styles.scoreMain}>
             <span className={styles.scoreMainLabel}>Puntos</span>

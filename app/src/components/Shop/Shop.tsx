@@ -4,7 +4,7 @@ import type { Joker } from "../../types/joker";
 import type { Consumable } from "../../types/consumable";
 import type { Voucher } from "../../types/voucher";
 import type { ShopOffers } from "../../types/game";
-import { getArcanaPack, getCelestialPack } from "../../logic/consumables";
+import { getArcanaPack, getCelestialPack, getSpectralPack } from "../../logic/consumables";
 import { getConsumablePrice, getJokerPrice, hasVoucher } from "../../logic/vouchers";
 import PackModal from "../PackModal/PackModal";
 
@@ -23,17 +23,17 @@ interface ShopProps {
   onContinue: () => void;
 }
 
-//* Sobres disponibles en la tienda (Arcana y Celestial)
 interface PackDefinition {
   id: string;
   name: string;
   price: number;
-  kind: "arcana" | "celestial";
+  kind: "arcana" | "celestial" | "spectral";
 }
 
 const PACK_DEFINITIONS: PackDefinition[] = [
   { id: "pack-arcana", name: "Arcana Pack", price: 4, kind: "arcana" },
   { id: "pack-celestial", name: "Celestial Pack", price: 5, kind: "celestial" },
+  { id: "pack-spectral", name: "Spectral Pack", price: 6, kind: "spectral" },
 ];
 
 const REROLL_BASE_COST = 5;
@@ -44,6 +44,18 @@ function EmptyOfferSlot(): JSX.Element {
       <span>Agotado</span>
     </div>
   );
+}
+
+function getPackDescription(kind: PackDefinition["kind"]): string {
+  if (kind === "arcana") return "Contiene cartas de tarot. Elige 1.";
+  if (kind === "celestial") return "Contiene cartas de planeta. Elige 1.";
+  return "Contiene cartas espectrales. Elige 1.";
+}
+
+function getPackCards(kind: PackDefinition["kind"]): Consumable[] {
+  if (kind === "arcana") return getArcanaPack(3);
+  if (kind === "celestial") return getCelestialPack(3);
+  return getSpectralPack(2);
 }
 
 export function Shop({
@@ -82,13 +94,10 @@ export function Shop({
     onBuyConsumable(consumable);
   };
 
-  //* Comprar un sobre: descuenta el dinero y abre el modal con sus cartas
   const openPack = (pack: PackDefinition): void => {
     onSpendMoney(getJokerPrice(pack.price, vouchers));
     setSoldPackIds((prev) => [...prev, pack.id]);
-    const cards =
-      pack.kind === "arcana" ? getArcanaPack(3) : getCelestialPack(3);
-    setOpenedPack({ name: pack.name, cards });
+    setOpenedPack({ name: pack.name, cards: getPackCards(pack.kind) });
   };
 
   const pickFromPack = (card: Consumable): void => {
@@ -181,11 +190,7 @@ export function Shop({
                   Booster
                 </span>
                 <h3 className={styles.jokerName}>{pack.name}</h3>
-                <p className={styles.jokerDescription}>
-                  {pack.kind === "arcana"
-                    ? "Contiene cartas de tarot. Elige 1."
-                    : "Contiene cartas de planeta. Elige 1."}
-                </p>
+                <p className={styles.jokerDescription}>{getPackDescription(pack.kind)}</p>
                 <button
                   type="button"
                   className={styles.buyButton}

@@ -48,10 +48,11 @@ src/
 ├── hooks/
 │   └── useGameState.ts      # Estado y acciones principales de la partida
 ├── logic/                   # Reglas del dominio del juego
-│   ├── blinds.ts            # Niveles, blinds y bosses
+│   ├── blinds.ts            # Niveles, blinds, bosses y sus efectos
 │   ├── deck.ts              # Creación, barajado y robo de cartas
 │   ├── handEvaluator.ts     # Detección de manos de poker
 │   ├── joker.ts             # Catálogo y ofertas de jokers
+│   ├── consumables.ts       # Tarots, planetas y cartas espectrales
 │   └── score.ts             # Cálculo de chips, multiplicador y score
 ├── pages/
 │   ├── Game/                # Pantalla principal de la partida
@@ -59,7 +60,7 @@ src/
 │   └── NotFound/            # Ruta inexistente
 ├── storage/
 │   └── localStorage.ts      # Guardado y carga de partidas
-├── types/                   # Tipos TypeScript del dominio
+├── types/                   # Tipos TypeScript del dominio (card, deck, game, joker, boss)
 └── utils/
     └── shuffle.ts           # Utilidad genérica para barajar arrays
 ```
@@ -115,6 +116,10 @@ El tipo `GameState` (`src/types/game.ts`) contiene toda la información necesari
 - `hand`: cartas que tiene el jugador.
 - `discardPile`: cartas jugadas o descartadas.
 - `jokers`: jokers comprados.
+- `consumables`: tarots, planetas y cartas espectrales disponibles.
+- `vouchers`: vouchers comprados.
+- `shopOffers`: ofertas actuales de la tienda.
+- `handLevels`: niveles de cada tipo de mano.
 - `deckId`: baraja elegida.
 - `level`: nivel/Ante actual.
 - `blinds`: los tres blinds del nivel actual.
@@ -125,7 +130,8 @@ El tipo `GameState` (`src/types/game.ts`) contiene toda la información necesari
 - `money`: dinero del jugador.
 - `score`: puntuación acumulada contra el blind actual.
 - `status`: pantalla o fase actual.
-- `bossNamesRemaining`: bosses que todavía no han aparecido en el ciclo actual.
+- `bossIdsRemaining`: bosses que todavía no han aparecido en el ciclo actual.
+- `playedHandTypesThisRound`: tipos de mano jugados en la ronda actual.
 
 ## Hook `useGameState`
 
@@ -155,9 +161,9 @@ Los componentes no modifican el estado directamente. Por ejemplo, `RoundPanel` r
 
 Las barajas están definidas en `src/types/deck.ts`:
 
-- `Red Deck`: una descarte adicional por nivel.
-- `Blue Deck`: una mano adicional por nivel.
-- `Yellow Deck`: 10 dólares adicionales al comenzar.
+- `Baraja Roja`: un descarte adicional por nivel.
+- `Baraja Azul`: una mano adicional por nivel.
+- `Baraja Amarilla`: 10 dólares adicionales al comenzar.
 
 La selección visual se realiza en `DeckSelectPanel`. El `deckId` llega a `startNewGame`, donde se aplican sus bonuses al estado inicial.
 
@@ -194,16 +200,47 @@ El catálogo está en `src/logic/joker.ts`.
 
 La tienda muestra ofertas reales y permite comprar si el jugador tiene suficiente dinero. Al comprar, el joker se añade a `gameState.jokers` y el precio se resta de `gameState.money`.
 
-## Bosses sin repetición
+## Consumibles y Spectral Packs
 
-Los bosses se guardan como una lista serializable en `bossNamesRemaining`.
+El catálogo de consumibles está en `src/logic/consumables.ts` y sus tipos en `src/types/consumable.ts`.
 
-1. Al comenzar una partida se baraja la lista de bosses.
+- Los tarots pueden modificar cartas, destruirlas o dar dinero.
+- Los planetas suben el nivel de un tipo de mano.
+- El `Spectral Pack` ofrece 2 cartas espectrales y permite elegir 1.
+- Las cartas espectrales no aparecen en las ofertas normales de consumibles.
+
+Cartas espectrales implementadas:
+
+- **Grim**: mejora una carta seleccionada con +20 chips permanentes.
+- **Sigil**: convierte todas las cartas de la mano a un palo aleatorio.
+- **Ectoplasm**: destruye el joker seleccionado.
+- **Ankh**: duplica el joker seleccionado y coloca la copia junto al original.
+- **The Soul**: añade un joker aleatorio gratis.
+
+Los consumibles que requieren objetivo distinguen entre carta, joker o ningún objetivo mediante `getConsumableTargetKind`. El modo de selección se cancela al cambiar de fase sin consumir la carta.
+
+## Bosses y sus efectos
+
+Cada boss se define en `types/boss.ts` (`BossDefinition`) y el catálogo está en `logic/blinds.ts` (`BOSS_CATALOG`). Cada uno declara un `anteMinimo` y un `effect`:
+
+- **The Wall**: objetivo ×2 (total ×4).
+- **The Needle**: solo 1 mano.
+- **The Water**: empiezas sin descartes.
+- **The Manacle**: una carta menos en la mano.
+- **The Hook**: descarta 2 cartas al azar cada vez que juegas una mano.
+- **The Plant**: las figuras (J, Q, K) no puntúan.
+- **The Goad / The Head / The Window / The Club**: un palo no puntúa.
+- **The Eye**: no se puede repetir tipo de jugada en la ronda.
+- **The Mouth**: solo se puede jugar el tipo de la primera mano.
+
+Los bosses se guardan como una lista serializable en `bossIdsRemaining`.
+
+1. Al comenzar una partida se barajan los bosses disponibles para el Ante (`anteMinimo <= level`).
 2. Cada nuevo level extrae un boss de la lista.
 3. El boss extraído se elimina del pool.
 4. Cuando la lista queda vacía, se vuelve a barajar.
 
-Así no se repite un boss hasta que todos los bosses disponibles han aparecido. Al estar guardado como `string[]`, el pool también puede persistirse en localStorage.
+Así no se repite un boss hasta que todos los disponibles han aparecido, y los bosses de Antes altos no salen antes de tiempo. Al estar guardado como `string[]`, el pool también puede persistirse en localStorage.
 
 ## Guardado en localStorage
 
@@ -244,17 +281,21 @@ Implementado:
 - Estado centralizado mediante `useGameState`.
 - Guardado y carga con localStorage.
 - Generación de niveles y blinds.
-- Bosses aleatorios sin repetición dentro de cada ciclo.
+- Bosses aleatorios sin repetición, con efectos propios y filtrado por Ante.
 - Creación, selección, juego y descarte de cartas.
 - Evaluación de manos de poker.
 - Cálculo de score con jokers.
+- Cálculo de score con cartas debuffeadas por el Boss.
 - Tienda con ofertas y compra de jokers.
+- Tarots, planetas y Spectral Packs con selección de cartas.
+- Efectos espectrales sobre cartas, jokers y la mano completa.
+- Selección de objetivos para consumibles y duplicación ordenada de jokers.
 - Bonuses iniciales de las barajas Red, Blue y Yellow.
 
 Pendiente o simplificado:
 
-- Los efectos especiales de los Boss Blinds todavía son placeholders.
 - La lista de bosses es reducida respecto al juego original.
 - Los niveles Endless posteriores al 12 utilizan una aproximación.
 - Las pantallas de Rules y Options todavía no tienen una vista propia.
 - Faltan tests automatizados.
+- La rotación aleatoria de packs de la tienda todavía está pendiente.

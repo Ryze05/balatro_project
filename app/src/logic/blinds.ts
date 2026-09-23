@@ -1,4 +1,6 @@
-import type { Blind, BlindType } from "../types/game";
+import type { Blind, BlindType, HandType } from "../types/game";
+import type { Card } from "../types/card";
+import type { BossDefinition } from "../types/boss";
 import { shuffle } from "../utils/shuffle";
 
 //* Puntajes de los niveles
@@ -46,46 +48,92 @@ const TYPE_REWARD: Record<BlindType, number> = {
   boss: 5,
 };
 
-//* Boss blinds
-const BOSS_NAMES = [
-  "The Hook",
-  "The Ox",
-  "The Wall",
-  "The Fish",
-  "The Manacle",
-  "The Eye",
-  "The Mouth",
-  "The Serpent",
-  "The Pillar",
-  "The Water",
+//* Catálogo de Boss Blinds con su efecto y el Ante mínimo en el que aparecen
+export const BOSS_CATALOG: BossDefinition[] = [
+  { id: "the-hook", name: "The Hook", description: "Descarta 2 cartas al azar cada vez que juegas una mano.", anteMinimo: 1, effect: { type: "discard_random_on_play", count: 2 } },
+  { id: "the-goad", name: "The Goad", description: "Las picas no puntúan.", anteMinimo: 1, effect: { type: "debuff_suit", suit: "spades" } },
+  { id: "the-head", name: "The Head", description: "Los corazones no puntúan.", anteMinimo: 1, effect: { type: "debuff_suit", suit: "hearts" } },
+  { id: "the-window", name: "The Window", description: "Los diamantes no puntúan.", anteMinimo: 1, effect: { type: "debuff_suit", suit: "diamonds" } },
+  { id: "the-club", name: "The Club", description: "Los tréboles no puntúan.", anteMinimo: 1, effect: { type: "debuff_suit", suit: "clubs" } },
+  { id: "the-water", name: "The Water", description: "Empiezas la ronda sin descartes.", anteMinimo: 1, effect: { type: "discards", count: 0 } },
+  { id: "the-manacle", name: "The Manacle", description: "Roba una carta menos.", anteMinimo: 1, effect: { type: "handSize", delta: -1 } },
+  { id: "the-wall", name: "The Wall", description: "El objetivo se multiplica por 2.", anteMinimo: 2, effect: { type: "target", multiplier: 2 } },
+  { id: "the-needle", name: "The Needle", description: "Solo tienes 1 mano.", anteMinimo: 2, effect: { type: "hands", count: 1 } },
+  { id: "the-plant", name: "The Plant", description: "Las figuras (J, Q, K) no puntúan.", anteMinimo: 2, effect: { type: "debuff_face" } },
+  { id: "the-eye", name: "The Eye", description: "No puedes repetir el tipo de jugada en la ronda.", anteMinimo: 3, effect: { type: "no_repeat_hands" } },
+  { id: "the-mouth", name: "The Mouth", description: "Solo puedes jugar el tipo de tu primera mano.", anteMinimo: 3, effect: { type: "first_hand_only" } },
 ];
 
-export function createBossPool(): string[] {
-  return shuffle(BOSS_NAMES);
+//* Pool de bosses disponibles para un Ante, sin repetir hasta agotarlo
+export function createBossPool(level: number): string[] {
+  return shuffle(BOSS_CATALOG.filter((boss) => boss.anteMinimo <= level).map((boss) => boss.id));
 }
 
-//* Saca un boss del pool sin repetir
-export function pickNextBossName(pool: string[]): { bossName: string; remaining: string[] } {
-  const activePool = pool.length === 0 ? createBossPool() : pool;
-  const bossName = activePool[activePool.length - 1];
-  return { bossName, remaining: activePool.slice(0, -1) };
+export function pickNextBoss(pool: string[], level: number): { bossId: string; remaining: string[] } {
+  const activePool = pool.length === 0 ? createBossPool(level) : pool;
+  const bossId = activePool[activePool.length - 1];
+  return { bossId, remaining: activePool.slice(0, -1) };
+}
+
+export function getBossById(id: string | undefined): BossDefinition | undefined {
+  if (!id) return undefined;
+  return BOSS_CATALOG.find((boss) => boss.id === id);
+}
+
+export function getHandSizeDelta(blind: Blind): number {
+  return blind.effect?.type === "handSize" ? blind.effect.delta : 0;
+}
+
+export function getResourceOverrides(blind: Blind): { hands?: number; discards?: number } {
+  const effect = blind.effect;
+  if (effect?.type === "hands") return { hands: effect.count };
+  if (effect?.type === "discards") return { discards: effect.count };
+  return {};
+}
+
+export function isCardDebuffed(card: Card, blind: Blind): boolean {
+  const effect = blind.effect;
+  if (effect?.type === "debuff_suit") return card.suit === effect.suit;
+  if (effect?.type === "debuff_face") return ["J", "Q", "K"].includes(card.rank);
+  return false;
+}
+
+export function checkPlayAllowed(
+  handType: HandType,
+  playedTypes: HandType[],
+  blind: Blind,
+): { allowed: boolean; reason?: string } {
+  const effect = blind.effect;
+  if (effect?.type === "no_repeat_hands" && playedTypes.includes(handType)) {
+    return { allowed: false, reason: `${blind.name}: no puedes repetir esta jugada en la ronda.` };
+  }
+  if (effect?.type === "first_hand_only" && playedTypes.length > 0 && playedTypes[0] !== handType) {
+    return { allowed: false, reason: `${blind.name}: solo puedes jugar la misma jugada que tu primera mano.` };
+  }
+  return { allowed: true };
 }
 
 //* Construcción de los blinds
-function buildBlind(level: number, type: BlindType, bossName: string): Blind {
+function buildBlind(level: number, type: BlindType, bossId: string): Blind {
   const baseChips = getBaseChipsForLevel(level);
-  const targetScore = Math.round(baseChips * TYPE_MULTIPLIER[type]);
+  let targetScore = Math.round(baseChips * TYPE_MULTIPLIER[type]);
   const reward = TYPE_REWARD[type];
 
   if (type === "boss") {
+    const boss = getBossById(bossId);
+    if (boss?.effect.type === "target") {
+      targetScore = Math.round(targetScore * boss.effect.multiplier);
+    }
     return {
       id: `${level}-boss`,
-      name: bossName,
+      name: boss?.name ?? "Boss Blind",
       type,
       targetScore,
       reward,
       skippable: false,
-      description: "Boss Blind — cannot be skipped.",
+      bossId: boss?.id,
+      effect: boss?.effect,
+      description: boss?.description ?? "Boss Blind — cannot be skipped.",
     };
   }
 
@@ -102,10 +150,10 @@ function buildBlind(level: number, type: BlindType, bossName: string): Blind {
 }
 
 //* Generar blinds de los niveles
-export function generateBlindsForLevel(level: number, bossName: string): Blind[] {
+export function generateBlindsForLevel(level: number, bossId: string): Blind[] {
   return [
-    buildBlind(level, "small", bossName),
-    buildBlind(level, "big", bossName),
-    buildBlind(level, "boss", bossName),
+    buildBlind(level, "small", bossId),
+    buildBlind(level, "big", bossId),
+    buildBlind(level, "boss", bossId),
   ];
 }

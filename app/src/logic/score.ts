@@ -1,6 +1,7 @@
 import type { Card } from "../types/card";
-import type { HandType, ScoringContext } from "../types/game";
+import type { Blind, HandType, ScoringContext } from "../types/game";
 import type { Joker } from "../types/joker";
+import { isCardDebuffed } from "./blinds";
 
 interface HandValues {
   chips: number;
@@ -57,16 +58,18 @@ export function calculateScore(
   handType: HandType,
   scoringCards: Card[],
   jokers: Joker[],
-  handLevels: Partial<Record<HandType, number>> = {}
+  handLevels: Partial<Record<HandType, number>> = {},
+  blind?: Blind
 ): ScoringContext {
   const baseScore = HAND_VALUES[handType];
   const level = handLevels[handType] ?? 1;
   const levelBonus = level - 1;
 
-  let cardChips = 0
-  scoringCards.forEach(card => {
-    cardChips += card.chipValue
-  })
+  let cardChips = 0;
+  scoringCards.forEach((card) => {
+    if (blind && isCardDebuffed(card, blind)) return;
+    cardChips += card.chipValue;
+  });
 
   const score: ScoringContext = {
     chips: baseScore.chips + cardChips + levelBonus * baseScore.chipsPerLevel,
