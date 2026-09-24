@@ -65,6 +65,24 @@ src/
     └── shuffle.ts           # Utilidad genérica para barajar arrays
 ```
 
+### Capas principales
+
+- **Interfaz:** `components/` contiene los elementos visuales reutilizables y `pages/` las pantallas asociadas a rutas.
+- **Estado:** `hooks/useGameState.ts` coordina el estado y las acciones de la partida.
+- **Dominio:** `logic/` contiene las reglas de cartas, puntuación, blinds, jokers, consumibles y vouchers.
+- **Persistencia:** `storage/localStorage.ts` guarda y recupera partidas.
+- **Contexto:** `context/` comparte preferencias globales como el tema visual.
+
+### Rutas
+
+```text
+/       Landing
+/game   Partida
+*       NotFound
+```
+
+`App.tsx` también monta componentes globales como `RotatePrompt` y `BackgroundMusic`.
+
 ## Flujo de una partida
 
 ```text
@@ -156,6 +174,55 @@ El hook devuelve dos tipos de datos:
 - Funciones de acción: callbacks que la interfaz llama cuando el usuario interactúa.
 
 Los componentes no modifican el estado directamente. Por ejemplo, `RoundPanel` recibe `onPlayHand={playHand}` y llama esa función al pulsar el botón. El hook actualiza el estado, React vuelve a renderizar la interfaz y el componente recibe los datos actualizados.
+
+### Contexto del tema
+
+El tema utiliza React Context para compartir su estado con distintos componentes sin tener que pasar props manualmente.
+
+```text
+ThemeContext      Define qué datos se pueden compartir
+ThemeProvider     Contiene el estado y la lógica del tema
+useTheme          Facilita el acceso al contexto
+```
+
+`ThemeContext` define el contrato de los valores compartidos:
+
+```tsx
+export interface ThemeContextValue {
+  theme: ThemeId;
+  setTheme: (theme: ThemeId) => void;
+}
+```
+
+El contexto no contiene el estado real. `ThemeProvider` lo mantiene mediante `useState` y lo proporciona a sus componentes hijos mediante `value`:
+
+```tsx
+const [theme, setTheme] = useState<ThemeId>(getStoredTheme);
+
+return (
+  <ThemeContext.Provider value={{ theme, setTheme }}>
+    {children}
+  </ThemeContext.Provider>
+);
+```
+
+En este caso, `value` comparte el tema actual y la función para cambiarlo. El provider se monta en `main.tsx`, envolviendo toda la aplicación:
+
+```tsx
+<ThemeProvider>
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+</ThemeProvider>
+```
+
+Los componentes consumidores acceden a esos valores mediante `useTheme()`:
+
+```tsx
+const { theme, setTheme } = useTheme();
+```
+
+El hook encapsula `useContext` y comprueba que se utilice dentro de `ThemeProvider`. Al cambiar el tema, el provider actualiza `data-theme` en el documento y guarda la selección en `localStorage`.
 
 ## Barajas
 
@@ -255,23 +322,6 @@ El hook guarda automáticamente cuando la fase es una fase real de partida: `bli
 
 Al montar `Game`, el hook intenta cargar la partida guardada. Si no existe, crea un estado inicial con `status: "menu"`. Si la partida termina, se elimina del localStorage.
 
-## Despliegue en Vercel
-
-La aplicación usa `BrowserRouter`, por lo que las rutas de React necesitan un rewrite hacia `index.html`. El proyecto incluye `vercel.json` con esta configuración:
-
-```json
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-}
-```
-
-En Vercel, si el directorio raíz del proyecto es `app`, utiliza:
-
-```text
-Build Command: npm run build
-Output Directory: dist
-```
-
 ## Estado actual
 
 Implementado:
@@ -297,5 +347,16 @@ Pendiente o simplificado:
 - La lista de bosses es reducida respecto al juego original.
 - Los niveles Endless posteriores al 12 utilizan una aproximación.
 - Las pantallas de Rules y Options todavía no tienen una vista propia.
-- Faltan tests automatizados.
 - La rotación aleatoria de packs de la tienda todavía está pendiente.
+- Faltan tests automatizados.
+
+## Verificación actual
+
+La build y el análisis estático se ejecutan correctamente:
+
+```bash
+npm run build
+npm run lint
+```
+
+Actualmente no existe una suite de tests automatizados.

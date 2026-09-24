@@ -161,8 +161,6 @@ export default function Game() {
           onUseConsumable={handleUseConsumable}
           targetJokerMode={targetKind === "joker"}
           onTargetJoker={handleTargetJoker}
-          //* FIX: JokerBoard usa esto para deshabilitar (en vez de dejar
-          //* "muerto") el botón de un consumible que no se puede usar ahora.
           canUseConsumable={canUseConsumable}
         />
 
