@@ -16,18 +16,7 @@ export default function Landing() {
  
       <div className={styles.presentationSection}>
         <p className={styles.presentationLabel}>Presentación del proyecto</p>
-        <div className={styles.presentationCard}>
-          <div className={styles.presentationFrameWrap}>
-            <iframe
-              className={styles.presentationFrame}
-              src="https://www.canva.com/design/DAHT2gnsSDg/6P7I361trcuZTHduXnoRaA/view?embed"
-              loading="lazy"
-              allow="fullscreen"
-              allowFullScreen
-              title="Presentación del proyecto"
-            />
-          </div>
-        </div>
+        <div className={styles.presentationCard} />
       </div>
     </div>
   );
