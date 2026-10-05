@@ -13,11 +13,6 @@ export default function Landing() {
           Ir al Menú
         </Link>
       </div>
- 
-      <div className={styles.presentationSection}>
-        <p className={styles.presentationLabel}>Presentación del proyecto</p>
-        <div className={styles.presentationCard} />
-      </div>
     </div>
   );
 }
